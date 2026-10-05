@@ -156,7 +156,7 @@ ${screenshotUrl ? `*Payment Screenshot:* http://localhost:3000${screenshotUrl}` 
 Please confirm our order. Thank you!`;
 
         const encodedWa = encodeURIComponent(whatsappMsg);
-        const waUrl = `https://wa.me/919876543210?text=${encodedWa}`;
+        const waUrl = `https://wa.me/919486880641?text=${encodedWa}`;
         
         window.open(waUrl, '_blank');
         router.push(`/confirmation/${data.bookingId}`);

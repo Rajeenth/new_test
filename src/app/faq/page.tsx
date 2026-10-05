@@ -60,7 +60,7 @@ export default function FAQPage() {
             <Link href="/contact" className="btn btn-outline-success fw-bold me-2">
               Contact Us
             </Link>
-            <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="btn btn-success fw-bold">
+            <a href="https://wa.me/919486880641" target="_blank" rel="noreferrer" className="btn btn-success fw-bold">
               <i className="bi bi-whatsapp me-1"></i> Chat on WhatsApp
             </a>
           </div>

@@ -47,7 +47,7 @@ export default function RootLayout({
                   Traditional Eathamozhy coconut saplings, raised in our own farm and delivered to your farm with 100% transparency and Mother Palm origin verification.
                 </p>
                 <div className="d-flex gap-2">
-                  <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-success">
+                  <a href="https://wa.me/919486880641" target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-success">
                     <i className="bi bi-whatsapp me-1"></i> WhatsApp Us
                   </a>
                   <Link href="/contact" className="btn btn-sm btn-outline-light">
@@ -85,7 +85,7 @@ export default function RootLayout({
                   <i className="bi bi-envelope me-1"></i> support@eathamozhycoconut.com
                 </p>
                 <p className="text-secondary small">
-                  <i className="bi bi-phone me-1"></i> +91 98765 43210
+                  <i className="bi bi-phone me-1"></i> +91 94868 80641
                 </p>
               </div>
             </div>

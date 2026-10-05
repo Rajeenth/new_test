@@ -160,7 +160,7 @@ export default async function BatchDetailPage({
                 </Link>
 
                 <div className="text-center mt-3">
-                  <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="text-success small fw-bold text-decoration-none">
+                  <a href="https://wa.me/919486880641" target="_blank" rel="noreferrer" className="text-success small fw-bold text-decoration-none">
                     <i className="bi bi-whatsapp me-1"></i> Have questions? Chat with our Farm Admin
                   </a>
                 </div>

@@ -88,7 +88,7 @@ export default function FarmingGuidePage() {
           <div className="card border-0 shadow-sm rounded-4 p-4 mt-5 bg-white text-center">
             <h4 className="fw-bold text-dark mb-2">Have a specific soil or pest question?</h4>
             <p className="text-secondary mb-3">Our farm experts are available to assist you via WhatsApp.</p>
-            <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="btn btn-success fw-bold d-inline-flex align-items-center gap-2 mx-auto">
+            <a href="https://wa.me/919486880641" target="_blank" rel="noreferrer" className="btn btn-success fw-bold d-inline-flex align-items-center gap-2 mx-auto">
               <i className="bi bi-whatsapp fs-5"></i> Ask Farm Expert on WhatsApp
             </a>
           </div>

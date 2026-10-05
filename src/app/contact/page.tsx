@@ -47,8 +47,8 @@ export default function ContactPage() {
 
                 <div className="mb-4">
                   <h6 className="fw-bold text-dark mb-1">Phone & WhatsApp</h6>
-                  <p className="text-secondary small mb-1"><i className="bi bi-telephone me-1 text-success"></i> +91 98765 43210</p>
-                  <p className="text-secondary small"><i className="bi bi-whatsapp me-1 text-success"></i> +91 98765 43210</p>
+                  <p className="text-secondary small mb-1"><i className="bi bi-telephone me-1 text-success"></i> +91 94868 80641</p>
+                  <p className="text-secondary small"><i className="bi bi-whatsapp me-1 text-success"></i> +91 94868 80641</p>
                 </div>
 
                 <div className="mb-4">
@@ -57,10 +57,10 @@ export default function ContactPage() {
                 </div>
 
                 <div className="d-flex flex-column gap-2 mt-auto">
-                  <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="btn btn-success fw-bold py-2">
+                  <a href="https://wa.me/919486880641" target="_blank" rel="noreferrer" className="btn btn-success fw-bold py-2">
                     <i className="bi bi-whatsapp me-1"></i> WhatsApp Us Directly
                   </a>
-                  <a href="tel:+919876543210" className="btn btn-outline-dark fw-bold py-2">
+                  <a href="tel:+919486880641" className="btn btn-outline-dark fw-bold py-2">
                     <i className="bi bi-telephone-fill me-1"></i> Call Us Now
                   </a>
                 </div>

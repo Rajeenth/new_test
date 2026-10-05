@@ -111,7 +111,7 @@ export default function Navbar() {
           </Link>
 
           <a 
-            href="https://wa.me/919876543210" 
+            href="https://wa.me/919486880641" 
             target="_blank" 
             rel="noreferrer" 
             className="text-success text-decoration-none p-1"
