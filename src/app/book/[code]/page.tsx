@@ -235,39 +235,120 @@ Please confirm our order and dispatch details. Thank you!`;
               <div>
                 <h4 className="fw-bold text-dark mb-3">Step 1: How many saplings would you like?</h4>
 
-                <div className="bg-light p-4 rounded-4 mb-4 text-center border">
-                  <div className="d-flex align-items-center justify-content-center gap-3 mb-3">
+                <div className="bg-light p-4 rounded-4 mb-4 text-center border shadow-sm">
+                  <label className="form-label small fw-bold text-dark d-block mb-2">
+                    Enter Exact Quantity or Use Buttons Below:
+                  </label>
+                  
+                  {/* Direct Number Input + Step Buttons */}
+                  <div className="d-flex flex-wrap align-items-center justify-content-center gap-2 mb-3">
                     <button 
-                      className="btn btn-outline-secondary btn-lg fw-bold px-3"
+                      type="button"
+                      className="btn btn-outline-secondary fw-bold"
+                      onClick={() => setQuantity(Math.max(1, quantity - 50))}
+                      title="Decrease by 50"
+                    >
+                      -50
+                    </button>
+                    <button 
+                      type="button"
+                      className="btn btn-outline-secondary fw-bold"
+                      onClick={() => setQuantity(Math.max(1, quantity - 10))}
+                      title="Decrease by 10"
+                    >
+                      -10
+                    </button>
+                    <button 
+                      type="button"
+                      className="btn btn-outline-secondary fw-bold px-3"
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     >
-                      -
+                      -1
                     </button>
-                    <span className="display-5 fw-bold text-success px-4">{quantity}</span>
+                    
+                    {/* Direct Editable Input */}
+                    <div className="mx-1" style={{ maxWidth: '160px' }}>
+                      <input 
+                        type="number" 
+                        min="1" 
+                        max={batch.availableQuantity}
+                        value={quantity}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 1;
+                          setQuantity(Math.min(batch.availableQuantity, Math.max(1, val)));
+                        }}
+                        className="form-control form-control-lg text-center fw-bold fs-2 text-success border-2 border-success shadow-sm"
+                      />
+                    </div>
+
                     <button 
-                      className="btn btn-outline-secondary btn-lg fw-bold px-3"
+                      type="button"
+                      className="btn btn-outline-secondary fw-bold px-3"
                       onClick={() => setQuantity(Math.min(batch.availableQuantity, quantity + 1))}
                     >
-                      +
+                      +1
+                    </button>
+                    <button 
+                      type="button"
+                      className="btn btn-outline-secondary fw-bold"
+                      onClick={() => setQuantity(Math.min(batch.availableQuantity, quantity + 10))}
+                      title="Increase by 10"
+                    >
+                      +10
+                    </button>
+                    <button 
+                      type="button"
+                      className="btn btn-outline-secondary fw-bold"
+                      onClick={() => setQuantity(Math.min(batch.availableQuantity, quantity + 50))}
+                      title="Increase by 50"
+                    >
+                      +50
                     </button>
                   </div>
 
-                  <p className="text-muted small">Quick Selection:</p>
+                  {/* Range Slider for Instant Sliding */}
+                  <div className="px-3 mb-3" style={{ maxWidth: '400px', margin: '0 auto' }}>
+                    <input 
+                      type="range" 
+                      className="form-range" 
+                      min="1" 
+                      max={batch.availableQuantity} 
+                      value={quantity}
+                      onChange={(e) => setQuantity(Number(e.target.value))}
+                    />
+                    <div className="d-flex justify-content-between text-muted extra-small">
+                      <span>1 Sapling</span>
+                      <span>Max Stock: {batch.availableQuantity}</span>
+                    </div>
+                  </div>
+
+                  <p className="text-muted small mb-2 fw-bold">Quick Selection Presets:</p>
                   <div className="d-flex flex-wrap justify-content-center gap-2 mb-3">
-                    {[5, 10, 25, 50, 100].map(q => (
-                      <button 
-                        key={q} 
-                        className={`btn ${quantity === q ? 'btn-success fw-bold' : 'btn-outline-success'}`}
-                        onClick={() => setQuantity(Math.min(batch.availableQuantity, q))}
-                      >
-                        {q} Saplings
-                      </button>
-                    ))}
+                    {[10, 25, 50, 100, 150, 200, 250, 500].map(q => {
+                      if (q > batch.availableQuantity) return null;
+                      return (
+                        <button 
+                          key={q} 
+                          type="button"
+                          className={`btn btn-sm ${quantity === q ? 'btn-success fw-bold px-3 shadow-sm' : 'btn-outline-success'}`}
+                          onClick={() => setQuantity(q)}
+                        >
+                          {q} Saplings
+                        </button>
+                      );
+                    })}
+                    <button 
+                      type="button"
+                      className={`btn btn-sm ${quantity === batch.availableQuantity ? 'btn-success fw-bold shadow-sm' : 'btn-outline-dark'}`}
+                      onClick={() => setQuantity(batch.availableQuantity)}
+                    >
+                      All Available ({batch.availableQuantity})
+                    </button>
                   </div>
 
                   {quantity >= 100 && (
-                    <div className="alert alert-warning mb-0 small">
-                      <i className="bi bi-info-circle-fill me-1"></i> <strong>Bulk Order:</strong> Ordering 100+ saplings qualifies for dedicated direct farm transport truck.
+                    <div className="alert alert-warning mb-0 small rounded-3">
+                      <i className="bi bi-truck me-1 text-dark"></i> <strong>Bulk Farm Order ({quantity} Saplings):</strong> Qualifies for dedicated direct farm transport truck.
                     </div>
                   )}
                 </div>

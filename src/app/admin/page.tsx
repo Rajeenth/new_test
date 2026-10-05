@@ -1,13 +1,39 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { DataStore } from '@/lib/dataStore';
 
 export default function AdminDashboardPage() {
-  const batches = DataStore.getBatches();
-  const bookings = DataStore.getBookings();
+  const [batches, setBatches] = useState<any[]>([]);
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const totalProduced = batches.reduce((acc, b) => acc + b.totalQuantity, 0);
-  const totalBooked = batches.reduce((acc, b) => acc + b.bookedQuantity, 0);
-  const totalAvailable = batches.reduce((acc, b) => acc + b.availableQuantity, 0);
+  const fetchDashboardData = async () => {
+    try {
+      const [batchesRes, bookingsRes] = await Promise.all([
+        fetch('/api/batches'),
+        fetch('/api/bookings')
+      ]);
+      const batchesData = await batchesRes.json();
+      const bookingsData = await bookingsRes.json();
+      
+      setBatches(Array.isArray(batchesData) ? batchesData : []);
+      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
+    } catch (err) {
+      console.error('Failed to fetch dashboard metrics');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const totalProduced = batches.reduce((acc, b) => acc + (b.totalQuantity || 0), 0);
+  const totalBooked = batches.reduce((acc, b) => acc + (b.bookedQuantity || 0), 0);
+  const totalAvailable = batches.reduce((acc, b) => acc + (b.availableQuantity || 0), 0);
+  const activeOrders = bookings.length;
 
   return (
     <>
@@ -33,7 +59,7 @@ export default function AdminDashboardPage() {
             <div className="col-md-3">
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white border-start border-primary border-4">
                 <small className="text-muted d-block text-uppercase fw-bold">Total Produced</small>
-                <h2 className="fw-bold text-dark mb-0">{totalProduced.toLocaleString()}</h2>
+                <h2 className="fw-bold text-dark mb-0">{loading ? '...' : totalProduced.toLocaleString()}</h2>
                 <small className="text-secondary">All Sapling Batches</small>
               </div>
             </div>
@@ -41,7 +67,7 @@ export default function AdminDashboardPage() {
             <div className="col-md-3">
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white border-start border-success border-4">
                 <small className="text-muted d-block text-uppercase fw-bold">Total Booked</small>
-                <h2 className="fw-bold text-success mb-0">{totalBooked.toLocaleString()}</h2>
+                <h2 className="fw-bold text-success mb-0">{loading ? '...' : totalBooked.toLocaleString()}</h2>
                 <small className="text-secondary">Confirmed Orders</small>
               </div>
             </div>
@@ -49,7 +75,7 @@ export default function AdminDashboardPage() {
             <div className="col-md-3">
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white border-start border-warning border-4">
                 <small className="text-muted d-block text-uppercase fw-bold">Available Inventory</small>
-                <h2 className="fw-bold text-warning mb-0">{totalAvailable.toLocaleString()}</h2>
+                <h2 className="fw-bold text-warning mb-0">{loading ? '...' : totalAvailable.toLocaleString()}</h2>
                 <small className="text-secondary">Live Stock Remaining</small>
               </div>
             </div>
@@ -57,24 +83,24 @@ export default function AdminDashboardPage() {
             <div className="col-md-3">
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white border-start border-danger border-4">
                 <small className="text-muted d-block text-uppercase fw-bold">Active Orders</small>
-                <h2 className="fw-bold text-danger mb-0">{bookings.length}</h2>
+                <h2 className="fw-bold text-danger mb-0">{loading ? '...' : activeOrders.toLocaleString()}</h2>
                 <small className="text-secondary">Requires Processing</small>
               </div>
             </div>
           </div>
 
-          {/* Integration Status Badges */}
+          {/* System Status Badges */}
           <div className="card border-0 shadow-sm rounded-4 p-4 mb-5 bg-white">
-            <h5 className="fw-bold text-dark mb-3"><i className="bi bi-cpu me-2 text-success"></i> System Integrations</h5>
+            <h5 className="fw-bold text-dark mb-3"><i className="bi bi-cpu me-2 text-success"></i> System Integrations & Live Data</h5>
             <div className="d-flex flex-wrap gap-3">
               <span className="badge bg-success-subtle text-success border border-success p-2">
                 <i className="bi bi-whatsapp me-1"></i> WhatsApp Business API: Connected
               </span>
               <span className="badge bg-success-subtle text-success border border-success p-2">
-                <i className="bi bi-credit-card me-1"></i> Payment Gateway: Active
+                <i className="bi bi-credit-card me-1"></i> UPI Payment Gateway: Active
               </span>
               <span className="badge bg-success-subtle text-success border border-success p-2">
-                <i className="bi bi-database me-1"></i> Database: Active (MongoDB / Server Engine)
+                <i className="bi bi-database me-1"></i> Real-Time Inventory Sync: Active
               </span>
               <span className="badge bg-info-subtle text-info border border-info p-2">
                 <i className="bi bi-shield-lock me-1"></i> Audit Logging: Enabled
