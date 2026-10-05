@@ -141,7 +141,10 @@ export default function AdminOrdersPage() {
                         <td><strong className="text-success">{ord.bookingId}</strong></td>
                         <td>
                           <strong className="d-block">{ord.customerName}</strong>
-                          <small className="text-muted"><i className="bi bi-phone me-1"></i>{ord.mobile} | {ord.district}</small>
+                          <small className="text-muted d-block"><i className="bi bi-phone me-1"></i>{ord.mobile} | {ord.district}</small>
+                          <small className="badge bg-light text-dark border extra-small mt-1">
+                            <i className="bi bi-truck me-1"></i>{ord.deliveryService || 'ST Couriers'} ({ord.nearestHub || 'Main Hub'})
+                          </small>
                         </td>
                         <td><span className="badge bg-success-subtle text-success border me-1">{ord.expectedDeliveryDate || 'N/A'}</span></td>
                         <td><span className="badge bg-secondary">{ord.batchCode}</span></td>

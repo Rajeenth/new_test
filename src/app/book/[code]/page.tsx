@@ -34,6 +34,8 @@ export default function BookingFlowPage({
     farmLocation: '',
     specialInstructions: '',
     expectedDeliveryDate: defaultDeliveryDate,
+    deliveryService: 'ST Couriers',
+    nearestHub: '',
     agreeTerms: true
   });
 
@@ -134,7 +136,7 @@ export default function BookingFlowPage({
 
       const data = await res.json();
       if (res.ok) {
-        // Compose Pre-filled WhatsApp Message with Expected Delivery Date
+        // Compose Pre-filled WhatsApp Message with Delivery Service & Nearest Hub
         const whatsappMsg = 
 `🌴 *NEW SAPLING ORDER - EATHAMOZHY COCONUT FARM*
 
@@ -145,15 +147,17 @@ export default function BookingFlowPage({
 *Batch Code:* ${batch.batchCode}
 *Total Paid Amount:* ₹${totalAmount.toLocaleString()}
 *Expected Delivery Date:* ${formData.expectedDeliveryDate}
+*Preferred Courier / Delivery Service:* ${formData.deliveryService}
+*Nearest Delivery Hub / Town Hub:* ${formData.nearestHub || 'District Main Hub'}
 *UPI ID Paid to:* ${upiId} (${displayName})
 *Bill Note:* ${billNote}
 
 *Delivery Address:*
 ${formData.address}, ${formData.district}, ${formData.state} - ${formData.pinCode}
 
-${screenshotUrl ? `*Payment Screenshot:* http://localhost:3000${screenshotUrl}` : '*Note:* Payment screenshot attached.'}
+📎 *Payment Screenshot Attached:* ${screenshotUrl ? `http://localhost:3000${screenshotUrl}` : '[Attached to WhatsApp message]'}
 
-Please confirm our order. Thank you!`;
+Please confirm our order and dispatch details. Thank you!`;
 
         const encodedWa = encodeURIComponent(whatsappMsg);
         const waUrl = `https://wa.me/919486880641?text=${encodedWa}`;
@@ -373,6 +377,39 @@ Please confirm our order. Thank you!`;
                         value={formData.pinCode}
                         onChange={handleInputChange}
                       />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label className="form-label small fw-bold">Preferred Courier / Delivery Service *</label>
+                      <select 
+                        name="deliveryService" 
+                        className="form-select"
+                        required
+                        value={formData.deliveryService}
+                        onChange={handleInputChange}
+                      >
+                        <option value="ST Couriers">ST Couriers</option>
+                        <option value="The Professional Couriers">The Professional Couriers</option>
+                        <option value="India Post (Speed Post)">India Post (Speed Post)</option>
+                        <option value="VRL Logistics / Parcel Service">VRL Logistics / Parcel Service</option>
+                        <option value="Direct Farm Vehicle Transport">Direct Farm Vehicle Transport (Bulk)</option>
+                        <option value="Self Pickup at Farm">Self Pickup at Eathamozhy Farm</option>
+                      </select>
+                      <small className="text-muted extra-small">Choose your preferred logistics partner.</small>
+                    </div>
+
+                    <div className="col-md-6">
+                      <label className="form-label small fw-bold">Nearest Delivery Hub / Town Hub *</label>
+                      <input 
+                        type="text" 
+                        name="nearestHub" 
+                        className="form-control" 
+                        required
+                        placeholder="e.g. Nagercoil Main Branch / Valliyur Hub"
+                        value={formData.nearestHub}
+                        onChange={handleInputChange}
+                      />
+                      <small className="text-muted extra-small">Hub location closest to your farm for parcel collection/dispatch.</small>
                     </div>
                   </div>
 

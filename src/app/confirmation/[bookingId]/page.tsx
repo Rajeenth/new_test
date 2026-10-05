@@ -50,15 +50,28 @@ export default async function BookingConfirmationPage({
               </div>
 
               <div className="col-md-6">
-                <h6 className="fw-bold text-dark mb-2">Delivery Details</h6>
-                <p className="text-secondary small mb-0">
+                <h6 className="fw-bold text-dark mb-2">Delivery & Logistics Details</h6>
+                <p className="text-secondary small mb-2">
                   <strong>{booking.customerName}</strong><br />
                   {booking.address}<br />
                   {booking.district}, {booking.state} - {booking.pinCode}<br />
                   Phone: {booking.mobile} | WhatsApp: {booking.whatsapp}
                 </p>
+                <div className="p-2 bg-light rounded border small">
+                  <div className="mb-1"><strong>Courier Service:</strong> <span className="text-success fw-bold">{booking.deliveryService || 'ST Couriers'}</span></div>
+                  <div><strong>Nearest Delivery Hub:</strong> <span className="text-dark fw-bold">{booking.nearestHub || 'District Main Hub'}</span></div>
+                </div>
               </div>
             </div>
+
+            {booking.paymentScreenshotUrl && (
+              <div className="p-3 bg-light rounded-4 border mb-4 text-center">
+                <small className="text-muted d-block fw-bold mb-2"><i className="bi bi-camera me-1 text-success"></i> Payment Screenshot Uploaded</small>
+                <a href={booking.paymentScreenshotUrl} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-success">
+                  <i className="bi bi-eye me-1"></i> View Payment Screenshot
+                </a>
+              </div>
+            )}
 
             {/* Simulated WhatsApp Notification Previews */}
             <div className="border-top pt-4 mb-4">

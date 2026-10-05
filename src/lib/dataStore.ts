@@ -56,6 +56,8 @@ export interface Booking {
   farmLocation?: string;
   specialInstructions?: string;
   expectedDeliveryDate?: string;
+  deliveryService?: string;
+  nearestHub?: string;
   quantity: number;
   subtotal: number;
   deliveryCharge: number;
