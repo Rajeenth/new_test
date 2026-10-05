@@ -165,8 +165,30 @@ ${formData.address}, ${formData.district}, ${formData.state} - ${formData.pinCod
 
 Please confirm our order and dispatch details. Thank you!`;
 
-        // Clean navigation to confirmation screen without popup blocker warning
-        router.push(`/confirmation/${data.bookingId}?openWa=1`);
+        const encodedWa = encodeURIComponent(whatsappMsg);
+        const waUrl = `https://wa.me/919486880641?text=${encodedWa}`;
+
+        // Trigger WhatsApp directly in new window / app
+        try {
+          window.open(waUrl, '_blank');
+        } catch (e) {
+          window.location.href = waUrl;
+        }
+
+        // Navigate to confirmation screen with fallback order parameters so page never returns 404
+        const queryParams = new URLSearchParams({
+          name: formData.customerName,
+          qty: quantity.toString(),
+          batch: batch.batchCode,
+          amount: totalAmount.toString(),
+          mobile: formData.whatsapp,
+          date: formData.expectedDeliveryDate,
+          courier: formData.deliveryService,
+          hub: formData.nearestHub || 'District Main Hub',
+          addr: `${formData.address}, ${formData.district}, ${formData.state} - ${formData.pinCode}`
+        });
+
+        router.push(`/confirmation/${data.bookingId}?${queryParams.toString()}`);
       } else {
         alert(data.error || 'Failed to place booking');
         setSubmitting(false);
