@@ -90,6 +90,16 @@ export interface FAQ {
   category: string;
 }
 
+export interface Enquiry {
+  id: string;
+  name: string;
+  mobile: string;
+  location?: string;
+  message: string;
+  status: 'NEW' | 'CONTACTED' | 'RESOLVED';
+  createdAt: string;
+}
+
 // Helper to compute age & height dynamically from Seeded Date
 export function getSaplingMetrics(seededDateStr: string) {
   if (!seededDateStr) return { age: 'N/A', height: 'N/A', monthsCount: 0 };
@@ -294,6 +304,18 @@ const faqs: FAQ[] = [
   }
 ];
 
+let enquiries: Enquiry[] = [
+  {
+    id: 'enq-1',
+    name: 'Suresh Kumar',
+    mobile: '9443322110',
+    location: 'Tirunelveli, Tamil Nadu',
+    message: 'Looking for 150 saplings for my 2-acre farm expansion next month. Please share transport details.',
+    status: 'NEW',
+    createdAt: '2026-10-04T14:30:00Z'
+  }
+];
+
 // Helper Functions
 export const DataStore = {
   getBatches: () => {
@@ -387,6 +409,50 @@ export const DataStore = {
 
   getParentPalmByCode: (code: string) => {
     return parentPalms.find(p => p.code.toLowerCase() === code.toLowerCase()) || null;
+  },
+
+  addParentPalm: (data: Omit<ParentPalm, 'id'>) => {
+    const created: ParentPalm = {
+      ...data,
+      id: `mp-${Date.now()}`,
+      images: data.images && data.images.length > 0 ? data.images : [
+        '/images/placeholders/coconut.jpeg',
+        '/images/placeholders/coconut1.jpeg'
+      ]
+    };
+    parentPalms.unshift(created);
+    return created;
+  },
+
+  updateParentPalm: (code: string, updatedFields: Partial<ParentPalm>) => {
+    const target = parentPalms.find(p => p.code.toLowerCase() === code.toLowerCase());
+    if (!target) throw new Error('Parent palm mother tree not found');
+    Object.assign(target, updatedFields);
+    return target;
+  },
+
+  deleteParentPalm: (code: string) => {
+    parentPalms = parentPalms.filter(p => p.code.toLowerCase() !== code.toLowerCase());
+    return true;
+  },
+
+  getEnquiries: () => enquiries,
+
+  addEnquiry: (data: Omit<Enquiry, 'id' | 'status' | 'createdAt'>) => {
+    const created: Enquiry = {
+      ...data,
+      id: `enq-${Date.now()}`,
+      status: 'NEW',
+      createdAt: new Date().toISOString()
+    };
+    enquiries.unshift(created);
+    return created;
+  },
+
+  updateEnquiryStatus: (id: string, status: 'NEW' | 'CONTACTED' | 'RESOLVED') => {
+    const target = enquiries.find(e => e.id === id);
+    if (target) target.status = status;
+    return target;
   },
 
   getBookings: () => bookings,

@@ -87,19 +87,9 @@ export default function AdminDashboardPage() {
             <div className="col-md-4">
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
                 <h5 className="fw-bold text-dark mb-2"><i className="bi bi-grid-3x3-gap text-success me-2"></i> Batch Management</h5>
-                <p className="text-secondary small mb-3">Create new batches, assign Mother Palms, set heights, prices & statuses.</p>
+                <p className="text-secondary small mb-3">Create new batches, assign Mother Palms, set prices, photo gallery & statuses.</p>
                 <Link href="/admin/batches" className="btn btn-outline-success fw-bold mt-auto">
-                  Manage Batches <i className="bi bi-arrow-right ms-1"></i>
-                </Link>
-              </div>
-            </div>
-
-            <div className="col-md-4">
-              <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
-                <h5 className="fw-bold text-dark mb-2"><i className="bi bi-box-seam text-warning me-2"></i> Inventory Adjustment</h5>
-                <p className="text-secondary small mb-3">Adjust inventory for damaged/rejected plants with mandatory audit log reasons.</p>
-                <Link href="/admin/inventory" className="btn btn-outline-warning text-dark fw-bold mt-auto">
-                  Adjust Inventory Audit <i className="bi bi-arrow-right ms-1"></i>
+                  Manage Batches & Photos <i className="bi bi-arrow-right ms-1"></i>
                 </Link>
               </div>
             </div>
@@ -107,9 +97,39 @@ export default function AdminDashboardPage() {
             <div className="col-md-4">
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
                 <h5 className="fw-bold text-dark mb-2"><i className="bi bi-bag-check text-primary me-2"></i> Order Management</h5>
-                <p className="text-secondary small mb-3">View bookings, update status (Preparing, Dispatched) & enter Courier Tracking IDs.</p>
+                <p className="text-secondary small mb-3">View bookings, check payment screenshots, update status & enter tracking IDs.</p>
                 <Link href="/admin/orders" className="btn btn-outline-primary fw-bold mt-auto">
                   Manage Customer Orders <i className="bi bi-arrow-right ms-1"></i>
+                </Link>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <h5 className="fw-bold text-dark mb-2"><i className="bi bi-envelope-paper text-warning me-2"></i> Customer Enquiries</h5>
+                <p className="text-secondary small mb-3">View contact form enquiries, customer questions, locations & reply directly on WhatsApp.</p>
+                <Link href="/admin/enquiries" className="btn btn-outline-warning text-dark fw-bold mt-auto">
+                  View Customer Enquiries <i className="bi bi-arrow-right ms-1"></i>
+                </Link>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <h5 className="fw-bold text-dark mb-2"><i className="bi bi-tree-fill text-success me-2"></i> Mother Tree Genetics</h5>
+                <p className="text-secondary small mb-3">Add and update Mother Palms (Parent Trees), yield history, age, plot location & photos.</p>
+                <Link href="/admin/mother-trees" className="btn btn-outline-success fw-bold mt-auto">
+                  Manage Mother Trees <i className="bi bi-arrow-right ms-1"></i>
+                </Link>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <h5 className="fw-bold text-dark mb-2"><i className="bi bi-box-seam text-secondary me-2"></i> Inventory Audit</h5>
+                <p className="text-secondary small mb-3">Adjust inventory for damaged/rejected saplings with mandatory audit log reasons.</p>
+                <Link href="/admin/inventory" className="btn btn-outline-secondary fw-bold mt-auto">
+                  Adjust Inventory Audit <i className="bi bi-arrow-right ms-1"></i>
                 </Link>
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import ImageCarousel from '@/components/ImageCarousel';
 
 export default function BatchesPage() {
   const [batches, setBatches] = useState<any[]>([]);
@@ -100,12 +101,8 @@ export default function BatchesPage() {
                       {b.status === 'SOLD_OUT' && <span className="badge bg-danger px-3 py-2">SOLD OUT</span>}
                     </div>
 
-                    <div className="overflow-hidden" style={{ height: '220px' }}>
-                      <img 
-                        src={b.images[0]} 
-                        alt={b.name} 
-                        className="w-100 h-100 object-fit-cover"
-                      />
+                    <div className="overflow-hidden" style={{ minHeight: '220px' }}>
+                      <ImageCarousel images={b.images} title={b.name} carouselId={`batch-card-${b.batchCode}`} />
                     </div>
 
                     <div className="card-body p-4 d-flex flex-column justify-content-between">
