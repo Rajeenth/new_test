@@ -29,8 +29,16 @@ export default function AdminOrdersPage() {
   }, []);
 
   const handleStatusChange = async (orderId: string, status: string) => {
+    const ord = orders.find(o => o.bookingId === orderId);
+
+    // RESTRICTION: Only allow confirming if payment screenshot is available!
+    if (status !== 'Payment review' && status !== 'Cancelled' && (!ord?.paymentScreenshotUrl || ord.paymentScreenshotUrl.trim() === '')) {
+      alert('⚠️ CANNOT CONFIRM ORDER WITHOUT SCREENSHOT!\n\nNo payment screenshot has been uploaded/received for this order. You can only confirm orders after a valid payment screenshot is available.');
+      fetchOrders(); // reset select element
+      return;
+    }
+
     if (status === 'Dispatched') {
-      const ord = orders.find(o => o.bookingId === orderId);
       setSelectedOrder(ord);
       return;
     }
@@ -155,14 +163,25 @@ export default function AdminOrdersPage() {
                             rajeenth1@ybl
                           </span>
                           {ord.paymentScreenshotUrl ? (
-                            <button 
-                              className="btn btn-sm btn-outline-primary py-0 text-nowrap"
-                              onClick={() => setPreviewScreenshot(ord.paymentScreenshotUrl)}
-                            >
-                              <i className="bi bi-image me-1"></i> View Screenshot
-                            </button>
+                            <div className="text-center">
+                              <img 
+                                src={ord.paymentScreenshotUrl} 
+                                alt="Payment Screenshot" 
+                                className="rounded border mb-1 shadow-sm cursor-pointer"
+                                style={{ width: '50px', height: '50px', objectFit: 'cover', cursor: 'pointer' }}
+                                onClick={() => setPreviewScreenshot(ord.paymentScreenshotUrl)}
+                              />
+                              <button 
+                                className="btn btn-sm btn-outline-primary py-0 d-block w-100 text-nowrap extra-small"
+                                onClick={() => setPreviewScreenshot(ord.paymentScreenshotUrl)}
+                              >
+                                <i className="bi bi-eye me-1"></i> View Screenshot
+                              </button>
+                            </div>
                           ) : (
-                            <small className="text-muted extra-small">Via WhatsApp</small>
+                            <span className="badge bg-danger-subtle text-danger border border-danger extra-small d-block py-1">
+                              <i className="bi bi-exclamation-triangle-fill me-1"></i> Missing Screenshot
+                            </span>
                           )}
                         </td>
                         <td>

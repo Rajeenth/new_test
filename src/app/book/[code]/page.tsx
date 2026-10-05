@@ -96,22 +96,28 @@ export default function BookingFlowPage({
       setScreenshotFile(file);
       setUploadingScreenshot(true);
 
-      const form = new FormData();
-      form.append('files', file);
-      form.append('category', 'payments');
-      form.append('tag', batch.batchCode);
-
-      try {
-        const res = await fetch('/api/upload', { method: 'POST', body: form });
-        const data = await res.json();
-        if (res.ok && data.urls && data.urls.length > 0) {
-          setScreenshotUrl(data.urls[0]);
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64Url = event.target?.result as string;
+        if (base64Url) {
+          setScreenshotUrl(base64Url);
         }
-      } catch (err) {
-        alert('Failed to upload screenshot preview');
-      } finally {
-        setUploadingScreenshot(false);
-      }
+
+        // Also try server upload backup
+        const form = new FormData();
+        form.append('files', file);
+        form.append('category', 'payments');
+        form.append('tag', batch.batchCode);
+
+        try {
+          await fetch('/api/upload', { method: 'POST', body: form });
+        } catch (err) {
+          // ignore server fallback error since base64 data URL is active
+        } finally {
+          setUploadingScreenshot(false);
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -488,10 +494,13 @@ Please confirm our order and dispatch details. Thank you!`;
                       />
                       {uploadingScreenshot && <small className="text-muted d-block">Uploading screenshot...</small>}
                       {screenshotUrl && (
-                        <small className="text-success fw-bold d-block">
-                          <i className="bi bi-check-circle-fill me-1"></i> Payment screenshot attached!
+                        <small className="text-success fw-bold d-block mb-1">
+                          <i className="bi bi-check-circle-fill me-1"></i> Payment screenshot attached for Admin Verification!
                         </small>
                       )}
+                      <small className="text-secondary extra-small d-block mt-1">
+                        <i className="bi bi-shield-check me-1 text-success"></i> <strong>Note:</strong> Uploading screenshot here attached it directly to the Farm Admin verification panel. When WhatsApp opens, you can also send the image attachment directly in chat.
+                      </small>
                     </div>
                   </div>
                 </div>
