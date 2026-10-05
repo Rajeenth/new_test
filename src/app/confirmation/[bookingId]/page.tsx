@@ -73,8 +73,6 @@ export default function BookingConfirmationPage({
 *Delivery Address:*
 ${displayAddr}
 
-📎 *Payment Screenshot Attached:* ${displayScreenshot ? 'Attached with Order Record' : '[Attached in chat below]'}
-
 Please confirm our order and dispatch details. Thank you!`;
 
   const encodedWa = encodeURIComponent(whatsappMsg);

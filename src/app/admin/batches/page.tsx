@@ -19,6 +19,8 @@ export default function AdminBatchesPage() {
   const [editPrice, setEditPrice] = useState<number>(150);
   const [editTotalQuantity, setEditTotalQuantity] = useState<number>(500);
   const [editDescription, setEditDescription] = useState<string>('');
+  const [editImages, setEditImages] = useState<string[]>([]);
+  const [newImageUrl, setNewImageUrl] = useState<string>('');
 
   // Auto-generate Batch Code (e.g. EM-1226-D)
   const generateAutoBatchCode = () => {
@@ -148,6 +150,35 @@ export default function AdminBatchesPage() {
     setEditPrice(batch.price);
     setEditTotalQuantity(batch.totalQuantity);
     setEditDescription(batch.description || '');
+    setEditImages(batch.images && batch.images.length > 0 ? [...batch.images] : []);
+    setNewImageUrl('');
+  };
+
+  const handleAddEditFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const url = evt.target?.result as string;
+          if (url) {
+            setEditImages(prev => [...prev, url]);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const handleAddUrlImage = () => {
+    if (newImageUrl.trim()) {
+      setEditImages(prev => [...prev, newImageUrl.trim()]);
+      setNewImageUrl('');
+    }
+  };
+
+  const removeEditImage = (indexToRemove: number) => {
+    setEditImages(prev => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleSaveEdit = async () => {
@@ -161,12 +192,13 @@ export default function AdminBatchesPage() {
           batchCode: editingBatch.batchCode,
           price: editPrice,
           totalQuantity: editTotalQuantity,
-          description: editDescription
+          description: editDescription,
+          images: editImages
         })
       });
 
       if (res.ok) {
-        alert(`Batch ${editingBatch.batchCode} updated! New Price: ₹${editPrice}, Total Qty: ${editTotalQuantity}.`);
+        alert(`Batch ${editingBatch.batchCode} updated! ${editImages.length} photo(s) saved for customer viewing.`);
         setEditingBatch(null);
         fetchBatchesData();
       } else {
@@ -493,10 +525,54 @@ export default function AdminBatchesPage() {
                   <label className="form-label small fw-bold">Batch Notes / Description</label>
                   <textarea 
                     className="form-control" 
-                    rows={3} 
+                    rows={2} 
                     value={editDescription}
                     onChange={e => setEditDescription(e.target.value)}
                   ></textarea>
+                </div>
+
+                {/* Batch Images Gallery & Uploader */}
+                <div className="mb-3 p-3 bg-light rounded-3 border">
+                  <label className="form-label small fw-bold text-dark mb-2">
+                    <i className="bi bi-images me-1 text-success"></i> Customer Photo Gallery ({editImages.length})
+                  </label>
+                  
+                  {editImages.length > 0 ? (
+                    <div className="d-flex flex-wrap gap-2 mb-3 max-vh-25 overflow-auto p-1 bg-white border rounded">
+                      {editImages.map((imgUrl, idx) => (
+                        <div key={idx} className="position-relative d-inline-block">
+                          <img 
+                            src={imgUrl} 
+                            alt={`Batch Photo ${idx+1}`} 
+                            className="rounded border"
+                            style={{ width: '65px', height: '65px', objectFit: 'cover' }}
+                          />
+                          <button 
+                            type="button" 
+                            className="btn btn-danger btn-sm py-0 px-1 position-absolute top-0 end-0 rounded-circle"
+                            style={{ fontSize: '0.65rem', transform: 'translate(30%, -30%)' }}
+                            onClick={() => removeEditImage(idx)}
+                            title="Remove image"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <small className="text-muted d-block mb-2">No photos uploaded for this batch yet.</small>
+                  )}
+
+                  <div className="mb-2">
+                    <label className="form-label extra-small text-muted mb-1">Upload New Photos from Device:</label>
+                    <input 
+                      type="file" 
+                      className="form-control form-control-sm" 
+                      multiple 
+                      accept="image/*"
+                      onChange={handleAddEditFiles}
+                    />
+                  </div>
                 </div>
 
                 <div className="d-flex gap-2 justify-content-end mt-4">

@@ -161,8 +161,6 @@ export default function BookingFlowPage({
 *Delivery Address:*
 ${formData.address}, ${formData.district}, ${formData.state} - ${formData.pinCode}
 
-📎 *Payment Screenshot Attached:* ${screenshotUrl ? `http://localhost:3000${screenshotUrl}` : '[Attached to WhatsApp message]'}
-
 Please confirm our order and dispatch details. Thank you!`;
 
         const encodedWa = encodeURIComponent(whatsappMsg);
