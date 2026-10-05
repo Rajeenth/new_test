@@ -165,11 +165,8 @@ ${formData.address}, ${formData.district}, ${formData.state} - ${formData.pinCod
 
 Please confirm our order and dispatch details. Thank you!`;
 
-        const encodedWa = encodeURIComponent(whatsappMsg);
-        const waUrl = `https://wa.me/919486880641?text=${encodedWa}`;
-        
-        window.open(waUrl, '_blank');
-        router.push(`/confirmation/${data.bookingId}`);
+        // Clean navigation to confirmation screen without popup blocker warning
+        router.push(`/confirmation/${data.bookingId}?openWa=1`);
       } else {
         alert(data.error || 'Failed to place booking');
         setSubmitting(false);

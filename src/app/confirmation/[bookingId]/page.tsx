@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { DataStore } from '@/lib/dataStore';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import WhatsAppButton from './WhatsAppButton';
 
 export default async function BookingConfirmationPage({
   params
@@ -13,19 +15,48 @@ export default async function BookingConfirmationPage({
     notFound();
   }
 
+  const whatsappMsg = 
+`🌴 *NEW SAPLING ORDER - EATHAMOZHY COCONUT FARM*
+
+*Booking ID:* ${booking.bookingId}
+*Customer Name:* ${booking.customerName}
+*Phone / WhatsApp:* ${booking.whatsapp}
+*Sapling Count:* ${booking.quantity} Saplings
+*Batch Code:* ${booking.batchCode}
+*Total Paid Amount:* ₹${booking.totalAmount.toLocaleString()}
+*Expected Delivery Date:* ${booking.expectedDeliveryDate || 'As scheduled'}
+*Preferred Courier / Delivery Service:* ${booking.deliveryService || 'ST Couriers'}
+*Nearest Delivery Hub / Town Hub:* ${booking.nearestHub || 'District Main Hub'}
+*UPI ID Paid to:* rajeenth1@ybl (eathamozhy coconut farm)
+*Bill Note:* Coconut order - ${booking.quantity} saplings
+
+*Delivery Address:*
+${booking.address}, ${booking.district}, ${booking.state} - ${booking.pinCode}
+
+📎 *Payment Screenshot Attached:* ${booking.paymentScreenshotUrl ? 'Attached with Order Record' : '[Attached in chat below]'}
+
+Please confirm our order and dispatch details. Thank you!`;
+
+  const encodedWa = encodeURIComponent(whatsappMsg);
+  const waUrl = `https://wa.me/919486880641?text=${encodedWa}`;
+
   return (
     <>
       <section className="bg-success text-white py-5 text-center">
         <div className="container py-3">
           <div className="display-1 mb-2">🎉</div>
-          <span className="badge bg-warning text-dark px-3 py-2 rounded-pill mb-2 fw-bold">PAYMENT SUCCESSFUL</span>
-          <h1 className="display-4 fw-bold">Booking Confirmed!</h1>
+          <span className="badge bg-warning text-dark px-3 py-2 rounded-pill mb-2 fw-bold">PAYMENT SUBMITTED</span>
+          <h1 className="display-4 fw-bold">Booking Details Recorded!</h1>
           <p className="lead mb-0">Thank you for supporting Eathamozhy Coconut Farm.</p>
         </div>
       </section>
 
       <section className="py-5 bg-light">
         <div className="container" style={{ maxWidth: '800px' }}>
+          
+          <Suspense fallback={<div className="text-center py-3">Loading WhatsApp status...</div>}>
+            <WhatsAppButton waUrl={waUrl} />
+          </Suspense>
           
           <div className="card border-0 shadow-lg rounded-4 p-4 mb-4 bg-white">
             <div className="text-center border-bottom pb-4 mb-4">
@@ -112,8 +143,8 @@ export default async function BookingConfirmationPage({
               <Link href={`/tracking?id=${booking.bookingId}&mobile=${booking.mobile}`} className="btn btn-success fw-bold px-4">
                 <i className="bi bi-truck me-1"></i> Track Booking Status
               </Link>
-              <a href="https://wa.me/919486880641" target="_blank" rel="noreferrer" className="btn btn-outline-success fw-bold">
-                <i className="bi bi-whatsapp me-1"></i> WhatsApp Farm Support
+              <a href={waUrl} target="_blank" rel="noreferrer" className="btn btn-outline-success fw-bold">
+                <i className="bi bi-whatsapp me-1"></i> Send / Resend WhatsApp Message
               </a>
               <Link href="/" className="btn btn-outline-secondary">
                 Return to Home
