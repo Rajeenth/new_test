@@ -391,6 +391,16 @@ export const DataStore = {
 
   getBookings: () => bookings,
 
+  getBookingsByMobile: (mobile: string) => {
+    const cleanMob = mobile.trim();
+    if (!cleanMob) return [];
+    return bookings.filter(b => 
+      b.mobile.includes(cleanMob) || 
+      b.whatsapp.includes(cleanMob) ||
+      b.bookingId.toLowerCase().includes(cleanMob.toLowerCase())
+    );
+  },
+
   getBookingById: (bookingId: string, mobile?: string) => {
     const cleanId = bookingId.trim().toUpperCase();
     return bookings.find(b => {

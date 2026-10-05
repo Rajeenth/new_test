@@ -11,6 +11,11 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const mobile = searchParams.get('mobile');
+  if (mobile) {
+    return NextResponse.json(DataStore.getBookingsByMobile(mobile));
+  }
   return NextResponse.json(DataStore.getBookings());
 }
