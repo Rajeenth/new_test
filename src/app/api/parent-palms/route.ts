@@ -21,11 +21,11 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { code, ...updatedFields } = body;
-    if (!code) {
-      return NextResponse.json({ error: 'code is required' }, { status: 400 });
+    const identifier = body.id || body.code;
+    if (!identifier) {
+      return NextResponse.json({ error: 'Mother tree id or code is required' }, { status: 400 });
     }
-    const updated = DataStore.updateParentPalm(code, updatedFields);
+    const updated = DataStore.updateParentPalm(identifier, body);
     return NextResponse.json(updated);
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update mother tree' }, { status: 500 });

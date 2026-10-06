@@ -154,31 +154,51 @@ export default function AdminBatchesPage() {
     setNewImageUrl('');
   };
 
-  const handleAddEditFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          const url = evt.target?.result as string;
-          if (url) {
-            setEditImages(prev => [...prev, url]);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-  };
+  const handleAddEditFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0 || !editingBatch) return;
 
-  const handleAddUrlImage = () => {
-    if (newImageUrl.trim()) {
-      setEditImages(prev => [...prev, newImageUrl.trim()]);
-      setNewImageUrl('');
+    const files = Array.from(e.target.files);
+    setUploading(true);
+    const formData = new FormData();
+    files.forEach(f => formData.append('files', f));
+    formData.append('category', 'batches');
+    formData.append('tag', editingBatch.batchCode);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok && data.urls) {
+        setEditImages(prev => [...prev, ...data.urls]);
+        alert(`Successfully added ${data.urls.length} photo(s)!`);
+      } else {
+        // Fallback to FileReader if server upload fails
+        files.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            const url = evt.target?.result as string;
+            if (url) setEditImages(prev => [...prev, url]);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    } catch (err) {
+      alert('Error uploading images');
+    } finally {
+      setUploading(false);
     }
   };
 
   const removeEditImage = (indexToRemove: number) => {
     setEditImages(prev => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const removeAllEditImages = () => {
+    if (confirm('Are you sure you want to remove ALL current images for this batch?')) {
+      setEditImages([]);
+    }
   };
 
   const handleSaveEdit = async () => {
@@ -533,12 +553,23 @@ export default function AdminBatchesPage() {
 
                 {/* Batch Images Gallery & Uploader */}
                 <div className="mb-3 p-3 bg-light rounded-3 border">
-                  <label className="form-label small fw-bold text-dark mb-2">
-                    <i className="bi bi-images me-1 text-success"></i> Customer Photo Gallery ({editImages.length})
-                  </label>
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <label className="form-label small fw-bold text-dark mb-0">
+                      <i className="bi bi-images me-1 text-success"></i> Customer Photo Gallery ({editImages.length})
+                    </label>
+                    {editImages.length > 0 && (
+                      <button 
+                        type="button" 
+                        className="btn btn-sm btn-outline-danger py-0 px-2 extra-small"
+                        onClick={removeAllEditImages}
+                      >
+                        <i className="bi bi-trash me-1"></i> Clear All Photos
+                      </button>
+                    )}
+                  </div>
                   
                   {editImages.length > 0 ? (
-                    <div className="d-flex flex-wrap gap-2 mb-3 max-vh-25 overflow-auto p-1 bg-white border rounded">
+                    <div className="d-flex flex-wrap gap-2 mb-3 max-vh-25 overflow-auto p-2 bg-white border rounded">
                       {editImages.map((imgUrl, idx) => (
                         <div key={idx} className="position-relative d-inline-block">
                           <img 
@@ -560,16 +591,19 @@ export default function AdminBatchesPage() {
                       ))}
                     </div>
                   ) : (
-                    <small className="text-muted d-block mb-2">No photos uploaded for this batch yet.</small>
+                    <small className="text-muted d-block mb-2">No photos in this batch. Upload replacement images below.</small>
                   )}
 
                   <div className="mb-2">
-                    <label className="form-label extra-small text-muted mb-1">Upload New Photos from Device:</label>
+                    <label className="form-label extra-small text-muted mb-1">
+                      {uploading ? 'Uploading selected photos...' : 'Upload New Replacement Photos from Device:'}
+                    </label>
                     <input 
                       type="file" 
                       className="form-control form-control-sm" 
                       multiple 
                       accept="image/*"
+                      disabled={uploading}
                       onChange={handleAddEditFiles}
                     />
                   </div>

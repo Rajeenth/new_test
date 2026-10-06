@@ -33,7 +33,8 @@ export default function AdminDashboardPage() {
   const totalProduced = batches.reduce((acc, b) => acc + (b.totalQuantity || 0), 0);
   const totalBooked = batches.reduce((acc, b) => acc + (b.bookedQuantity || 0), 0);
   const totalAvailable = batches.reduce((acc, b) => acc + (b.availableQuantity || 0), 0);
-  const activeOrders = bookings.length;
+  const activeOrders = bookings.filter(b => b.bookingStatus !== 'Delivered' && b.bookingStatus !== 'Cancelled').length;
+  const totalOrders = bookings.length;
 
   return (
     <>
@@ -84,7 +85,7 @@ export default function AdminDashboardPage() {
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white border-start border-danger border-4">
                 <small className="text-muted d-block text-uppercase fw-bold">Active Orders</small>
                 <h2 className="fw-bold text-danger mb-0">{loading ? '...' : activeOrders.toLocaleString()}</h2>
-                <small className="text-secondary">Requires Processing</small>
+                <small className="text-secondary">{loading ? '' : `${totalOrders} Total Booking(s)`}</small>
               </div>
             </div>
           </div>

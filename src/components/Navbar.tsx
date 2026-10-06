@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -28,27 +30,33 @@ export default function Navbar() {
       {/* Main Desktop & Laptop Navbar */}
       <header className="navbar navbar-expand-lg sticky-top navbar-dark bg-dark shadow-sm py-2">
         <div className="container">
-          <Link href="/" className="navbar-brand d-flex align-items-center fw-bold text-success fs-4 me-4">
+          <Link 
+            href="/" 
+            className="navbar-brand d-flex align-items-center fw-bold text-success fs-4 me-4"
+            onClick={() => setIsOpen(false)}
+          >
             <i className="bi bi-tree-fill me-2 text-success"></i> Eathamozhy Coconut Farm
           </Link>
 
           <button 
             className="navbar-toggler" 
             type="button" 
-            data-bs-toggle="collapse" 
-            data-bs-target="#navbarMain"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-label="Toggle navigation menu"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="navbarMain">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0 fw-semibold gap-1">
+          <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarMain">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0 fw-semibold gap-1 pt-2 pt-lg-0">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
                 return (
                   <li key={link.href} className="nav-item">
                     <Link 
                       href={link.href} 
+                      onClick={() => setIsOpen(false)}
                       className={`nav-link px-3 py-2 rounded-3 transition-all ${
                         active 
                           ? 'active fw-bold text-success bg-success-subtle bg-opacity-25 border border-success' 
@@ -64,14 +72,19 @@ export default function Navbar() {
               })}
             </ul>
 
-            <div className="d-flex align-items-center gap-2">
+            <div className="d-flex align-items-center gap-2 pb-2 pb-lg-0">
               <Link 
                 href="/admin" 
+                onClick={() => setIsOpen(false)}
                 className={`btn btn-sm ${pathname.startsWith('/admin') ? 'btn-danger' : 'btn-outline-light'}`}
               >
                 <i className="bi bi-shield-lock me-1"></i> Admin
               </Link>
-              <Link href="/batches" className="btn btn-success fw-bold shadow-sm">
+              <Link 
+                href="/batches" 
+                onClick={() => setIsOpen(false)}
+                className="btn btn-success fw-bold shadow-sm"
+              >
                 <i className="bi bi-bag-check me-1"></i> Book Saplings
               </Link>
             </div>

@@ -28,7 +28,7 @@ export default function Home() {
           <span className="badge bg-success px-3 py-2 fs-6 rounded-pill mb-3 text-uppercase tracking-wider">
             <i className="bi bi-shield-check me-1"></i> Authentic Eathamozhy Heritage
           </span>
-          <h1 className="display-3 fw-bold mb-3 text-light">From Our Farm to Your Farm</h1>
+          <h1 className="display-3 fw-bold mb-3 text-light">The Only GI-Tagged Coconut Variety in Mainland India</h1>
           <p className="lead text-light mb-4 mx-auto" style={{ maxWidth: '750px' }}>
             Traditional Eathamozhy coconut saplings, carefully raised in our own farm. See actual batch availability, verified Mother Tree origin, and book directly online.
           </p>

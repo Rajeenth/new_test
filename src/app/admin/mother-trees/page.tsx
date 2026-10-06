@@ -51,8 +51,23 @@ export default function AdminMotherTreesPage() {
       if (res.ok) {
         alert(`Mother Tree ${newTree.code} added successfully!`);
         fetchPalms();
+        // Reset form to clear inputs and auto-increment code
+        const nextNum = Math.floor(25 + Math.random() * 50);
+        setNewTree({
+          code: `EM-MP-0${nextNum}`,
+          name: `Plot C Selected Mother Tree #${nextNum}`,
+          age: 40,
+          location: 'Eathamozhy Main Grove',
+          healthStatus: 'Excellent (Vigorous Nut Producer)',
+          yieldHistory: '160–180 nuts per palm per year',
+          description: 'High-yielding mother tree selected for mother seed nut production.',
+          nutCharacteristics: 'Large spherical nuts with high coconut water volume and thick kernel.',
+          whySelected: 'Consistently high yield with exceptional seedling germination rate.',
+          images: ['/images/placeholders/coconut.jpeg']
+        });
       } else {
-        alert('Failed to add mother tree');
+        const errData = await res.json();
+        alert(errData.error || 'Failed to add mother tree');
       }
     } catch (err) {
       alert('Error adding mother tree');
@@ -68,11 +83,12 @@ export default function AdminMotherTreesPage() {
         body: JSON.stringify(editingTree)
       });
       if (res.ok) {
-        alert(`Mother Tree ${editingTree.code} updated!`);
+        alert(`Mother Tree ${editingTree.code} updated successfully!`);
         setEditingTree(null);
         fetchPalms();
       } else {
-        alert('Failed to update mother tree');
+        const errData = await res.json();
+        alert(errData.error || 'Failed to update mother tree');
       }
     } catch (err) {
       alert('Error updating mother tree');
@@ -261,6 +277,16 @@ export default function AdminMotherTreesPage() {
 
                 <div className="row g-3">
                   <div className="col-md-6">
+                    <label className="form-label small fw-bold">Mother Tree Code</label>
+                    <input 
+                      type="text" 
+                      className="form-control fw-bold border-success" 
+                      value={editingTree.code}
+                      onChange={e => setEditingTree({ ...editingTree, code: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
                     <label className="form-label small fw-bold">Name</label>
                     <input 
                       type="text" 
@@ -277,6 +303,16 @@ export default function AdminMotherTreesPage() {
                       className="form-control" 
                       value={editingTree.age}
                       onChange={e => setEditingTree({ ...editingTree, age: Number(e.target.value) })}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label small fw-bold">Health Status</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={editingTree.healthStatus || ''}
+                      onChange={e => setEditingTree({ ...editingTree, healthStatus: e.target.value })}
                     />
                   </div>
 
@@ -305,7 +341,7 @@ export default function AdminMotherTreesPage() {
                     <input 
                       type="text" 
                       className="form-control" 
-                      value={editingTree.whySelected}
+                      value={editingTree.whySelected || ''}
                       onChange={e => setEditingTree({ ...editingTree, whySelected: e.target.value })}
                     />
                   </div>

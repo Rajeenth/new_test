@@ -431,15 +431,18 @@ export const DataStore = {
     return created;
   },
 
-  updateParentPalm: (code: string, updatedFields: Partial<ParentPalm>) => {
-    const target = parentPalms.find(p => p.code.toLowerCase() === code.toLowerCase());
+  updateParentPalm: (identifier: string, updatedFields: Partial<ParentPalm>) => {
+    const target = parentPalms.find(p => 
+      p.id === identifier || 
+      p.code.toLowerCase() === identifier.toLowerCase()
+    );
     if (!target) throw new Error('Parent palm mother tree not found');
     Object.assign(target, updatedFields);
     return target;
   },
 
-  deleteParentPalm: (code: string) => {
-    parentPalms = parentPalms.filter(p => p.code.toLowerCase() !== code.toLowerCase());
+  deleteParentPalm: (codeOrId: string) => {
+    parentPalms = parentPalms.filter(p => p.id !== codeOrId && p.code.toLowerCase() !== codeOrId.toLowerCase());
     return true;
   },
 
