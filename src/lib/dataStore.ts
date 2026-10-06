@@ -335,6 +335,13 @@ export const DataStore = {
     });
   },
 
+  getOldestAvailableBatch: () => {
+    const all = DataStore.getBatches();
+    const readyAvailable = all.filter(b => b.availableQuantity > 0 && b.status !== 'COMING_SOON');
+    readyAvailable.sort((a, b) => new Date(a.seededDate).getTime() - new Date(b.seededDate).getTime());
+    return readyAvailable[0] || all.find(b => b.availableQuantity > 0) || all[0];
+  },
+
   getBatchByCode: (code: string) => {
     const b = batches.find(x => x.batchCode.toLowerCase() === code.toLowerCase());
     if (!b) return null;

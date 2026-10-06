@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { DataStore } from '@/lib/dataStore';
+import ImageCarousel from '@/components/ImageCarousel';
 
 export const dynamic = 'force-dynamic';
 
 export default function Home() {
   const batches = DataStore.getBatches();
-  const currentBatch = batches[0];
+  const currentBatch = DataStore.getOldestAvailableBatch();
   const motherPalms = DataStore.getParentPalms();
   const reviews = DataStore.getReviews();
 
@@ -88,13 +89,11 @@ export default function Home() {
             <div className="card-body p-4">
               <div className="row align-items-center g-4">
                 <div className="col-md-5">
-                  <div className="rounded-3 overflow-hidden shadow-sm" style={{ maxHeight: '240px' }}>
-                    <img 
-                      src={currentBatch?.images[0]} 
-                      alt={currentBatch?.name} 
-                      className="img-fluid w-100 object-fit-cover"
-                    />
-                  </div>
+                  <ImageCarousel 
+                    images={currentBatch?.images || []} 
+                    title={currentBatch?.name || 'Featured Batch'} 
+                    carouselId="home-featured-carousel" 
+                  />
                 </div>
 
                 <div className="col-md-7">
