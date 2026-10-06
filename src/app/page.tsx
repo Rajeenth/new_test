@@ -102,34 +102,50 @@ export default function Home() {
                     Age: <strong>{currentBatch?.age}</strong> | Height: <strong>{currentBatch?.height}</strong> | Mother Tree: <Link href={`/parent-palm/${currentBatch?.parentPalmCode}`} className="text-success fw-bold">{currentBatch?.parentPalmCode}</Link>
                   </p>
 
-                  <div className="row text-center bg-light p-3 rounded-3 mb-3 border">
-                    <div className="col-4 border-end">
-                      <small className="text-muted d-block text-uppercase">Total</small>
-                      <span className="fs-5 fw-bold text-dark">{currentBatch?.totalQuantity}</span>
-                    </div>
-                    <div className="col-4 border-end">
-                      <small className="text-muted d-block text-uppercase">Booked / Sold</small>
-                      <span className="fs-5 fw-bold text-primary">{currentBatch?.bookedQuantity}</span>
-                    </div>
-                    <div className="col-4">
-                      <small className="text-muted d-block text-uppercase">Available</small>
-                      <span className="fs-5 fw-bold text-success">{currentBatch?.availableQuantity}</span>
-                    </div>
-                  </div>
+                  {(() => {
+                    const totalQty = currentBatch?.totalQuantity || 0;
+                    const adj = currentBatch?.inventoryAdjustments || 0;
+                    const netProduced = totalQty + adj;
+                    const bookedQty = currentBatch?.bookedQuantity || 0;
+                    const availQty = currentBatch?.availableQuantity || 0;
+                    const bookedPct = netProduced > 0 ? Number(((bookedQty / netProduced) * 100).toFixed(1)) : 0;
 
-                  <div className="mb-3">
-                    <div className="d-flex justify-content-between small fw-bold mb-1">
-                      <span>Booking Progress</span>
-                      <span className="text-success">{currentBatch?.bookedPercentage}% Booked</span>
-                    </div>
-                    <div className="progress" style={{ height: '12px' }}>
-                      <div 
-                        className="progress-bar bg-success progress-bar-striped progress-bar-animated" 
-                        role="progressbar" 
-                        style={{ width: `${currentBatch?.bookedPercentage}%` }}
-                      ></div>
-                    </div>
-                  </div>
+                    return (
+                      <>
+                        <div className="row text-center bg-light p-3 rounded-3 mb-3 border">
+                          <div className="col-4 border-end">
+                            <small className="text-muted d-block text-uppercase">Net Stock</small>
+                            <span className="fs-5 fw-bold text-dark">{netProduced}</span>
+                            {adj !== 0 && (
+                              <small className="text-muted extra-small d-block">({adj > 0 ? `+${adj}` : adj} audit)</small>
+                            )}
+                          </div>
+                          <div className="col-4 border-end">
+                            <small className="text-muted d-block text-uppercase">Booked / Sold</small>
+                            <span className="fs-5 fw-bold text-primary">{bookedQty}</span>
+                          </div>
+                          <div className="col-4">
+                            <small className="text-muted d-block text-uppercase">Available</small>
+                            <span className="fs-5 fw-bold text-success">{availQty}</span>
+                          </div>
+                        </div>
+
+                        <div className="mb-3">
+                          <div className="d-flex justify-content-between small fw-bold mb-1">
+                            <span>Booking Progress</span>
+                            <span className="text-success">{bookedPct}% Booked</span>
+                          </div>
+                          <div className="progress" style={{ height: '12px' }}>
+                            <div 
+                              className="progress-bar bg-success progress-bar-striped progress-bar-animated" 
+                              role="progressbar" 
+                              style={{ width: `${bookedPct}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
 
                   <div className="d-flex justify-content-between align-items-center">
                     <div>

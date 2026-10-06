@@ -23,6 +23,56 @@ export default function AdminMotherTreesPage() {
 
   // Edit Modal State
   const [editingTree, setEditingTree] = useState<any | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUploadTreeFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0 || !editingTree) return;
+    const files = Array.from(e.target.files);
+    setUploading(true);
+    const formData = new FormData();
+    files.forEach(f => formData.append('files', f));
+    formData.append('category', 'parent-palms');
+    formData.append('tag', editingTree.code);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok && data.urls) {
+        setEditingTree((prev: any) => prev ? {
+          ...prev,
+          images: [...(prev.images || []), ...data.urls]
+        } : null);
+        alert(`Successfully added ${data.urls.length} photo(s) for Mother Tree ${editingTree.code}!`);
+      } else {
+        alert(data.error || 'Upload failed');
+      }
+    } catch (err) {
+      alert('Error uploading images');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeTreeImage = (idxToRemove: number) => {
+    if (!editingTree) return;
+    setEditingTree({
+      ...editingTree,
+      images: (editingTree.images || []).filter((_: any, idx: number) => idx !== idxToRemove)
+    });
+  };
+
+  const removeAllTreeImages = () => {
+    if (!editingTree) return;
+    if (confirm('Are you sure you want to clear all photos for this mother tree?')) {
+      setEditingTree({
+        ...editingTree,
+        images: []
+      });
+    }
+  };
 
   const fetchPalms = async () => {
     try {
@@ -354,6 +404,64 @@ export default function AdminMotherTreesPage() {
                       value={editingTree.description}
                       onChange={e => setEditingTree({ ...editingTree, description: e.target.value })}
                     ></textarea>
+                  </div>
+
+                  {/* Mother Tree Images Gallery & Uploader */}
+                  <div className="col-12 bg-light p-3 rounded-3 border">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <label className="form-label small fw-bold text-dark mb-0">
+                        <i className="bi bi-images me-1 text-success"></i> Mother Tree Photos ({(editingTree.images || []).length})
+                      </label>
+                      {(editingTree.images || []).length > 0 && (
+                        <button 
+                          type="button" 
+                          className="btn btn-sm btn-outline-danger py-0 px-2 extra-small"
+                          onClick={removeAllTreeImages}
+                        >
+                          <i className="bi bi-trash me-1"></i> Clear All Photos
+                        </button>
+                      )}
+                    </div>
+                    
+                    {(editingTree.images || []).length > 0 ? (
+                      <div className="d-flex flex-wrap gap-2 mb-3 max-vh-25 overflow-auto p-2 bg-white border rounded">
+                        {editingTree.images.map((imgUrl: string, idx: number) => (
+                          <div key={idx} className="position-relative d-inline-block">
+                            <img 
+                              src={imgUrl} 
+                              alt={`Mother Tree Photo ${idx+1}`} 
+                              className="rounded border"
+                              style={{ width: '65px', height: '65px', objectFit: 'cover' }}
+                            />
+                            <button 
+                              type="button" 
+                              className="btn btn-danger btn-sm py-0 px-1 position-absolute top-0 end-0 rounded-circle"
+                              style={{ fontSize: '0.65rem', transform: 'translate(30%, -30%)' }}
+                              onClick={() => removeTreeImage(idx)}
+                              title="Remove image"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <small className="text-muted d-block mb-2">No photos uploaded for this tree yet.</small>
+                    )}
+
+                    <div>
+                      <label className="form-label extra-small text-muted mb-1">
+                        {uploading ? 'Uploading selected photos...' : 'Upload New Mother Tree Photographs:'}
+                      </label>
+                      <input 
+                        type="file" 
+                        className="form-control form-control-sm" 
+                        multiple 
+                        accept="image/*"
+                        disabled={uploading}
+                        onChange={handleUploadTreeFiles}
+                      />
+                    </div>
                   </div>
                 </div>
 
