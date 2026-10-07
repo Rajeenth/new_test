@@ -105,11 +105,36 @@ export default function AdminBatchesPage() {
 
   const handleCreateBatch = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalImages = uploadedUrls.length > 0 ? uploadedUrls : [
-      '/images/placeholders/coconut.jpeg',
-      '/images/placeholders/coconut1.jpeg',
-      '/images/placeholders/coconut2.jpeg'
-    ];
+
+    let finalImages: string[] = uploadedUrls;
+
+    // If files are selected in input but not uploaded yet, upload them automatically
+    if (batchFiles.length > 0 && uploadedUrls.length === 0) {
+      setUploading(true);
+      const formData = new FormData();
+      batchFiles.forEach(f => formData.append('files', f));
+      formData.append('category', 'batches');
+      formData.append('tag', newBatch.batchCode);
+
+      try {
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok && uploadData.urls) {
+          finalImages = uploadData.urls;
+        }
+      } catch (err) {
+        console.error('Auto upload error during batch creation');
+      } finally {
+        setUploading(false);
+      }
+    }
+
+    if (finalImages.length === 0) {
+      finalImages = [`/images/batches/${newBatch.batchCode}/batch_1.jpg`];
+    }
 
     try {
       const res = await fetch('/api/batches', {
@@ -122,7 +147,7 @@ export default function AdminBatchesPage() {
       });
 
       if (res.ok) {
-        alert(`Batch ${newBatch.batchCode} added! It is now live on the Available Batches page.`);
+        alert(`Batch ${newBatch.batchCode} added! Dedicated folder /public/images/batches/${newBatch.batchCode}/ created.`);
         fetchBatchesData();
         setUploadedUrls([]);
         setBatchFiles([]);

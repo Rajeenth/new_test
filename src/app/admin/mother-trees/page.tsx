@@ -106,17 +106,59 @@ export default function AdminMotherTreesPage() {
     fetchPalms();
   }, []);
 
+  const [treeFiles, setTreeFiles] = useState<File[]>([]);
+
+  const handleTreeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setTreeFiles(Array.from(e.target.files));
+    }
+  };
+
   const handleCreateTree = async (e: React.FormEvent) => {
     e.preventDefault();
+    let finalImages: string[] = [];
+
+    // Auto upload selected files to dedicated folder public/images/parent-palms/${newTree.code}/
+    if (treeFiles.length > 0) {
+      setUploading(true);
+      const formData = new FormData();
+      treeFiles.forEach(f => formData.append('files', f));
+      formData.append('category', 'parent-palms');
+      formData.append('tag', newTree.code);
+
+      try {
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok && uploadData.urls) {
+          finalImages = uploadData.urls;
+        }
+      } catch (err) {
+        console.error('Auto upload error during mother tree creation');
+      } finally {
+        setUploading(false);
+      }
+    }
+
+    if (finalImages.length === 0) {
+      finalImages = [`/images/parent-palms/${newTree.code}/tree_1.jpg`];
+    }
+
     try {
       const res = await fetch('/api/parent-palms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTree)
+        body: JSON.stringify({
+          ...newTree,
+          images: finalImages
+        })
       });
       if (res.ok) {
-        alert(`Mother Tree ${newTree.code} added successfully!`);
+        alert(`Mother Tree ${newTree.code} added successfully! Dedicated folder /public/images/parent-palms/${newTree.code}/ created.`);
         fetchPalms();
+        setTreeFiles([]);
         // Reset form to clear inputs and auto-increment code
         const nextNum = Math.floor(25 + Math.random() * 50);
         setNewTree({
@@ -129,7 +171,7 @@ export default function AdminMotherTreesPage() {
           description: 'High-yielding mother tree selected for mother seed nut production.',
           nutCharacteristics: 'Large spherical nuts with high coconut water volume and thick kernel.',
           whySelected: 'Consistently high yield with exceptional seedling germination rate.',
-          images: ['/images/placeholders/coconut.jpeg']
+          images: [`/images/parent-palms/EM-MP-0${nextNum}/tree_1.jpg`]
         });
       } else {
         const errData = await res.json();
@@ -275,9 +317,26 @@ export default function AdminMotherTreesPage() {
                   ></textarea>
                 </div>
 
+                {/* DEDICATED FOLDER PHOTO UPLOAD */}
+                <div className="col-12 bg-light p-3 rounded-3 border">
+                  <label className="form-label small fw-bold text-dark d-block mb-1">
+                    <i className="bi bi-cloud-arrow-up-fill text-success me-1"></i> Upload Mother Tree Photographs
+                  </label>
+                  <span className="d-block extra-small text-muted mb-2 font-monospace">
+                    <i className="bi bi-folder-fill text-warning me-1"></i> Auto-creates dedicated folder: /public/images/parent-palms/{newTree.code}/
+                  </span>
+                  <input 
+                    type="file" 
+                    className="form-control form-control-sm" 
+                    multiple 
+                    accept="image/*"
+                    onChange={handleTreeFileChange}
+                  />
+                </div>
+
                 <div className="col-12">
-                  <button type="submit" className="btn btn-success fw-bold px-4">
-                    <i className="bi bi-plus-circle me-1"></i> Save Mother Tree Record
+                  <button type="submit" className="btn btn-success fw-bold px-4" disabled={uploading}>
+                    <i className="bi bi-plus-circle me-1"></i> {uploading ? 'Creating Folder & Uploading...' : 'Save Mother Tree Record'}
                   </button>
                 </div>
               </div>

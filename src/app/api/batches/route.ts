@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { DataStore } from '@/lib/dataStore';
 
+import { mkdir } from 'fs/promises';
+import path from 'path';
+
 export async function GET() {
   const batches = DataStore.getBatches();
   return NextResponse.json(batches);
@@ -9,6 +12,15 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    if (!body.batchCode) {
+      return NextResponse.json({ error: 'batchCode is required' }, { status: 400 });
+    }
+
+    // Automatically create dedicated folder for new batch on disk
+    const safeCode = body.batchCode.replace(/[^a-zA-Z0-9_-]/g, '');
+    const folderPath = path.join(process.cwd(), 'public', 'images', 'batches', safeCode);
+    await mkdir(folderPath, { recursive: true });
+
     const newBatch = DataStore.addBatch(body);
     return NextResponse.json(newBatch, { status: 201 });
   } catch (err: any) {

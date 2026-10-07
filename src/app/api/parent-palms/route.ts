@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { DataStore } from '@/lib/dataStore';
 
+import { mkdir } from 'fs/promises';
+import path from 'path';
+
 export async function GET() {
   return NextResponse.json(DataStore.getParentPalms());
 }
@@ -11,6 +14,12 @@ export async function POST(request: Request) {
     if (!body.code || !body.name) {
       return NextResponse.json({ error: 'Mother tree code and name required' }, { status: 400 });
     }
+
+    // Automatically create dedicated folder for new Mother Tree on disk
+    const safeCode = body.code.replace(/[^a-zA-Z0-9_-]/g, '');
+    const folderPath = path.join(process.cwd(), 'public', 'images', 'parent-palms', safeCode);
+    await mkdir(folderPath, { recursive: true });
+
     const created = DataStore.addParentPalm(body);
     return NextResponse.json(created, { status: 201 });
   } catch (err: any) {
