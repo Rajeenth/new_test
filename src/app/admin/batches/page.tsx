@@ -191,13 +191,29 @@ export default function AdminBatchesPage() {
     }
   };
 
-  const removeEditImage = (indexToRemove: number) => {
+  const removeEditImage = async (indexToRemove: number) => {
+    const targetUrl = editImages[indexToRemove];
     setEditImages(prev => prev.filter((_, idx) => idx !== indexToRemove));
+    if (targetUrl && targetUrl.startsWith('/images/')) {
+      try {
+        await fetch(`/api/upload?path=${encodeURIComponent(targetUrl)}`, { method: 'DELETE' });
+      } catch (e) {
+        console.error('Failed to unlink deleted image file:', e);
+      }
+    }
   };
 
-  const removeAllEditImages = () => {
+  const removeAllEditImages = async () => {
     if (confirm('Are you sure you want to remove ALL current images for this batch?')) {
+      const toDelete = [...editImages];
       setEditImages([]);
+      for (const imgUrl of toDelete) {
+        if (imgUrl && imgUrl.startsWith('/images/')) {
+          try {
+            await fetch(`/api/upload?path=${encodeURIComponent(imgUrl)}`, { method: 'DELETE' });
+          } catch (e) {}
+        }
+      }
     }
   };
 
@@ -554,9 +570,14 @@ export default function AdminBatchesPage() {
                 {/* Batch Images Gallery & Uploader */}
                 <div className="mb-3 p-3 bg-light rounded-3 border">
                   <div className="d-flex justify-content-between align-items-center mb-2">
-                    <label className="form-label small fw-bold text-dark mb-0">
-                      <i className="bi bi-images me-1 text-success"></i> Customer Photo Gallery ({editImages.length})
-                    </label>
+                    <div>
+                      <label className="form-label small fw-bold text-dark mb-0">
+                        <i className="bi bi-images me-1 text-success"></i> Customer Photo Gallery ({editImages.length})
+                      </label>
+                      <span className="d-block extra-small text-muted font-monospace">
+                        <i className="bi bi-folder-fill text-warning me-1"></i> /public/images/batches/{editingBatch.batchCode}/
+                      </span>
+                    </div>
                     {editImages.length > 0 && (
                       <button 
                         type="button" 

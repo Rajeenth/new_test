@@ -56,21 +56,37 @@ export default function AdminMotherTreesPage() {
     }
   };
 
-  const removeTreeImage = (idxToRemove: number) => {
+  const removeTreeImage = async (idxToRemove: number) => {
     if (!editingTree) return;
+    const targetUrl = (editingTree.images || [])[idxToRemove];
     setEditingTree({
       ...editingTree,
       images: (editingTree.images || []).filter((_: any, idx: number) => idx !== idxToRemove)
     });
+    if (targetUrl && targetUrl.startsWith('/images/')) {
+      try {
+        await fetch(`/api/upload?path=${encodeURIComponent(targetUrl)}`, { method: 'DELETE' });
+      } catch (e) {
+        console.error('Failed to unlink deleted tree image:', e);
+      }
+    }
   };
 
-  const removeAllTreeImages = () => {
+  const removeAllTreeImages = async () => {
     if (!editingTree) return;
     if (confirm('Are you sure you want to clear all photos for this mother tree?')) {
+      const toDelete = [...(editingTree.images || [])];
       setEditingTree({
         ...editingTree,
         images: []
       });
+      for (const imgUrl of toDelete) {
+        if (imgUrl && imgUrl.startsWith('/images/')) {
+          try {
+            await fetch(`/api/upload?path=${encodeURIComponent(imgUrl)}`, { method: 'DELETE' });
+          } catch (e) {}
+        }
+      }
     }
   };
 
@@ -409,9 +425,14 @@ export default function AdminMotherTreesPage() {
                   {/* Mother Tree Images Gallery & Uploader */}
                   <div className="col-12 bg-light p-3 rounded-3 border">
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                      <label className="form-label small fw-bold text-dark mb-0">
-                        <i className="bi bi-images me-1 text-success"></i> Mother Tree Photos ({(editingTree.images || []).length})
-                      </label>
+                      <div>
+                        <label className="form-label small fw-bold text-dark mb-0">
+                          <i className="bi bi-images me-1 text-success"></i> Mother Tree Photos ({(editingTree.images || []).length})
+                        </label>
+                        <span className="d-block extra-small text-muted font-monospace">
+                          <i className="bi bi-folder-fill text-warning me-1"></i> /public/images/parent-palms/{editingTree.code}/
+                        </span>
+                      </div>
                       {(editingTree.images || []).length > 0 && (
                         <button 
                           type="button" 

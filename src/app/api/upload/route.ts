@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile, mkdir, unlink } from 'fs/promises';
 import path from 'path';
 
 export async function POST(request: Request) {
@@ -15,10 +15,10 @@ export async function POST(request: Request) {
 
     // Sanitize folder path
     const safeTag = tag.replace(/[^a-zA-Z0-9_-]/g, '');
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', category, safeTag);
+    const targetDir = path.join(process.cwd(), 'public', 'images', category, safeTag);
 
     // Ensure directory exists
-    await mkdir(uploadDir, { recursive: true });
+    await mkdir(targetDir, { recursive: true });
 
     const savedUrls: string[] = [];
 
@@ -30,21 +30,50 @@ export async function POST(request: Request) {
       const timeStamp = Date.now();
       const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
       const filename = `${timeStamp}_${sanitizedFilename}`;
-      const filePath = path.join(uploadDir, filename);
+      const filePath = path.join(targetDir, filename);
 
       await writeFile(filePath, buffer);
       
-      const publicUrl = `/uploads/${category}/${safeTag}/${filename}`;
+      const publicUrl = `/images/${category}/${safeTag}/${filename}`;
       savedUrls.push(publicUrl);
     }
 
     return NextResponse.json({ 
       success: true, 
       urls: savedUrls,
-      message: `Uploaded ${savedUrls.length} image(s) to /uploads/${category}/${safeTag}/` 
+      message: `Uploaded ${savedUrls.length} image(s) to /images/${category}/${safeTag}/` 
     });
   } catch (error: any) {
     console.error('File upload error:', error);
     return NextResponse.json({ error: error.message || 'File upload failed' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const imagePath = searchParams.get('path');
+    if (!imagePath) {
+      return NextResponse.json({ error: 'Image path parameter required' }, { status: 400 });
+    }
+
+    // Normalize path to prevent directory traversal
+    const relativePath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
+    const fullPath = path.join(process.cwd(), 'public', relativePath);
+
+    // Only allow deleting within /public/images/
+    if (!fullPath.startsWith(path.join(process.cwd(), 'public', 'images'))) {
+      return NextResponse.json({ error: 'Unauthorized path deletion' }, { status: 403 });
+    }
+
+    try {
+      await unlink(fullPath);
+    } catch (e) {
+      // Ignore if file doesn't exist on disk
+    }
+
+    return NextResponse.json({ success: true, message: `File ${imagePath} removed from server.` });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'File deletion failed' }, { status: 500 });
   }
 }

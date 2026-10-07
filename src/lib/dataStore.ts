@@ -148,14 +148,7 @@ export function getDynamicBatchStatus(availableQuantity: number, seededDateStr: 
   return 'AVAILABLE';
 }
 
-// Local Placeholder Images
-const placeholderImages = [
-  '/images/placeholders/coconut.jpeg',
-  '/images/placeholders/coconut1.jpeg',
-  '/images/placeholders/coconut2.jpeg'
-];
-
-// Global Store State
+// Global Store State with Dedicated Folder Paths
 let parentPalms: ParentPalm[] = [
   {
     id: 'mp-1',
@@ -168,7 +161,10 @@ let parentPalms: ParentPalm[] = [
     description: 'Selected from our original ancestral grove, Mother Palm EM-MP-014 represents the quintessential Eathamozhy tall coconut cultivar known for heavy nut bearing and disease resilience.',
     nutCharacteristics: 'Large spherical nuts with thick endosperm (copra content 170g/nut) and sweet water volume averaging 350ml.',
     whySelected: 'Selected for superior germinability (>92%), thick husk protection, and high tolerance to coastal wind and fluctuating rainfall.',
-    images: placeholderImages
+    images: [
+      '/images/parent-palms/EM-MP-014/tree_1.jpg',
+      '/images/parent-palms/EM-MP-014/tree_2.jpg'
+    ]
   },
   {
     id: 'mp-2',
@@ -182,9 +178,8 @@ let parentPalms: ParentPalm[] = [
     nutCharacteristics: 'Medium-large nuts, early germinating seednuts.',
     whySelected: 'Outstanding seedling vigor and rapid root emergence in seedbeds.',
     images: [
-      '/images/placeholders/coconut1.jpeg',
-      '/images/placeholders/coconut2.jpeg',
-      '/images/placeholders/coconut.jpeg'
+      '/images/parent-palms/EM-MP-008/tree_1.jpg',
+      '/images/parent-palms/EM-MP-008/tree_2.jpg'
     ]
   }
 ];
@@ -205,7 +200,10 @@ let batches: Batch[] = [
     status: 'AVAILABLE',
     description: 'These saplings were raised in our farm and belong to the current September 2026 batch. Selected from Mother Palm EM-MP-014 with robust collars and vibrant green fronds.',
     viewsCount: 142,
-    images: placeholderImages
+    images: [
+      '/images/batches/EM-0926-A/batch_1.jpg',
+      '/images/batches/EM-0926-A/batch_2.jpg'
+    ]
   },
   {
     id: 'b-2',
@@ -223,9 +221,8 @@ let batches: Batch[] = [
     description: 'High vigor saplings from Riverside Plot B seednuts. Almost fully booked due to advance pre-orders.',
     viewsCount: 98,
     images: [
-      '/images/placeholders/coconut2.jpeg',
-      '/images/placeholders/coconut.jpeg',
-      '/images/placeholders/coconut1.jpeg'
+      '/images/batches/EM-1026-B/batch_1.jpg',
+      '/images/batches/EM-1026-B/batch_2.jpg'
     ]
   },
   {
@@ -243,7 +240,10 @@ let batches: Batch[] = [
     status: 'COMING_SOON',
     description: 'Upcoming monsoon season batch prepared for late autumn dispatch across Tamil Nadu and South India.',
     viewsCount: 215,
-    images: placeholderImages
+    images: [
+      '/images/batches/EM-1126-C/batch_1.jpg',
+      '/images/batches/EM-1126-C/batch_2.jpg'
+    ]
   }
 ];
 
@@ -361,10 +361,11 @@ export const DataStore = {
   },
 
   addBatch: (newBatchData: any) => {
-    // Combine batch name and code if not already combined
     const combinedName = newBatchData.name.includes(newBatchData.batchCode) 
       ? newBatchData.name 
       : `${newBatchData.name} (${newBatchData.batchCode})`;
+
+    const defaultFolderImages = [`/images/batches/${newBatchData.batchCode}/batch_1.jpg`];
 
     const created: Batch = {
       id: `b-${Date.now()}`,
@@ -381,7 +382,7 @@ export const DataStore = {
       status: 'AVAILABLE',
       description: newBatchData.description || '',
       viewsCount: 15,
-      images: newBatchData.images && newBatchData.images.length > 0 ? newBatchData.images : placeholderImages
+      images: newBatchData.images && newBatchData.images.length > 0 ? newBatchData.images : defaultFolderImages
     };
 
     batches.unshift(created);
@@ -400,7 +401,7 @@ export const DataStore = {
     if (updatedFields.name) {
       target.name = updatedFields.name.includes(target.batchCode) ? updatedFields.name : `${updatedFields.name} (${target.batchCode})`;
     }
-    if (updatedFields.images && updatedFields.images.length > 0) {
+    if (updatedFields.images) {
       target.images = updatedFields.images;
     }
 
@@ -419,13 +420,11 @@ export const DataStore = {
   },
 
   addParentPalm: (data: Omit<ParentPalm, 'id'>) => {
+    const defaultTreeImages = [`/images/parent-palms/${data.code}/tree_1.jpg`];
     const created: ParentPalm = {
       ...data,
       id: `mp-${Date.now()}`,
-      images: data.images && data.images.length > 0 ? data.images : [
-        '/images/placeholders/coconut.jpeg',
-        '/images/placeholders/coconut1.jpeg'
-      ]
+      images: data.images && data.images.length > 0 ? data.images : defaultTreeImages
     };
     parentPalms.unshift(created);
     return created;
@@ -502,11 +501,10 @@ export const DataStore = {
       id: `bk-${Date.now()}`,
       bookingId,
       paymentStatus: 'PENDING_VERIFICATION',
-      bookingStatus: 'Payment review', // Initial status set to "Payment review"
+      bookingStatus: 'Payment review',
       createdAt: new Date().toISOString()
     };
 
-    // Deduct quantity immediately in batch upon booking placement
     const targetBatch = batches.find(b => b.batchCode === data.batchCode);
     if (targetBatch) {
       targetBatch.bookedQuantity += data.quantity;
