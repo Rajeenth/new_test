@@ -18,7 +18,7 @@ export default function AdminMotherTreesPage() {
     description: 'Selected for heavy canopy, disease immunity, and large copra content.',
     nutCharacteristics: 'Large spherical nuts with high coconut water volume and thick kernel.',
     whySelected: 'Consistently high yield for over 40 years without dropping premature buttons.',
-    images: ['/images/placeholders/coconut1.jpeg']
+    images: [] as string[]
   });
 
   // Edit Modal State

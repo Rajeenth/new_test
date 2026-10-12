@@ -28,12 +28,7 @@ export default function BatchesPage() {
       <section className="bg-dark text-white py-5 text-center position-relative overflow-hidden">
         <div 
           className="position-absolute top-0 start-0 w-100 h-100 opacity-30"
-          style={{
-            backgroundImage: "url('/images/placeholders/coconut.jpeg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.6)'
-          }}
+          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
         ></div>
         <div className="container position-relative py-3">
           <span className="badge bg-warning text-dark px-3 py-2 rounded-pill mb-2 fw-bold">TRANSPARENT INVENTORY</span>
@@ -119,33 +114,44 @@ export default function BatchesPage() {
                         </div>
 
                         {/* Stats & Progress */}
-                        <div className="row text-center border-top border-bottom py-2 mb-3 g-0">
-                          <div className="col-4 border-end">
-                            <small className="text-muted d-block extra-small">TOTAL</small>
-                            <span className="fw-bold text-dark">{b.totalQuantity}</span>
-                          </div>
-                          <div className="col-4 border-end">
-                            <small className="text-muted d-block extra-small">BOOKED</small>
-                            <span className="fw-bold text-primary">{b.bookedQuantity}</span>
-                          </div>
-                          <div className="col-4">
-                            <small className="text-muted d-block extra-small">AVAILABLE</small>
-                            <span className="fw-bold text-success">{b.availableQuantity}</span>
-                          </div>
-                        </div>
+                        {(() => {
+                          const netStock = Math.max(0, b.totalQuantity + (b.inventoryAdjustments || 0));
+                          const adj = b.inventoryAdjustments || 0;
+                          return (
+                            <>
+                              <div className="row text-center border-top border-bottom py-2 mb-3 g-0">
+                                <div className="col-4 border-end">
+                                  <small className="text-muted d-block extra-small">NET STOCK</small>
+                                  <span className="fw-bold text-dark">{netStock}</span>
+                                  {adj !== 0 && (
+                                    <small className="text-muted extra-small d-block">({adj > 0 ? `+${adj}` : adj} audit)</small>
+                                  )}
+                                </div>
+                                <div className="col-4 border-end">
+                                  <small className="text-muted d-block extra-small">BOOKED</small>
+                                  <span className="fw-bold text-primary">{b.bookedQuantity}</span>
+                                </div>
+                                <div className="col-4">
+                                  <small className="text-muted d-block extra-small">AVAILABLE</small>
+                                  <span className="fw-bold text-success">{b.availableQuantity}</span>
+                                </div>
+                              </div>
 
-                        <div className="mb-3">
-                          <div className="progress" style={{ height: '8px' }}>
-                            <div 
-                              className="progress-bar bg-success" 
-                              style={{ width: `${b.bookedPercentage}%` }}
-                            ></div>
-                          </div>
-                          <div className="d-flex justify-content-between text-muted extra-small mt-1">
-                            <span>{b.bookedPercentage}% booked</span>
-                            <span>{b.availableQuantity} left</span>
-                          </div>
-                        </div>
+                              <div className="mb-3">
+                                <div className="progress" style={{ height: '8px' }}>
+                                  <div 
+                                    className="progress-bar bg-success" 
+                                    style={{ width: `${b.bookedPercentage}%` }}
+                                  ></div>
+                                </div>
+                                <div className="d-flex justify-content-between text-muted extra-small mt-1">
+                                  <span>{b.bookedPercentage}% booked</span>
+                                  <span>{b.availableQuantity} left</span>
+                                </div>
+                              </div>
+                            </>
+                          );
+                        })()}
                       </div>
 
                       <div className="pt-3 border-top d-flex justify-content-between align-items-center">

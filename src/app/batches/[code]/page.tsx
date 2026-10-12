@@ -23,12 +23,7 @@ export default async function BatchDetailPage({
       <section className="bg-dark text-white py-4 position-relative overflow-hidden">
         <div 
           className="position-absolute top-0 start-0 w-100 h-100 opacity-25"
-          style={{
-            backgroundImage: "url('/images/placeholders/coconut.jpeg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.5)'
-          }}
+          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
         ></div>
         <div className="container position-relative">
           <nav aria-label="breadcrumb">
@@ -125,8 +120,20 @@ export default async function BatchDetailPage({
                       <td className="fw-bold text-dark text-end py-2">{batch.height}</td>
                     </tr>
                     <tr className="border-bottom">
-                      <td className="text-muted py-2">Total Produced</td>
+                      <td className="text-muted py-2">Total Seednuts Produced</td>
                       <td className="fw-bold text-dark text-end py-2">{batch.totalQuantity}</td>
+                    </tr>
+                    {batch.inventoryAdjustments !== 0 && (
+                      <tr className="border-bottom bg-warning-subtle">
+                        <td className="text-muted py-2">Audit Inventory Adjustment</td>
+                        <td className="fw-bold text-danger text-end py-2">
+                          {batch.inventoryAdjustments > 0 ? `+${batch.inventoryAdjustments}` : batch.inventoryAdjustments} saplings
+                        </td>
+                      </tr>
+                    )}
+                    <tr className="border-bottom">
+                      <td className="text-muted py-2">Net Seedling Stock</td>
+                      <td className="fw-bold text-dark text-end py-2">{batch.totalQuantity + (batch.inventoryAdjustments || 0)}</td>
                     </tr>
                     <tr className="border-bottom">
                       <td className="text-muted py-2">Booked / Sold Quantity</td>

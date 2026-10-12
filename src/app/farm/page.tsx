@@ -7,12 +7,7 @@ export default function OurFarmPage() {
       <section className="bg-dark text-white py-5 text-center position-relative overflow-hidden">
         <div 
           className="position-absolute top-0 start-0 w-100 h-100 opacity-30"
-          style={{
-            backgroundImage: "url('/images/placeholders/coconut1.jpeg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.6)'
-          }}
+          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
         ></div>
         <div className="container position-relative py-5">
           <span className="badge bg-success px-3 py-2 fs-6 rounded-pill mb-3">OUR HERITAGE</span>
@@ -40,7 +35,7 @@ export default function OurFarmPage() {
               </p>
             </div>
             <div className="col-md-6">
-              <img src="/images/placeholders/coconut.jpeg" alt="Ancestral Grove" className="img-fluid rounded-4 shadow-sm" />
+              <img src="/images/parent-palms/EM-MP-001/tree_1.jpg" alt="Ancestral Grove" className="img-fluid rounded-4 shadow-sm" style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }} />
             </div>
           </div>
 
@@ -53,7 +48,7 @@ export default function OurFarmPage() {
               </p>
             </div>
             <div className="col-md-6">
-              <img src="/images/placeholders/coconut1.jpeg" alt="Mother Palms Selection" className="img-fluid rounded-4 shadow-sm" />
+              <img src="/images/batches/EM-0126-A/batch_1.jpg" alt="Mother Palms Selection" className="img-fluid rounded-4 shadow-sm" style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }} />
             </div>
           </div>
 
@@ -66,7 +61,7 @@ export default function OurFarmPage() {
               </p>
             </div>
             <div className="col-md-6">
-              <img src="/images/placeholders/coconut2.jpeg" alt="Online Farm Platform" className="img-fluid rounded-4 shadow-sm" />
+              <img src="/images/parent-palms/EM-MP-002/tree_1.jpg" alt="Online Farm Platform" className="img-fluid rounded-4 shadow-sm" style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }} />
             </div>
           </div>
         </div>
@@ -83,7 +78,7 @@ export default function OurFarmPage() {
           <div className="row g-3">
             <div className="col-md-4 col-6">
               <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <img src="/images/placeholders/coconut.jpeg" alt="Farm Plot" className="img-fluid object-fit-cover" style={{ height: '220px' }} />
+                <img src="/images/batches/EM-0126-A/batch_1.jpg" alt="Farm Plot" className="img-fluid object-fit-cover" style={{ height: '220px', width: '100%' }} />
                 <div className="card-body p-2 text-center bg-white">
                   <small className="fw-bold text-dark">Nursery Seedbeds</small>
                 </div>
@@ -91,7 +86,7 @@ export default function OurFarmPage() {
             </div>
             <div className="col-md-4 col-6">
               <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <img src="/images/placeholders/coconut1.jpeg" alt="Mother Palms" className="img-fluid object-fit-cover" style={{ height: '220px' }} />
+                <img src="/images/parent-palms/EM-MP-001/tree_1.jpg" alt="Mother Palms" className="img-fluid object-fit-cover" style={{ height: '220px', width: '100%' }} />
                 <div className="card-body p-2 text-center bg-white">
                   <small className="fw-bold text-dark">Ancestral Mother Tree Grove</small>
                 </div>
@@ -99,7 +94,7 @@ export default function OurFarmPage() {
             </div>
             <div className="col-md-4 col-6">
               <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <img src="/images/placeholders/coconut2.jpeg" alt="Saplings Row" className="img-fluid object-fit-cover" style={{ height: '220px' }} />
+                <img src="/images/batches/EM-0226-B/batch_1.jpg" alt="Saplings Row" className="img-fluid object-fit-cover" style={{ height: '220px', width: '100%' }} />
                 <div className="card-body p-2 text-center bg-white">
                   <small className="fw-bold text-dark">7-9 Month Sapling Rows</small>
                 </div>

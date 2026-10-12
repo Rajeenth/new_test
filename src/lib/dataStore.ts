@@ -151,133 +151,585 @@ export function getDynamicBatchStatus(availableQuantity: number, seededDateStr: 
 // Global Store State with Dedicated Folder Paths
 let parentPalms: ParentPalm[] = [
   {
-    id: 'mp-1',
-    code: 'EM-MP-014',
-    name: 'Heritage Mother Tree #14',
-    age: 85,
-    location: 'Plot A - Old Grove Section 2',
-    healthStatus: 'Excellent (Regularly inspected)',
-    yieldHistory: 'Consistently 140 - 165 nuts/year documented over 20 consecutive years.',
-    description: 'Selected from our original ancestral grove, Mother Palm EM-MP-014 represents the quintessential Eathamozhy tall coconut cultivar known for heavy nut bearing and disease resilience.',
-    nutCharacteristics: 'Large spherical nuts with thick endosperm (copra content 170g/nut) and sweet water volume averaging 350ml.',
-    whySelected: 'Selected for superior germinability (>92%), thick husk protection, and high tolerance to coastal wind and fluctuating rainfall.',
-    images: [
-      '/images/parent-palms/EM-MP-014/tree_1.jpg',
-      '/images/parent-palms/EM-MP-014/tree_2.jpg'
+    "id": "mp-1",
+    "code": "EM-MP-001",
+    "name": "Ancestral Grand Mother Tree #1",
+    "age": 88,
+    "location": "Plot A - Heritage Grove North",
+    "healthStatus": "Vigorous & Pest-Free",
+    "yieldHistory": "Consistently 160–180 high-weight seed nuts per year over 25 monitored years.",
+    "description": "Our flagship mother palm planted in 1938. Exceptional trunk girth, dense canopy, and superior copra content.",
+    "nutCharacteristics": "Large spherical nuts with 180g dry copra content and sweet water volume > 350ml.",
+    "whySelected": "Unmatched germination rate (>94%) and strong wind tolerance during coastal storms.",
+    "images": [
+      "/images/parent-palms/EM-MP-001/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-001/tree_2.jpg"
     ]
   },
   {
-    id: 'mp-2',
-    code: 'EM-MP-008',
-    name: 'High Yield Mother Tree #8',
-    age: 72,
-    location: 'Plot B - East Riverside Section',
-    healthStatus: 'Vigorous',
-    yieldHistory: '130 - 150 nuts/year average.',
-    description: 'Located in our fertile riverside section, EM-MP-008 has been monitored since 1998 for mother seed nut selection.',
-    nutCharacteristics: 'Medium-large nuts, early germinating seednuts.',
-    whySelected: 'Outstanding seedling vigor and rapid root emergence in seedbeds.',
-    images: [
-      '/images/parent-palms/EM-MP-008/tree_1.jpg',
-      '/images/parent-palms/EM-MP-008/tree_2.jpg'
+    "id": "mp-2",
+    "code": "EM-MP-002",
+    "name": "East River Tall Palm #2",
+    "age": 75,
+    "location": "Plot B - River Bank Section",
+    "healthStatus": "Excellent (Monitored Monthly)",
+    "yieldHistory": "145–165 seed nuts/year average with early spadix emergence.",
+    "description": "Located in fertile alluvial riverbank soil. Famous for fast germination and thick root collars.",
+    "nutCharacteristics": "Medium-large green seed nuts with thick fibrous husk providing natural drought shield.",
+    "whySelected": "High sapling survival rate in seedling nursery and rapid initial growth phase.",
+    "images": [
+      "/images/parent-palms/EM-MP-002/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-002/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-3",
+    "code": "EM-MP-003",
+    "name": "Coastal Shield Mother Tree #3",
+    "age": 82,
+    "location": "Plot A - Seaward Ridge",
+    "healthStatus": "Robust & High Immunity",
+    "yieldHistory": "150–170 seed nuts/year documented consistently.",
+    "description": "Seaward facing tall palm proven resistant to high saline breezes and soil salinity fluctuations.",
+    "nutCharacteristics": "Thick husk with heavy endosperm and oil yield > 68%.",
+    "whySelected": "Ideal parent palm for coastal region coconut plantation expansion.",
+    "images": [
+      "/images/parent-palms/EM-MP-003/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-003/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-4",
+    "code": "EM-MP-004",
+    "name": "Central Grove Prime Palm #4",
+    "age": 68,
+    "location": "Plot C - Central Farm",
+    "healthStatus": "Peak Productivity",
+    "yieldHistory": "155–175 nuts/year with uniform round shape.",
+    "description": "Prime mother palm selected for high seednut weight and uniform seedling collar circumference.",
+    "nutCharacteristics": "Heavy spherical seednuts with high water sugar content.",
+    "whySelected": "Selected for quick 4-month germination and robust initial root anchorage.",
+    "images": [
+      "/images/parent-palms/EM-MP-004/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-004/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-5",
+    "code": "EM-MP-005",
+    "name": "Golden Husk Mother Tree #5",
+    "age": 79,
+    "location": "Plot B - South Field",
+    "healthStatus": "Excellent Health",
+    "yieldHistory": "140–160 nuts/year with high copra recovery.",
+    "description": "Golden-tinged husk variant with high husk fiber tensile strength and dense meat.",
+    "nutCharacteristics": "Golden brown ripe nuts, 175g copra per nut.",
+    "whySelected": "Proven drought tolerance and high pest immunity.",
+    "images": [
+      "/images/parent-palms/EM-MP-005/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-005/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-6",
+    "code": "EM-MP-006",
+    "name": "High Copra Mother Palm #6",
+    "age": 71,
+    "location": "Plot D - West Boundary",
+    "healthStatus": "Vigorous",
+    "yieldHistory": "150–165 nuts/year with top-tier oil percentage.",
+    "description": "Monitored for oil extraction yield; yields superior Grade-A copra.",
+    "nutCharacteristics": "Compact round nut with dense solid kernel.",
+    "whySelected": "Top candidate for commercial oil-yielding coconut orchards.",
+    "images": [
+      "/images/parent-palms/EM-MP-006/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-006/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-7",
+    "code": "EM-MP-007",
+    "name": "Heritage Giant Palm #7",
+    "age": 91,
+    "location": "Plot A - Old Grove Center",
+    "healthStatus": "Prime Heritage Condition",
+    "yieldHistory": "165–185 nuts/year over 30 years.",
+    "description": "One of our oldest registered mother trees with massive canopy spread.",
+    "nutCharacteristics": "Extra-large seednuts yielding heavy sturdy saplings.",
+    "whySelected": "Unbeatable genetic stability and longevity.",
+    "images": [
+      "/images/parent-palms/EM-MP-007/tree_1.jpg",
+      "/images/parent-palms/EM-MP-007/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-8",
+    "code": "EM-MP-008",
+    "name": "Fast Germinator Palm #8",
+    "age": 64,
+    "location": "Plot C - East Section",
+    "healthStatus": "Vigorous",
+    "yieldHistory": "135–155 nuts/year with 96% germination speed.",
+    "description": "Sprouts 2 weeks earlier than average in seedbeds.",
+    "nutCharacteristics": "Thin husk, thick shell, large water cavity.",
+    "whySelected": "Fastest nursery sprout emergence rate on record.",
+    "images": [
+      "/images/parent-palms/EM-MP-008/tree_1.jpg",
+      "/images/parent-palms/EM-MP-008/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-9",
+    "code": "EM-MP-009",
+    "name": "Deep Root Mother Palm #9",
+    "age": 77,
+    "location": "Plot E - Highland Block",
+    "healthStatus": "Extremely Resilient",
+    "yieldHistory": "140–160 nuts/year under rain-fed conditions.",
+    "description": "Thrives in lower water tables with deep taproot architecture.",
+    "nutCharacteristics": "Medium seednuts with resilient outer husk.",
+    "whySelected": "Ideal for rain-fed agricultural fields.",
+    "images": [
+      "/images/parent-palms/EM-MP-009/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-009/tree_2.jpeg"
+    ]
+  },
+  {
+    "id": "mp-10",
+    "code": "EM-MP-010",
+    "name": "Sweet Water Mother Tree #10",
+    "age": 69,
+    "location": "Plot B - Canal Side",
+    "healthStatus": "Excellent",
+    "yieldHistory": "150–170 nuts/year with high brix sweetness index.",
+    "description": "Dual-purpose mother tree producing sweet tender water and rich mature copra.",
+    "nutCharacteristics": "Large green-yellow nuts, 400ml sweet water capacity.",
+    "whySelected": "Popular dual-purpose tender/mature coconut seedling lineage.",
+    "images": [
+      "/images/parent-palms/EM-MP-010/tree_1.jpeg",
+      "/images/parent-palms/EM-MP-010/tree_2.jpeg"
     ]
   }
 ];
 
 let batches: Batch[] = [
   {
-    id: 'b-1',
-    batchCode: 'EM-0926-A',
-    parentPalmId: 'mp-1',
-    parentPalmCode: 'EM-MP-014',
-    name: 'September 2026 Batch (EM-0926-A)',
-    harvestDate: '2026-01-05',
-    seededDate: '2026-01-15',
-    totalQuantity: 500,
-    bookedQuantity: 327,
-    inventoryAdjustments: 0,
-    price: 150,
-    status: 'AVAILABLE',
-    description: 'These saplings were raised in our farm and belong to the current September 2026 batch. Selected from Mother Palm EM-MP-014 with robust collars and vibrant green fronds.',
-    viewsCount: 142,
-    images: [
-      '/images/batches/EM-0926-A/batch_1.jpg',
-      '/images/batches/EM-0926-A/batch_2.jpg'
+    "id": "b-1",
+    "batchCode": "EM-0126-A",
+    "parentPalmId": "mp-1",
+    "parentPalmCode": "EM-MP-001",
+    "name": "January 2026 Ready Batch (EM-0126-A)",
+    "harvestDate": "2025-09-10",
+    "seededDate": "2025-09-25",
+    "totalQuantity": 500,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 150,
+    "status": "AVAILABLE",
+    "description": "Fully matured 12-month saplings ready for immediate orchard planting. Strong root systems and thick collars.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0126-A/batch_1.jpeg",
+      "/images/batches/EM-0126-A/batch_2.jpg"
     ]
   },
   {
-    id: 'b-2',
-    batchCode: 'EM-1026-B',
-    parentPalmId: 'mp-2',
-    parentPalmCode: 'EM-MP-008',
-    name: 'October 2026 Batch (EM-1026-B)',
-    harvestDate: '2026-02-01',
-    seededDate: '2026-02-10',
-    totalQuantity: 400,
-    bookedQuantity: 360,
-    inventoryAdjustments: -10,
-    price: 150,
-    status: 'LIMITED',
-    description: 'High vigor saplings from Riverside Plot B seednuts. Almost fully booked due to advance pre-orders.',
-    viewsCount: 98,
-    images: [
-      '/images/batches/EM-1026-B/batch_1.jpg',
-      '/images/batches/EM-1026-B/batch_2.jpg'
+    "id": "b-2",
+    "batchCode": "EM-0226-B",
+    "parentPalmId": "mp-2",
+    "parentPalmCode": "EM-MP-002",
+    "name": "February 2026 Prime Batch (EM-0226-B)",
+    "harvestDate": "2025-10-05",
+    "seededDate": "2025-10-20",
+    "totalQuantity": 450,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 150,
+    "status": "AVAILABLE",
+    "description": "Vigorous 11-month saplings from River Bank parent tree. High leaf frond count and dark green color.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0226-B/batch_1.jpeg",
+      "/images/batches/EM-0226-B/batch_2.jpeg"
     ]
   },
   {
-    id: 'b-3',
-    batchCode: 'EM-1126-C',
-    parentPalmId: 'mp-1',
-    parentPalmCode: 'EM-MP-014',
-    name: 'November 2026 Pre-Booking Batch (EM-1126-C)',
-    harvestDate: '2026-06-01',
-    seededDate: '2026-06-15',
-    totalQuantity: 600,
-    bookedQuantity: 0,
-    inventoryAdjustments: 0,
-    price: 160,
-    status: 'COMING_SOON',
-    description: 'Upcoming monsoon season batch prepared for late autumn dispatch across Tamil Nadu and South India.',
-    viewsCount: 215,
-    images: [
-      '/images/batches/EM-1126-C/batch_1.jpg',
-      '/images/batches/EM-1126-C/batch_2.jpg'
+    "id": "b-3",
+    "batchCode": "EM-0326-C",
+    "parentPalmId": "mp-3",
+    "parentPalmCode": "EM-MP-003",
+    "name": "March 2026 Coastal Batch (EM-0326-C)",
+    "harvestDate": "2025-11-01",
+    "seededDate": "2025-11-15",
+    "totalQuantity": 600,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 160,
+    "status": "AVAILABLE",
+    "description": "Coastal shield cultivar batch. Engineered for wind resistance and saline soil adaptability.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0326-C/batch_1.jpeg",
+      "/images/batches/EM-0326-C/batch_2.jpeg"
+    ]
+  },
+  {
+    "id": "b-4",
+    "batchCode": "EM-0426-D",
+    "parentPalmId": "mp-4",
+    "parentPalmCode": "EM-MP-004",
+    "name": "April 2026 Central Batch (EM-0426-D)",
+    "harvestDate": "2025-12-01",
+    "seededDate": "2025-12-15",
+    "totalQuantity": 400,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 155,
+    "status": "AVAILABLE",
+    "description": "Heavy collar saplings raised under drip irrigation with balanced organic compost nutrition.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0426-D/batch_1.jpeg",
+      "/images/batches/EM-0426-D/batch_2.jpeg"
+    ]
+  },
+  {
+    "id": "b-5",
+    "batchCode": "EM-0526-E",
+    "parentPalmId": "mp-5",
+    "parentPalmCode": "EM-MP-005",
+    "name": "May 2026 Summer Batch (EM-0526-E)",
+    "harvestDate": "2026-01-05",
+    "seededDate": "2026-01-20",
+    "totalQuantity": 350,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 150,
+    "status": "AVAILABLE",
+    "description": "Hardened saplings with high heat tolerance. Excellent candidate for dry zone planting.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0526-E/batch_1.jpeg",
+      "/images/batches/EM-0526-E/batch_2.jpeg"
+    ]
+  },
+  {
+    "id": "b-6",
+    "batchCode": "EM-0626-F",
+    "parentPalmId": "mp-6",
+    "parentPalmCode": "EM-MP-006",
+    "name": "June 2026 Monsoon Pre-Booking (EM-0626-F)",
+    "harvestDate": "2026-02-01",
+    "seededDate": "2026-02-15",
+    "totalQuantity": 550,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 165,
+    "status": "AVAILABLE",
+    "description": "Special monsoon edition batch. Prepared for planting at the start of South-West monsoon.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0626-F/batch_1.jpeg",
+      "/images/batches/EM-0626-F/batch_2.jpeg"
+    ]
+  },
+  {
+    "id": "b-7",
+    "batchCode": "EM-0726-G",
+    "parentPalmId": "mp-7",
+    "parentPalmCode": "EM-MP-007",
+    "name": "July 2026 Heritage Giant Batch (EM-0726-G)",
+    "harvestDate": "2026-03-01",
+    "seededDate": "2026-03-15",
+    "totalQuantity": 500,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 170,
+    "status": "AVAILABLE",
+    "description": "Offspring of 91-year old Giant Mother Tree #7. High genetic purity and extra large nut potential.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0726-G/batch_1.jpg",
+      "/images/batches/EM-0726-G/batch_2.jpeg"
+    ]
+  },
+  {
+    "id": "b-8",
+    "batchCode": "EM-0826-H",
+    "parentPalmId": "mp-8",
+    "parentPalmCode": "EM-MP-008",
+    "name": "August 2026 Fast Growth Batch (EM-0826-H)",
+    "harvestDate": "2026-04-01",
+    "seededDate": "2026-04-15",
+    "totalQuantity": 400,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 160,
+    "status": "AVAILABLE",
+    "description": "Rapid sprouting batch with quick root anchorage and dense frond emergence.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0826-H/batch_1.jpg",
+      "/images/batches/EM-0826-H/batch_2.jpeg"
+    ]
+  },
+  {
+    "id": "b-9",
+    "batchCode": "EM-0926-I",
+    "parentPalmId": "mp-9",
+    "parentPalmCode": "EM-MP-009",
+    "name": "September 2026 Deep Root Batch (EM-0926-I)",
+    "harvestDate": "2026-05-01",
+    "seededDate": "2026-05-15",
+    "totalQuantity": 450,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 155,
+    "status": "AVAILABLE",
+    "description": "Drought resilient sapling lineage from Highland Block parent palm.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-0926-I/batch_1.jpeg",
+      "/images/batches/EM-0926-I/batch_2.jpeg"
+    ]
+  },
+  {
+    "id": "b-10",
+    "batchCode": "EM-1026-J",
+    "parentPalmId": "mp-10",
+    "parentPalmCode": "EM-MP-010",
+    "name": "October 2026 Sweet Water Batch (EM-1026-J)",
+    "harvestDate": "2026-06-01",
+    "seededDate": "2026-06-15",
+    "totalQuantity": 600,
+    "bookedQuantity": 0,
+    "inventoryAdjustments": 0,
+    "price": 160,
+    "status": "AVAILABLE",
+    "description": "Dual-purpose saplings. Ideal for both tender coconut harvesting and copra production.",
+    "viewsCount": 120,
+    "images": [
+      "/images/batches/EM-1026-J/batch_1.jpeg",
+      "/images/batches/EM-1026-J/batch_2.jpeg"
     ]
   }
 ];
 
 let bookings: Booking[] = [
   {
-    id: 'bk-1',
-    bookingId: 'EM-0926-A-1047',
-    batchCode: 'EM-0926-A',
-    customerName: 'Rajeenth Kumar',
-    mobile: '9486880641',
-    whatsapp: '9486880641',
-    address: '12-A Coconut Farm Lane, Main Road',
-    district: 'Kanyakumari',
-    state: 'Tamil Nadu',
-    pinCode: '629001',
-    expectedDeliveryDate: '2026-10-12',
-    quantity: 25,
-    subtotal: 3750,
-    deliveryCharge: 250,
-    totalAmount: 4000,
-    paymentStatus: 'PENDING_VERIFICATION',
-    bookingStatus: 'Payment review', // Initial fulfillment status
-    createdAt: '2026-09-18T10:30:00Z'
+    "id": "bk-1001",
+    "bookingId": "EM-0126-A-1001",
+    "batchCode": "EM-0126-A",
+    "customerName": "Rajeenth Kumar",
+    "mobile": "9486880641",
+    "whatsapp": "9486880641",
+    "address": "12-A Coconut Farm Lane, Main Road",
+    "district": "Kanyakumari",
+    "state": "Tamil Nadu",
+    "pinCode": "629001",
+    "quantity": 25,
+    "subtotal": 3750,
+    "deliveryCharge": 250,
+    "totalAmount": 4000,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Confirmed",
+    "createdAt": "2026-10-01T09:00:00Z"
+  },
+  {
+    "id": "bk-1002",
+    "bookingId": "EM-0126-A-1002",
+    "batchCode": "EM-0126-A",
+    "customerName": "Suresh Murugan",
+    "mobile": "9443322110",
+    "whatsapp": "9443322110",
+    "address": "45 Palm Grove Estate, Highways",
+    "district": "Tirunelveli",
+    "state": "Tamil Nadu",
+    "pinCode": "627001",
+    "quantity": 50,
+    "subtotal": 7500,
+    "deliveryCharge": 500,
+    "totalAmount": 8000,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Dispatched",
+    "courierName": "VRL Logistics",
+    "trackingId": "VRL-TN-98421",
+    "dispatchDate": "2026-10-04",
+    "createdAt": "2026-10-02T10:30:00Z"
+  },
+  {
+    "id": "bk-1003",
+    "bookingId": "EM-0226-B-1003",
+    "batchCode": "EM-0226-B",
+    "customerName": "Anitha Ramesh",
+    "mobile": "9842155678",
+    "whatsapp": "9842155678",
+    "address": "88 River Road, Near Temple",
+    "district": "Madurai",
+    "state": "Tamil Nadu",
+    "pinCode": "625001",
+    "quantity": 30,
+    "subtotal": 4500,
+    "deliveryCharge": 300,
+    "totalAmount": 4800,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Preparing",
+    "createdAt": "2026-10-03T11:15:00Z"
+  },
+  {
+    "id": "bk-1004",
+    "bookingId": "EM-0326-C-1004",
+    "batchCode": "EM-0326-C",
+    "customerName": "Karthik Subramanian",
+    "mobile": "9790123456",
+    "whatsapp": "9790123456",
+    "address": "102 Beach Road, Colachel",
+    "district": "Kanyakumari",
+    "state": "Tamil Nadu",
+    "pinCode": "629151",
+    "quantity": 40,
+    "subtotal": 6400,
+    "deliveryCharge": 350,
+    "totalAmount": 6750,
+    "paymentStatus": "PENDING_VERIFICATION",
+    "bookingStatus": "Payment review",
+    "createdAt": "2026-10-04T14:20:00Z"
+  },
+  {
+    "id": "bk-1005",
+    "bookingId": "EM-0426-D-1005",
+    "batchCode": "EM-0426-D",
+    "customerName": "Venkatesh Rao",
+    "mobile": "9876543210",
+    "whatsapp": "9876543210",
+    "address": "15 Green Valley Farm",
+    "district": "Coimbatore",
+    "state": "Tamil Nadu",
+    "pinCode": "641001",
+    "quantity": 60,
+    "subtotal": 9300,
+    "deliveryCharge": 600,
+    "totalAmount": 9900,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Delivered",
+    "courierName": "KPN Speed Parcel",
+    "trackingId": "KPN-CBE-7712",
+    "dispatchDate": "2026-10-01",
+    "createdAt": "2026-09-28T08:00:00Z"
+  },
+  {
+    "id": "bk-1006",
+    "bookingId": "EM-0526-E-1006",
+    "batchCode": "EM-0526-E",
+    "customerName": "Meena Krishnan",
+    "mobile": "9123456789",
+    "whatsapp": "9123456789",
+    "address": "77 Agricultural Zone",
+    "district": "Salem",
+    "state": "Tamil Nadu",
+    "pinCode": "636001",
+    "quantity": 20,
+    "subtotal": 3000,
+    "deliveryCharge": 200,
+    "totalAmount": 3200,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Confirmed",
+    "createdAt": "2026-10-05T16:00:00Z"
+  },
+  {
+    "id": "bk-1007",
+    "bookingId": "EM-0626-F-1007",
+    "batchCode": "EM-0626-F",
+    "customerName": "Prakash Selvam",
+    "mobile": "9345678901",
+    "whatsapp": "9345678901",
+    "address": "33 East Coast Road",
+    "district": "Thanjavur",
+    "state": "Tamil Nadu",
+    "pinCode": "613001",
+    "quantity": 100,
+    "subtotal": 16500,
+    "deliveryCharge": 1000,
+    "totalAmount": 17500,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Preparing",
+    "createdAt": "2026-10-06T12:00:00Z"
+  },
+  {
+    "id": "bk-1008",
+    "bookingId": "EM-0726-G-1008",
+    "batchCode": "EM-0726-G",
+    "customerName": "Devi Prasad",
+    "mobile": "9566778899",
+    "whatsapp": "9566778899",
+    "address": "5 Heritage Lane",
+    "district": "Tiruchirappalli",
+    "state": "Tamil Nadu",
+    "pinCode": "620001",
+    "quantity": 35,
+    "subtotal": 5950,
+    "deliveryCharge": 350,
+    "totalAmount": 6300,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Confirmed",
+    "createdAt": "2026-10-06T15:30:00Z"
+  },
+  {
+    "id": "bk-1009",
+    "bookingId": "EM-0826-H-1009",
+    "batchCode": "EM-0826-H",
+    "customerName": "Balamurugan P.",
+    "mobile": "9486880641",
+    "whatsapp": "9486880641",
+    "address": "12-A Coconut Farm Lane",
+    "district": "Kanyakumari",
+    "state": "Tamil Nadu",
+    "pinCode": "629001",
+    "quantity": 15,
+    "subtotal": 2400,
+    "deliveryCharge": 200,
+    "totalAmount": 2600,
+    "paymentStatus": "PAID",
+    "bookingStatus": "Confirmed",
+    "createdAt": "2026-10-07T08:45:00Z"
+  },
+  {
+    "id": "bk-1010",
+    "bookingId": "EM-0926-I-1010",
+    "batchCode": "EM-0926-I",
+    "customerName": "Janaki Raman",
+    "mobile": "9840011223",
+    "whatsapp": "9840011223",
+    "address": "9 Canal View Road",
+    "district": "Erode",
+    "state": "Tamil Nadu",
+    "pinCode": "638001",
+    "quantity": 50,
+    "subtotal": 7750,
+    "deliveryCharge": 500,
+    "totalAmount": 8250,
+    "paymentStatus": "PENDING_VERIFICATION",
+    "bookingStatus": "Payment review",
+    "createdAt": "2026-10-07T11:00:00Z"
   }
 ];
 
 let adjustments: InventoryAdjustment[] = [
   {
-    id: 'adj-1',
-    batchCode: 'EM-1026-B',
-    quantityChange: -10,
-    reason: 'Damaged / unsuitable saplings rejected during quality check',
-    adminName: 'Rajeenth (Farm Admin)',
-    createdAt: '2026-09-18T16:00:00Z'
+    "id": "adj-1",
+    "batchCode": "EM-0126-A",
+    "quantityChange": -5,
+    "reason": "Routine nursery inspection reject of bent saplings",
+    "adminName": "Rajeenth (Farm Admin)",
+    "createdAt": "2026-10-02T16:00:00Z"
+  },
+  {
+    "id": "adj-2",
+    "batchCode": "EM-0326-C",
+    "quantityChange": 10,
+    "reason": "Bonus sprouted seednuts added from nursery bed extension",
+    "adminName": "Rajeenth (Farm Admin)",
+    "createdAt": "2026-10-05T10:00:00Z"
   }
 ];
 
@@ -286,12 +738,23 @@ const reviews: Review[] = [
     id: 'rev-1',
     customerName: 'Murugan K.',
     location: 'Nagercoil, Kanyakumari',
-    batchCode: 'EM-0826-B',
+    batchCode: 'EM-0126-A',
     quantity: 20,
     rating: 5,
     comment: 'Received extremely healthy saplings with thick collars and strong root systems. Packaging was carefully handled and survived transport without damage!',
     verified: true,
-    date: '2026-08-28'
+    date: '2026-09-28'
+  },
+  {
+    id: 'rev-2',
+    customerName: 'Suresh M.',
+    location: 'Tirunelveli, Tamil Nadu',
+    batchCode: 'EM-0226-B',
+    quantity: 50,
+    rating: 5,
+    comment: 'Outstanding Eathamozhy GI variety seedlings. Every single sapling germinated with deep green fronds.',
+    verified: true,
+    date: '2026-10-02'
   }
 ];
 
@@ -301,6 +764,12 @@ const faqs: FAQ[] = [
     question: 'Where are your saplings grown?',
     answer: 'All our coconut saplings are raised directly on our own ancestral farm in Eathamozhy, Kanyakumari district, Tamil Nadu.',
     category: 'General'
+  },
+  {
+    id: 'faq-2',
+    question: 'How are saplings packaged for long-distance transport?',
+    answer: 'Saplings are rooted in nutrient-rich media and secured inside custom-fitted wooden crates to protect the fronds and collar stem during transit.',
+    category: 'Logistics'
   }
 ];
 
@@ -320,17 +789,25 @@ let enquiries: Enquiry[] = [
 export const DataStore = {
   getBatches: () => {
     return batches.map(b => {
-      const available = Math.max(0, b.totalQuantity - b.bookedQuantity + b.inventoryAdjustments);
+      // Dynamically sum active (non-cancelled) bookings for this batch
+      const activeBookings = bookings.filter(
+        bk => bk.batchCode.toLowerCase() === b.batchCode.toLowerCase() && bk.bookingStatus !== 'Cancelled'
+      );
+      const computedBookedQuantity = activeBookings.reduce((sum, bk) => sum + bk.quantity, 0);
+      const netStock = Math.max(0, b.totalQuantity + (b.inventoryAdjustments || 0));
+      const available = Math.max(0, netStock - computedBookedQuantity);
       const metrics = getSaplingMetrics(b.seededDate);
       const computedStatus = getDynamicBatchStatus(available, b.seededDate);
 
       return {
         ...b,
+        bookedQuantity: computedBookedQuantity,
+        inventoryAdjustments: b.inventoryAdjustments || 0,
         age: metrics.age,
         height: metrics.height,
         availableQuantity: available,
         status: computedStatus,
-        bookedPercentage: Number(((b.bookedQuantity / b.totalQuantity) * 100).toFixed(1))
+        bookedPercentage: netStock > 0 ? Number(((computedBookedQuantity / netStock) * 100).toFixed(1)) : 0
       };
     });
   },
@@ -343,21 +820,14 @@ export const DataStore = {
   },
 
   getBatchByCode: (code: string) => {
-    const b = batches.find(x => x.batchCode.toLowerCase() === code.toLowerCase());
+    const all = DataStore.getBatches();
+    const b = all.find(x => x.batchCode.toLowerCase() === code.toLowerCase());
     if (!b) return null;
-    b.viewsCount = (b.viewsCount || 100) + 1; // Increment view count
-    const available = Math.max(0, b.totalQuantity - b.bookedQuantity + b.inventoryAdjustments);
-    const metrics = getSaplingMetrics(b.seededDate);
-    const computedStatus = getDynamicBatchStatus(available, b.seededDate);
-
-    return {
-      ...b,
-      age: metrics.age,
-      height: metrics.height,
-      availableQuantity: available,
-      status: computedStatus,
-      bookedPercentage: Number(((b.bookedQuantity / b.totalQuantity) * 100).toFixed(1))
-    };
+    const realBatch = batches.find(x => x.batchCode.toLowerCase() === code.toLowerCase());
+    if (realBatch) {
+      realBatch.viewsCount = (realBatch.viewsCount || 100) + 1;
+    }
+    return b;
   },
 
   addBatch: (newBatchData: any) => {
@@ -371,7 +841,7 @@ export const DataStore = {
       id: `b-${Date.now()}`,
       batchCode: newBatchData.batchCode,
       parentPalmId: newBatchData.parentPalmId || 'mp-1',
-      parentPalmCode: newBatchData.parentPalmCode || 'EM-MP-014',
+      parentPalmCode: newBatchData.parentPalmCode || 'EM-MP-001',
       name: combinedName,
       harvestDate: newBatchData.harvestDate,
       seededDate: newBatchData.seededDate,
@@ -403,6 +873,11 @@ export const DataStore = {
     }
     if (updatedFields.images) {
       target.images = updatedFields.images;
+    }
+    if (updatedFields.parentPalmCode) {
+      target.parentPalmCode = updatedFields.parentPalmCode;
+      const parent = parentPalms.find(p => p.code.toLowerCase() === updatedFields.parentPalmCode?.toLowerCase());
+      if (parent) target.parentPalmId = parent.id;
     }
 
     return DataStore.getBatchByCode(code);
@@ -505,11 +980,6 @@ export const DataStore = {
       createdAt: new Date().toISOString()
     };
 
-    const targetBatch = batches.find(b => b.batchCode === data.batchCode);
-    if (targetBatch) {
-      targetBatch.bookedQuantity += data.quantity;
-    }
-
     bookings.unshift(newBooking);
     return newBooking;
   },
@@ -528,14 +998,14 @@ export const DataStore = {
   },
 
   adjustInventory: (batchCode: string, change: number, reason: string, adminName: string) => {
-    const targetBatch = batches.find(b => b.batchCode === batchCode);
+    const targetBatch = batches.find(b => b.batchCode.toLowerCase() === batchCode.toLowerCase());
     if (!targetBatch) throw new Error('Batch not found');
     
-    targetBatch.inventoryAdjustments += change;
+    targetBatch.inventoryAdjustments = (targetBatch.inventoryAdjustments || 0) + change;
     
     const newAdj: InventoryAdjustment = {
       id: `adj-${Date.now()}`,
-      batchCode,
+      batchCode: targetBatch.batchCode,
       quantityChange: change,
       reason,
       adminName,

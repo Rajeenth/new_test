@@ -9,12 +9,7 @@ export default function FAQPage() {
       <section className="bg-dark text-white py-5 text-center position-relative overflow-hidden">
         <div 
           className="position-absolute top-0 start-0 w-100 h-100 opacity-30"
-          style={{
-            backgroundImage: "url('/images/placeholders/coconut.jpeg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.6)'
-          }}
+          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
         ></div>
         <div className="container position-relative py-3">
           <span className="badge bg-warning text-dark px-3 py-2 rounded-pill mb-2 fw-bold">HELP & ANSWERS</span>

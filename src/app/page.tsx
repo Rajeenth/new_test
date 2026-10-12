@@ -16,12 +16,7 @@ export default function Home() {
       <section className="position-relative bg-dark text-white py-5 text-center overflow-hidden">
         <div 
           className="position-absolute top-0 start-0 w-100 h-100 opacity-30"
-          style={{
-            backgroundImage: "url('/images/placeholders/coconut.jpeg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.6)'
-          }}
+          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
         ></div>
 
         <div className="container position-relative py-5">
