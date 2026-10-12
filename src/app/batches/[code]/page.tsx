@@ -53,7 +53,14 @@ export default async function BatchDetailPage({
             <div className="col-md-7">
               {/* Bootstrap Carousel for Multiple Batch Images */}
               <div className="mb-4">
-                <ImageCarousel images={batch.images} title={batch.name} carouselId="batchDetailCarousel" />
+                <ImageCarousel 
+                  images={batch.images} 
+                  title={batch.name} 
+                  carouselId="batchDetailCarousel" 
+                  height="420px"
+                  showThumbnails={true}
+                  objectFit="cover"
+                />
               </div>
 
               {/* Admin Description & Batch Notes */}

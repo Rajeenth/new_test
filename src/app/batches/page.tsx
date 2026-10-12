@@ -94,8 +94,15 @@ export default function BatchesPage() {
                       {b.status === 'SOLD_OUT' && <span className="badge bg-danger shadow-sm px-3 py-2">SOLD OUT</span>}
                     </div>
 
-                    <div className="overflow-hidden bg-light" style={{ minHeight: '220px' }}>
-                      <ImageCarousel images={b.images} title={b.name} carouselId={`batch-card-${b.batchCode}`} />
+                    <div className="overflow-hidden bg-dark position-relative w-100" style={{ height: '240px' }}>
+                      <ImageCarousel 
+                        images={b.images} 
+                        title={b.name} 
+                        carouselId={`batch-card-${b.batchCode}`} 
+                        height="240px"
+                        showThumbnails={false}
+                        objectFit="cover"
+                      />
                     </div>
 
                     <div className="card-body p-4 d-flex flex-column justify-content-between">

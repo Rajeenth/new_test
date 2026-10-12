@@ -116,11 +116,14 @@ export default function Home() {
                 
                 {/* Photo Carousel Preview */}
                 <div className="col-lg-5">
-                  <div className="rounded-4 overflow-hidden shadow-sm">
+                  <div className="rounded-4 overflow-hidden shadow-sm bg-dark position-relative w-100" style={{ height: '360px' }}>
                     <ImageCarousel 
                       images={currentBatch?.images || []} 
                       title={currentBatch?.name || 'Featured Batch'} 
                       carouselId="home-featured-carousel" 
+                      height="360px"
+                      showThumbnails={false}
+                      objectFit="cover"
                     />
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-2 px-1">

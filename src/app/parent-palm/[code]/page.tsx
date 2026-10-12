@@ -41,7 +41,14 @@ export default async function ParentPalmDetailPage({
         <div className="container">
           <div className="row g-4 mb-5">
             <div className="col-md-5">
-              <ImageCarousel images={palm.images} title={palm.name} carouselId="palmCarousel" />
+              <ImageCarousel 
+                images={palm.images} 
+                title={palm.name} 
+                carouselId="palmCarousel" 
+                height="420px"
+                showThumbnails={true}
+                objectFit="cover"
+              />
             </div>
 
             <div className="col-md-7">

@@ -6,90 +6,130 @@ interface ImageCarouselProps {
   images: string[];
   title: string;
   carouselId?: string;
+  height?: string;
+  showThumbnails?: boolean;
+  objectFit?: 'cover' | 'contain';
 }
 
-export default function ImageCarousel({ images, title, carouselId = 'batchCarousel' }: ImageCarouselProps) {
+export default function ImageCarousel({ 
+  images, 
+  title, 
+  carouselId = 'batchCarousel',
+  height = '320px',
+  showThumbnails = true,
+  objectFit = 'cover'
+}: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (!images || images.length === 0) {
     return (
-      <div className="bg-light text-center py-5 rounded-4 text-muted">
-        <i className="bi bi-image fs-1 d-block mb-2"></i>
-        No images available
+      <div 
+        className="bg-light text-center rounded-4 text-muted d-flex flex-column align-items-center justify-content-center w-100"
+        style={{ height }}
+      >
+        <i className="bi bi-image fs-1 d-block mb-1 text-secondary opacity-50"></i>
+        <small className="fw-semibold">No images uploaded</small>
       </div>
     );
   }
 
-  const nextSlide = () => {
+  const nextSlide = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setActiveIndex((prev) => (prev + 1) % images.length);
   };
 
-  const prevSlide = () => {
+  const prevSlide = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     setActiveIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
   return (
-    <div className="carousel-container position-relative rounded-4 overflow-hidden shadow-sm bg-dark">
-      {/* Main Slide Display */}
-      <div className="position-relative" style={{ minHeight: '350px', maxHeight: '450px' }}>
+    <div className="carousel-container position-relative rounded-4 overflow-hidden shadow-sm bg-dark w-100">
+      
+      {/* Main Slide Display with STRICT UNIFORM FIXED HEIGHT */}
+      <div 
+        className="position-relative w-100 overflow-hidden bg-dark"
+        style={{ 
+          height, 
+          minHeight: height, 
+          maxHeight: height 
+        }}
+      >
         <img 
           src={images[activeIndex]} 
           alt={`${title} - photo ${activeIndex + 1}`} 
-          className="w-100 h-100 object-fit-contain bg-black"
-          style={{ maxHeight: '450px', transition: 'all 0.3s ease' }}
+          className="w-100 h-100"
+          style={{ 
+            height: '100%', 
+            width: '100%', 
+            objectFit: objectFit,
+            objectPosition: 'center',
+            display: 'block',
+            transition: 'opacity 0.2s ease-in-out'
+          }}
         />
 
-        {/* Badges Overlay */}
+        {/* Counter Overlay Badge */}
         <div className="position-absolute top-0 start-0 m-3 z-2">
-          <span className="badge bg-dark bg-opacity-75 text-white px-3 py-2 rounded-pill shadow-sm">
-            <i className="bi bi-camera-fill me-1 text-warning"></i> Photo {activeIndex + 1} of {images.length}
+          <span className="badge bg-dark bg-opacity-75 text-white px-2 py-1 rounded-pill extra-small shadow-sm">
+            <i className="bi bi-camera-fill me-1 text-warning"></i> {activeIndex + 1} / {images.length}
           </span>
         </div>
 
-        {/* Carousel Navigation Arrows (shown if multiple images) */}
+        {/* Carousel Navigation Arrows */}
         {images.length > 1 && (
           <>
             <button 
-              className="btn btn-dark btn-sm rounded-circle position-absolute top-50 start-0 translate-middle-y ms-3 z-2 shadow opacity-75 hover-opacity-100"
+              type="button"
+              className="btn btn-dark btn-sm rounded-circle position-absolute top-50 start-0 translate-middle-y ms-2 z-2 shadow bg-opacity-75 hover-opacity-100 border-0 d-flex align-items-center justify-content-center p-0"
               onClick={prevSlide}
               aria-label="Previous photo"
-              style={{ width: '42px', height: '42px' }}
+              style={{ width: '34px', height: '34px' }}
             >
-              <i className="bi bi-chevron-left fs-5"></i>
+              <i className="bi bi-chevron-left fs-6 text-white"></i>
             </button>
             <button 
-              className="btn btn-dark btn-sm rounded-circle position-absolute top-50 end-0 translate-middle-y me-3 z-2 shadow opacity-75 hover-opacity-100"
+              type="button"
+              className="btn btn-dark btn-sm rounded-circle position-absolute top-50 end-0 translate-middle-y me-2 z-2 shadow bg-opacity-75 hover-opacity-100 border-0 d-flex align-items-center justify-content-center p-0"
               onClick={nextSlide}
               aria-label="Next photo"
-              style={{ width: '42px', height: '42px' }}
+              style={{ width: '34px', height: '34px' }}
             >
-              <i className="bi bi-chevron-right fs-5"></i>
+              <i className="bi bi-chevron-right fs-6 text-white"></i>
             </button>
           </>
         )}
       </div>
 
-      {/* Thumbnails Navigation Row */}
-      {images.length > 1 && (
-        <div className="bg-dark p-3 border-top border-secondary">
+      {/* Thumbnails Navigation Row (Only displayed when showThumbnails is true and >1 image) */}
+      {showThumbnails && images.length > 1 && (
+        <div className="bg-dark p-2 border-top border-secondary border-opacity-50">
           <div className="d-flex gap-2 overflow-x-auto justify-content-center">
             {images.map((img, idx) => (
               <button 
                 key={idx}
-                className={`btn p-0 border-2 rounded-3 overflow-hidden ${idx === activeIndex ? 'border-success scale-105' : 'border-transparent opacity-60'}`}
-                onClick={() => setActiveIndex(idx)}
-                style={{ width: '70px', height: '55px', transition: 'all 0.2s ease' }}
+                type="button"
+                className={`btn p-0 border-2 rounded-2 overflow-hidden flex-shrink-0 ${
+                  idx === activeIndex ? 'border-success' : 'border-transparent opacity-60'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveIndex(idx);
+                }}
+                style={{ width: '64px', height: '48px', transition: 'all 0.2s ease' }}
               >
                 <img 
                   src={img} 
                   alt={`Thumbnail ${idx + 1}`} 
-                  className="w-100 h-100 object-fit-cover" 
+                  className="w-100 h-100"
+                  style={{ objectFit: 'cover', display: 'block' }} 
                 />
               </button>
             ))}
           </div>
         </div>
       )}
+
     </div>
   );
 }
