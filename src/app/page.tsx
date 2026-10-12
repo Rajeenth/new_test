@@ -22,20 +22,26 @@ export default function Home() {
               {/* Trust Badge */}
               <div className="d-inline-flex align-items-center gap-2 mb-3">
                 <span className="badge-gi-pill d-inline-flex align-items-center gap-1 shadow-sm">
-                  <i className="bi bi-patch-check-fill text-warning"></i> GI TAG REGISTERED CULTIVAR
+                  <i className="bi bi-patch-check-fill text-warning"></i> GOVERNMENT GI TAG REGISTERED
                 </span>
                 <span className="badge-farm-pill d-none d-sm-inline-flex align-items-center gap-1 shadow-sm">
-                  <i className="bi bi-shield-lock-fill text-success"></i> 100% FARM-RAISED
+                  <i className="bi bi-shield-lock-fill text-success"></i> 100% FARM-RAISED IN KANYAKUMARI
                 </span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="display-4 fw-extrabold mb-3 text-light tracking-tight">
-                Authentic <span className="text-gradient-emerald">Eathamozhy Tall</span> Coconut Saplings
+              <h1 className="fw-extrabold mb-3 text-light tracking-tight" style={{ fontSize: 'clamp(2.2rem, 5vw, 3.85rem)', lineHeight: 1.18 }}>
+                <span className="d-block text-gradient-gold text-uppercase fw-extrabold mb-2" style={{ fontSize: 'clamp(0.95rem, 2.2vw, 1.35rem)', letterSpacing: '0.14em' }}>
+                  <i className="bi bi-award-fill text-warning me-2"></i>
+                  Mainland India’s Only GI-Tagged Coconut Variety
+                </span>
+                <span className="text-white">Authentic </span>
+                <span className="text-gradient-emerald">Eathamozhy Tall</span>
+                <span className="text-white"> Coconut Saplings</span>
               </h1>
 
               <p className="lead text-light opacity-90 mb-4 mx-auto" style={{ maxWidth: '780px', fontSize: '1.2rem' }}>
-                Mainland India’s only GI-Tagged coconut variety. Raised in our own ancestral coastal grove in Kanyakumari. 
+                Raised with generational care in our ancestral coastal grove in Kanyakumari. 
                 Inspect transparent batch stock, trace verified mother trees, and book directly online.
               </p>
 
