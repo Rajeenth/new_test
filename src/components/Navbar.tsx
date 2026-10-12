@@ -41,7 +41,7 @@ export default function Navbar() {
               </div>
               <div>
                 <span className="fw-bold fs-5 text-light d-block lh-1">Eathamozhy</span>
-                <span className="text-secondary extra-small text-uppercase tracking-wider">Coconut Nursery &bull; GI Tagged</span>
+                <span className="text-secondary extra-small text-uppercase tracking-wider">Coconut Farm &bull; GI Tagged</span>
               </div>
             </Link>
 

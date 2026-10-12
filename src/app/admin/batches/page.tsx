@@ -388,7 +388,7 @@ export default function AdminBatchesPage() {
 
                 <div className="col-md-6">
                   <label className="form-label small fw-bold text-dark">
-                    <i className="bi bi-calendar-check-fill me-1 text-success"></i> Seeded On Date (Nursery Sowing) *
+                    <i className="bi bi-calendar-check-fill me-1 text-success"></i> Seeded On Date (Farm Seedbed Sowing) *
                   </label>
                   <input 
                     type="date" 

@@ -19,7 +19,7 @@ export default function OurFarmPage() {
         <div className="container" style={{ maxWidth: '900px' }}>
           <div className="text-center mb-5">
             <h2 className="fw-bold text-dark">The Eathamozhy Farm Journey</h2>
-            <p className="text-muted">How generations of passion built our transparent online nursery</p>
+            <p className="text-muted">How generations of passion built our transparent direct-from-farm platform</p>
           </div>
 
           <div className="row g-4 align-items-center mb-5">
@@ -53,7 +53,7 @@ export default function OurFarmPage() {
               <span className="badge bg-success mb-2">3. TAKING OUR SAPLINGS ONLINE</span>
               <h3 className="fw-bold text-dark">Total Transparency for Farmers</h3>
               <p className="text-secondary">
-                Many nurseries buy saplings from unknown third-party brokers. We built this platform so agricultural buyers across Tamil Nadu and Pan-India can inspect the exact mother tree, view actual batch stock numbers, and book with complete peace of mind.
+                Unlike commercial middlemen who trade saplings from unknown brokers, we raise every single sapling directly on our own ancestral farm so agricultural buyers across Tamil Nadu and Pan-India can inspect the exact mother tree, view actual batch stock numbers, and book with complete peace of mind.
               </p>
             </div>
             <div className="col-md-6">
@@ -76,7 +76,7 @@ export default function OurFarmPage() {
               <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
                 <img src="/images/batches/EM-0126-A/batch_1.jpg" alt="Farm Plot" className="img-fluid object-fit-cover" style={{ height: '220px', width: '100%' }} />
                 <div className="card-body p-2 text-center bg-white">
-                  <small className="fw-bold text-dark">Nursery Seedbeds</small>
+                  <small className="fw-bold text-dark">Farm Seedbeds</small>
                 </div>
               </div>
             </div>

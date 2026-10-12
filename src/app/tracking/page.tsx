@@ -222,7 +222,7 @@ I would like an update on my order status. Thank you!`;
                         </div>
                       ) : (
                         <div className="alert alert-info border-info-subtle mb-3 p-3 rounded-3 extra-small">
-                          <i className="bi bi-info-circle me-1"></i> <strong>Order Status:</strong> {booking.bookingStatus === 'Payment review' ? 'Payment is under review by farm admin. Stock reserved!' : 'Saplings are being prepared in our farm nursery crate.'}
+                          <i className="bi bi-info-circle me-1"></i> <strong>Order Status:</strong> {booking.bookingStatus === 'Payment review' ? 'Payment is under review by farm admin. Stock reserved!' : 'Saplings are being prepared in our farm dispatch crate.'}
                         </div>
                       )}
 

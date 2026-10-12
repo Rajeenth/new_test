@@ -176,7 +176,7 @@ let parentPalms: ParentPalm[] = [
     "yieldHistory": "145–165 seed nuts/year average with early spadix emergence.",
     "description": "Located in fertile alluvial riverbank soil. Famous for fast germination and thick root collars.",
     "nutCharacteristics": "Medium-large green seed nuts with thick fibrous husk providing natural drought shield.",
-    "whySelected": "High sapling survival rate in seedling nursery and rapid initial growth phase.",
+    "whySelected": "High sapling survival rate in farm seedbed and rapid initial growth phase.",
     "images": [
       "/images/parent-palms/EM-MP-002/tree_1.jpeg",
       "/images/parent-palms/EM-MP-002/tree_2.jpeg"
@@ -272,7 +272,7 @@ let parentPalms: ParentPalm[] = [
     "yieldHistory": "135–155 nuts/year with 96% germination speed.",
     "description": "Sprouts 2 weeks earlier than average in seedbeds.",
     "nutCharacteristics": "Thin husk, thick shell, large water cavity.",
-    "whySelected": "Fastest nursery sprout emergence rate on record.",
+    "whySelected": "Fastest farm sprout emergence rate on record.",
     "images": [
       "/images/parent-palms/EM-MP-008/tree_1.jpg",
       "/images/parent-palms/EM-MP-008/tree_2.jpeg"
@@ -719,7 +719,7 @@ let adjustments: InventoryAdjustment[] = [
     "id": "adj-1",
     "batchCode": "EM-0126-A",
     "quantityChange": -5,
-    "reason": "Routine nursery inspection reject of bent saplings",
+    "reason": "Routine farm inspection reject of bent saplings",
     "adminName": "Rajeenth (Farm Admin)",
     "createdAt": "2026-10-02T16:00:00Z"
   },
@@ -727,7 +727,7 @@ let adjustments: InventoryAdjustment[] = [
     "id": "adj-2",
     "batchCode": "EM-0326-C",
     "quantityChange": 10,
-    "reason": "Bonus sprouted seednuts added from nursery bed extension",
+    "reason": "Bonus sprouted seednuts added from farm seedbed extension",
     "adminName": "Rajeenth (Farm Admin)",
     "createdAt": "2026-10-05T10:00:00Z"
   }

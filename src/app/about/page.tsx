@@ -53,7 +53,7 @@ export default function AboutEathamozhyPage() {
                     <em>"In our farm soil, mother palms given organic neem-cake & wood-ash compost consistently yield 140+ nuts annually."</em>
                   </li>
                   <li className="mb-3">
-                    <em>"We observe seednuts harvested between December and March achieve over 92% nursery germination rate within 120 days."</em>
+                    <em>"We observe seednuts harvested between December and March achieve over 92% farm germination rate within 120 days."</em>
                   </li>
                   <li className="mb-3">
                     <em>"Coastal salt breezes enhance tender water sweetness (averaging 350ml sweet water per nut)."</em>

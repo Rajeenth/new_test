@@ -78,7 +78,7 @@ export default function BatchesPage() {
               <div className="spinner-border text-success" role="status">
                 <span className="visually-hidden">Loading batches...</span>
               </div>
-              <p className="text-muted small mt-2">Loading live nursery stock...</p>
+              <p className="text-muted small mt-2">Loading live farm stock...</p>
             </div>
           ) : (
             <div className="row g-4">

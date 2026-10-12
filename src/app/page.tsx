@@ -68,7 +68,7 @@ export default function Home() {
                 <div className="col-6 col-md-3">
                   <div className="glass-card-dark p-3 text-center hover-lift-subtle">
                     <span className="display-6 fw-bold text-gradient-emerald d-block">94%</span>
-                    <small className="text-light opacity-80 extra-small text-uppercase fw-semibold">Nursery Germination</small>
+                    <small className="text-light opacity-80 extra-small text-uppercase fw-semibold">Farm Germination</small>
                   </div>
                 </div>
                 <div className="col-6 col-md-3">
@@ -352,7 +352,7 @@ export default function Home() {
                   <i className="bi bi-award-fill fs-2 text-success"></i>
                 </div>
                 <h5 className="fw-bold text-dark mb-2">GI Authenticity Certificate</h5>
-                <p className="text-secondary small mb-0">Every consignment is accompanied by our nursery provenance verification seal.</p>
+                <p className="text-secondary small mb-0">Every consignment is accompanied by our farm provenance verification seal.</p>
               </div>
             </div>
           </div>
