@@ -4,11 +4,7 @@ export default function OurFarmPage() {
   return (
     <>
       {/* Hero with Local Folder Background */}
-      <section className="bg-dark text-white py-5 text-center position-relative overflow-hidden">
-        <div 
-          className="position-absolute top-0 start-0 w-100 h-100 opacity-30"
-          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
-        ></div>
+      <section className="hero-ambient-mesh text-white py-5 position-relative overflow-hidden border-bottom border-success border-opacity-25">
         <div className="container position-relative py-5">
           <span className="badge bg-success px-3 py-2 fs-6 rounded-pill mb-3">OUR HERITAGE</span>
           <h1 className="display-4 fw-bold mb-3">Our Farm. Our Roots. Our Tradition.</h1>

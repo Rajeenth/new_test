@@ -10,126 +10,194 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Our Farm', href: '/farm' },
-    { name: 'Eathamozhy Coconut', href: '/about' },
-    { name: 'Available Batches', href: '/batches', isHighlight: true },
-    { name: 'Farming Guide', href: '/guide' },
-    { name: 'Reviews', href: '/reviews' },
+    { name: 'Available Batches', href: '/batches', badge: 'Live Stock' },
+    { name: 'Mother Trees', href: '/farm' },
+    { name: 'GI Heritage', href: '/about' },
+    { name: 'Planting Guide', href: '/guide' },
+    { name: 'Farmer Reviews', href: '/reviews' },
     { name: 'Track Order', href: '/tracking' },
   ];
 
   const isActive = (href: string) => {
-    if (href === '/') {
-      return pathname === '/';
-    }
+    if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
 
   return (
     <>
-      {/* Main Desktop & Laptop Navbar */}
-      <header className="navbar navbar-expand-lg sticky-top navbar-dark bg-dark shadow-sm py-2">
+      {/* Premium Desktop & Tablet Navigation */}
+      <header className="sticky-top z-3 glass-nav py-2 transition-all">
         <div className="container">
-          <Link 
-            href="/" 
-            className="navbar-brand d-flex align-items-center fw-bold text-success fs-4 me-4"
-            onClick={() => setIsOpen(false)}
-          >
-            <i className="bi bi-tree-fill me-2 text-success"></i> Eathamozhy Coconut Farm
-          </Link>
+          <div className="d-flex align-items-center justify-content-between">
+            
+            {/* Brand Logo & Heritage Tag */}
+            <Link 
+              href="/" 
+              className="d-flex align-items-center text-decoration-none text-light py-1"
+              onClick={() => setIsOpen(false)}
+            >
+              <div className="bg-success bg-gradient text-white rounded-3 d-flex align-items-center justify-content-center me-2 shadow-sm" style={{ width: '40px', height: '40px' }}>
+                <i className="bi bi-tree-fill fs-5"></i>
+              </div>
+              <div>
+                <span className="fw-bold fs-5 text-light d-block lh-1">Eathamozhy</span>
+                <span className="text-secondary extra-small text-uppercase tracking-wider">Coconut Nursery &bull; GI Tagged</span>
+              </div>
+            </Link>
 
-          <button 
-            className="navbar-toggler" 
-            type="button" 
-            onClick={() => setIsOpen(!isOpen)}
-            aria-expanded={isOpen}
-            aria-label="Toggle navigation menu"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-
-          <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarMain">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0 fw-semibold gap-1 pt-2 pt-lg-0">
+            {/* Desktop Navigation Links */}
+            <nav className="d-none d-lg-flex align-items-center gap-1">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
                 return (
-                  <li key={link.href} className="nav-item">
-                    <Link 
-                      href={link.href} 
-                      onClick={() => setIsOpen(false)}
-                      className={`nav-link px-3 py-2 rounded-3 transition-all ${
-                        active 
-                          ? 'active fw-bold text-success bg-success-subtle bg-opacity-25 border border-success' 
-                          : link.isHighlight 
-                            ? 'text-warning' 
-                            : 'text-light opacity-85 hover-opacity-100'
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
+                  <Link 
+                    key={link.href}
+                    href={link.href}
+                    className={`px-3 py-2 rounded-3 text-decoration-none small fw-semibold transition-all position-relative ${
+                      active 
+                        ? 'text-white bg-success bg-opacity-25 border border-success border-opacity-50' 
+                        : 'text-light opacity-80 hover-opacity-100 hover-lift-subtle'
+                    }`}
+                  >
+                    {link.name}
+                    {link.badge && !active && (
+                      <span className="badge bg-success bg-opacity-75 ms-1 extra-small px-1 py-0 rounded-pill">
+                        {link.badge}
+                      </span>
+                    )}
+                  </Link>
                 );
               })}
-            </ul>
+            </nav>
 
-            <div className="d-flex align-items-center gap-2 pb-2 pb-lg-0">
-              <Link 
-                href="/admin" 
-                onClick={() => setIsOpen(false)}
-                className={`btn btn-sm ${pathname.startsWith('/admin') ? 'btn-danger' : 'btn-outline-light'}`}
+            {/* Action Buttons: WhatsApp & Book Now */}
+            <div className="d-flex align-items-center gap-2">
+              <a 
+                href="https://wa.me/919486880641?text=Hello%20Eathamozhy%20Farm,%20I%20am%20interested%20in%20coconut%20saplings"
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-sm btn-outline-success border-success text-success fw-semibold d-none d-sm-inline-flex align-items-center gap-1 px-3 py-2 rounded-3"
+                title="Direct WhatsApp Help"
               >
-                <i className="bi bi-shield-lock me-1"></i> Admin
-              </Link>
+                <i className="bi bi-whatsapp"></i>
+                <span>Chat</span>
+              </a>
+
               <Link 
                 href="/batches" 
-                onClick={() => setIsOpen(false)}
-                className="btn btn-success fw-bold shadow-sm"
+                className="btn-emerald text-decoration-none text-white small fw-bold px-3 py-2 rounded-3 shadow-sm d-inline-flex align-items-center gap-2"
               >
-                <i className="bi bi-bag-check me-1"></i> Book Saplings
+                <i className="bi bi-bag-check-fill"></i>
+                <span className="d-none d-sm-inline">Book Saplings</span>
+                <span className="d-sm-none">Book</span>
               </Link>
+
+              {/* Mobile Menu Toggler */}
+              <button 
+                className="btn btn-dark border-secondary d-lg-none p-2 rounded-3 text-light ms-1"
+                type="button" 
+                onClick={() => setIsOpen(!isOpen)}
+                aria-expanded={isOpen}
+                aria-label="Toggle Navigation Menu"
+              >
+                <i className={`bi ${isOpen ? 'bi-x-lg' : 'bi-list'} fs-5`}></i>
+              </button>
             </div>
+
           </div>
+
+          {/* Mobile Dropdown Drawer */}
+          {isOpen && (
+            <div className="d-lg-none mt-3 pt-3 border-top border-secondary border-opacity-50 pb-2">
+              <div className="d-flex flex-column gap-1">
+                {navLinks.map((link) => {
+                  const active = isActive(link.href);
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`px-3 py-2 rounded-3 text-decoration-none fw-semibold d-flex justify-content-between align-items-center ${
+                        active 
+                          ? 'text-white bg-success bg-opacity-25 border border-success' 
+                          : 'text-light opacity-80'
+                      }`}
+                    >
+                      <span>{link.name}</span>
+                      {link.badge && (
+                        <span className="badge bg-success extra-small">{link.badge}</span>
+                      )}
+                    </Link>
+                  );
+                })}
+
+                <div className="d-flex gap-2 pt-2 mt-2 border-top border-secondary border-opacity-25">
+                  <Link 
+                    href="/admin" 
+                    onClick={() => setIsOpen(false)}
+                    className="btn btn-sm btn-outline-secondary w-50 py-2 text-light"
+                  >
+                    <i className="bi bi-shield-lock me-1"></i> Admin Portal
+                  </Link>
+                  <a 
+                    href="https://wa.me/919486880641" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    className="btn btn-sm btn-success w-50 py-2 fw-semibold"
+                  >
+                    <i className="bi bi-whatsapp me-1"></i> WhatsApp
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       </header>
 
-      {/* Sticky Mobile Bottom Navigation Bar with Active Highlights */}
-      <nav className="navbar fixed-bottom navbar-dark bg-dark d-md-none border-top border-secondary py-1 z-3">
-        <div className="container-fluid d-flex justify-content-around text-center small">
+      {/* Modern Fixed Bottom Mobile App Bar */}
+      <nav className="fixed-bottom d-md-none glass-nav border-top border-secondary border-opacity-25 py-2 z-3">
+        <div className="container-fluid d-flex justify-content-around text-center">
           <Link 
             href="/" 
-            className={`text-decoration-none p-1 ${pathname === '/' ? 'text-success fw-bold' : 'text-light'}`}
+            className={`text-decoration-none mobile-nav-link d-flex flex-column align-items-center ${pathname === '/' ? 'active' : 'text-light opacity-75'}`}
           >
-            <i className={`bi bi-house-door${pathname === '/' ? '-fill text-success' : ''} d-block fs-5`}></i> Home
-          </Link>
-          
-          <Link 
-            href="/batches" 
-            className={`text-decoration-none p-1 ${pathname.startsWith('/batches') ? 'text-warning fw-bold' : 'text-light'}`}
-          >
-            <i className={`bi bi-grid-3x3-gap${pathname.startsWith('/batches') ? '-fill text-warning' : ''} d-block fs-5`}></i> Batches
+            <i className="bi bi-house-door-fill fs-5"></i>
+            <span className="extra-small mt-1">Home</span>
           </Link>
 
           <Link 
             href="/batches" 
-            className="text-success text-decoration-none p-1 fw-bold"
+            className={`text-decoration-none mobile-nav-link d-flex flex-column align-items-center ${pathname.startsWith('/batches') ? 'active' : 'text-light opacity-75'}`}
           >
-            <i className="bi bi-bag-plus-fill d-block fs-5 text-success"></i> Book
+            <i className="bi bi-grid-fill fs-5"></i>
+            <span className="extra-small mt-1">Batches</span>
+          </Link>
+
+          <Link 
+            href="/farm" 
+            className={`text-decoration-none mobile-nav-link d-flex flex-column align-items-center ${pathname.startsWith('/farm') ? 'active' : 'text-light opacity-75'}`}
+          >
+            <i className="bi bi-tree fs-5"></i>
+            <span className="extra-small mt-1">Mother Trees</span>
           </Link>
 
           <Link 
             href="/tracking" 
-            className={`text-decoration-none p-1 ${pathname.startsWith('/tracking') ? 'text-success fw-bold' : 'text-light'}`}
+            className={`text-decoration-none mobile-nav-link d-flex flex-column align-items-center ${pathname.startsWith('/tracking') ? 'active' : 'text-light opacity-75'}`}
           >
-            <i className={`bi bi-truck${pathname.startsWith('/tracking') ? ' text-success' : ''} d-block fs-5`}></i> Track
+            <i className="bi bi-truck fs-5"></i>
+            <span className="extra-small mt-1">Track</span>
           </Link>
 
           <a 
             href="https://wa.me/919486880641" 
             target="_blank" 
-            rel="noreferrer" 
-            className="text-success text-decoration-none p-1"
+            rel="noreferrer"
+            className="text-decoration-none mobile-nav-link d-flex flex-column align-items-center text-success"
           >
-            <i className="bi bi-whatsapp d-block fs-5"></i> WhatsApp
+            <i className="bi bi-whatsapp fs-5"></i>
+            <span className="extra-small mt-1">Chat</span>
           </a>
         </div>
       </nav>

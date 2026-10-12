@@ -20,11 +20,7 @@ export default async function BatchDetailPage({
 
   return (
     <>
-      <section className="bg-dark text-white py-4 position-relative overflow-hidden">
-        <div 
-          className="position-absolute top-0 start-0 w-100 h-100 opacity-25"
-          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
-        ></div>
+      <section className="hero-ambient-mesh text-white py-5 position-relative overflow-hidden border-bottom border-success border-opacity-25">
         <div className="container position-relative">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb mb-2">

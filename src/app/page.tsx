@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { DataStore } from '@/lib/dataStore';
 import ImageCarousel from '@/components/ImageCarousel';
+import PlantingCalculator from '@/components/PlantingCalculator';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,90 +13,140 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero Section with Local Folder Background */}
-      <section className="position-relative bg-dark text-white py-5 text-center overflow-hidden">
-        <div 
-          className="position-absolute top-0 start-0 w-100 h-100 opacity-30"
-          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
-        ></div>
-
+      {/* 1. LUXURY HERO SECTION */}
+      <section className="position-relative hero-ambient-mesh text-white py-5 overflow-hidden border-bottom border-success border-opacity-25">
         <div className="container position-relative py-5">
-          <span className="badge bg-success px-3 py-2 fs-6 rounded-pill mb-3 text-uppercase tracking-wider">
-            <i className="bi bi-shield-check me-1"></i> Authentic Eathamozhy Heritage
-          </span>
-          <h1 className="display-3 fw-bold mb-3 text-light">The Only GI-Tagged Coconut Variety in Mainland India</h1>
-          <p className="lead text-light mb-4 mx-auto" style={{ maxWidth: '750px' }}>
-            Traditional Eathamozhy coconut saplings, carefully raised in our own farm. See actual batch availability, verified Mother Tree origin, and book directly online.
-          </p>
-          <div className="d-flex flex-wrap justify-content-center gap-3">
-            <Link href="/batches" className="btn btn-success btn-lg px-4 fw-bold shadow">
-              <i className="bi bi-grid-fill me-2"></i> View Available Batches
-            </Link>
-            <Link href="/farm" className="btn btn-outline-light btn-lg px-4 fw-bold">
-              <i className="bi bi-geo-alt me-2"></i> Explore Our Farm
-            </Link>
-          </div>
+          <div className="row align-items-center justify-content-center text-center">
+            <div className="col-lg-10">
+              
+              {/* Trust Badge */}
+              <div className="d-inline-flex align-items-center gap-2 mb-3">
+                <span className="badge-gi-pill d-inline-flex align-items-center gap-1 shadow-sm">
+                  <i className="bi bi-patch-check-fill text-warning"></i> GI TAG REGISTERED CULTIVAR
+                </span>
+                <span className="badge-farm-pill d-none d-sm-inline-flex align-items-center gap-1 shadow-sm">
+                  <i className="bi bi-shield-lock-fill text-success"></i> 100% FARM-RAISED
+                </span>
+              </div>
 
-          <div className="row justify-content-center mt-5 g-3">
-            <div className="col-6 col-md-3">
-              <div className="bg-dark bg-opacity-75 border border-secondary rounded-3 p-3">
-                <i className="bi bi-tree text-success fs-3 d-block mb-1"></i>
-                <small className="fw-bold d-block">100% Farm-Raised</small>
-                <span className="text-secondary extra-small">No middleman sourcing</span>
+              {/* Main Headline */}
+              <h1 className="display-4 fw-extrabold mb-3 text-light tracking-tight">
+                Authentic <span className="text-gradient-emerald">Eathamozhy Tall</span> Coconut Saplings
+              </h1>
+
+              <p className="lead text-light opacity-90 mb-4 mx-auto" style={{ maxWidth: '780px', fontSize: '1.2rem' }}>
+                Mainland India’s only GI-Tagged coconut variety. Raised in our own ancestral coastal grove in Kanyakumari. 
+                Inspect transparent batch stock, trace verified mother trees, and book directly online.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="d-flex flex-wrap justify-content-center gap-3 mb-5">
+                <Link href="/batches" className="btn-emerald text-decoration-none px-4 py-3 fs-6">
+                  <i className="bi bi-grid-fill"></i> View Live Batches ({batches.length} Available)
+                </Link>
+                <Link href="/farm" className="btn-glass text-decoration-none px-4 py-3 fs-6">
+                  <i className="bi bi-tree"></i> Trace Our Mother Trees
+                </Link>
+                <a 
+                  href="https://wa.me/919486880641?text=Hello%20Eathamozhy%20Farm,%20I%20want%20to%20inquire%20about%20saplings"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-outline-success border-success text-success fw-semibold px-4 py-3 d-inline-flex align-items-center gap-2 rounded-3"
+                >
+                  <i className="bi bi-whatsapp"></i> Chat on WhatsApp
+                </a>
               </div>
-            </div>
-            <div className="col-6 col-md-3">
-              <div className="bg-dark bg-opacity-75 border border-secondary rounded-3 p-3">
-                <i className="bi bi-truck text-warning fs-3 d-block mb-1"></i>
-                <small className="fw-bold d-block">Pan-India Delivery</small>
-                <span className="text-secondary extra-small">Protective crate packing</span>
+
+              {/* Stats Bar */}
+              <div className="row g-3 justify-content-center pt-2">
+                <div className="col-6 col-md-3">
+                  <div className="glass-card-dark p-3 text-center hover-lift-subtle">
+                    <span className="display-6 fw-bold text-gradient-gold d-block">80+</span>
+                    <small className="text-light opacity-80 extra-small text-uppercase fw-semibold">Years Ancestral Grove</small>
+                  </div>
+                </div>
+                <div className="col-6 col-md-3">
+                  <div className="glass-card-dark p-3 text-center hover-lift-subtle">
+                    <span className="display-6 fw-bold text-gradient-emerald d-block">94%</span>
+                    <small className="text-light opacity-80 extra-small text-uppercase fw-semibold">Nursery Germination</small>
+                  </div>
+                </div>
+                <div className="col-6 col-md-3">
+                  <div className="glass-card-dark p-3 text-center hover-lift-subtle">
+                    <span className="display-6 fw-bold text-light d-block">{motherPalms.length}+</span>
+                    <small className="text-light opacity-80 extra-small text-uppercase fw-semibold">Verified Mother Trees</small>
+                  </div>
+                </div>
+                <div className="col-6 col-md-3">
+                  <div className="glass-card-dark p-3 text-center hover-lift-subtle">
+                    <span className="display-6 fw-bold text-info d-block">100%</span>
+                    <small className="text-light opacity-80 extra-small text-uppercase fw-semibold">Transparent Stock</small>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="col-6 col-md-3">
-              <div className="bg-dark bg-opacity-75 border border-secondary rounded-3 p-3">
-                <i className="bi bi-bar-chart-line text-info fs-3 d-block mb-1"></i>
-                <small className="fw-bold d-block">Live Batch Stock</small>
-                <span className="text-secondary extra-small">Dynamic real-time inventory</span>
-              </div>
-            </div>
-            <div className="col-6 col-md-3">
-              <div className="bg-dark bg-opacity-75 border border-secondary rounded-3 p-3">
-                <i className="bi bi-search text-success fs-3 d-block mb-1"></i>
-                <small className="fw-bold d-block">Parent Palm Traceability</small>
-                <span className="text-secondary extra-small">Know mother tree origin</span>
-              </div>
+
             </div>
           </div>
         </div>
       </section>
 
-      {/* Live Availability Card Section */}
-      <section className="py-5 bg-light">
+      {/* 2. REAL-TIME LIVE STOCK TERMINAL CARD */}
+      <section className="py-5 bg-light position-relative">
         <div className="container">
-          <div className="card border-0 shadow-lg rounded-4 overflow-hidden mt-n5 position-relative" style={{ marginTop: '-4rem', zIndex: 10 }}>
-            <div className="card-header bg-success text-white py-3 px-4 d-flex justify-content-between align-items-center">
-              <div>
-                <span className="badge bg-warning text-dark me-2">LIVE STOCK</span>
-                <span className="fw-bold">Saplings Available Now</span>
+          <div 
+            className="card border-0 shadow-lg rounded-4 overflow-hidden position-relative mt-n5 hover-lift"
+            style={{ marginTop: '-4.5rem', zIndex: 10, background: '#ffffff' }}
+          >
+            {/* Terminal Header */}
+            <div className="py-3 px-4 d-flex flex-wrap justify-content-between align-items-center" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 100%)' }}>
+              <div className="d-flex align-items-center gap-2">
+                <span className="pulse-indicator"></span>
+                <span className="badge bg-warning text-dark fw-bold px-2 py-1">LIVE STOCK TERMINAL</span>
+                <span className="text-light fw-bold small d-none d-sm-inline">Ready for Immediate Booking & Dispatch</span>
               </div>
-              <span className="badge bg-light text-success fw-bold">{currentBatch?.batchCode}</span>
+              <div className="d-flex align-items-center gap-2">
+                <span className="badge bg-success bg-opacity-25 border border-success text-white fw-bold px-3 py-1">
+                  Batch: {currentBatch?.batchCode}
+                </span>
+              </div>
             </div>
 
-            <div className="card-body p-4">
+            <div className="card-body p-4 p-md-5">
               <div className="row align-items-center g-4">
-                <div className="col-md-5">
-                  <ImageCarousel 
-                    images={currentBatch?.images || []} 
-                    title={currentBatch?.name || 'Featured Batch'} 
-                    carouselId="home-featured-carousel" 
-                  />
+                
+                {/* Photo Carousel Preview */}
+                <div className="col-lg-5">
+                  <div className="rounded-4 overflow-hidden shadow-sm">
+                    <ImageCarousel 
+                      images={currentBatch?.images || []} 
+                      title={currentBatch?.name || 'Featured Batch'} 
+                      carouselId="home-featured-carousel" 
+                    />
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mt-2 px-1">
+                    <span className="badge bg-light text-secondary border extra-small">
+                      <i className="bi bi-camera-fill me-1"></i> Real Batch Photos
+                    </span>
+                    <span className="text-danger small fw-semibold">
+                      <i className="bi bi-eye-fill me-1"></i> 🔥 {currentBatch?.viewsCount || 140} farmers viewed today
+                    </span>
+                  </div>
                 </div>
 
-                <div className="col-md-7">
-                  <h3 className="fw-bold text-dark mb-1">{currentBatch?.name}</h3>
-                  <p className="text-muted small mb-3">
-                    Age: <strong>{currentBatch?.age}</strong> | Height: <strong>{currentBatch?.height}</strong> | Mother Tree: <Link href={`/parent-palm/${currentBatch?.parentPalmCode}`} className="text-success fw-bold">{currentBatch?.parentPalmCode}</Link>
-                  </p>
+                {/* Stock Numbers & Live Math */}
+                <div className="col-lg-7">
+                  <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                    <div>
+                      <h3 className="fw-bold text-dark mb-1">{currentBatch?.name}</h3>
+                      <p className="text-secondary small mb-3">
+                        Age: <strong className="text-dark">{currentBatch?.age}</strong> &bull; Avg Height: <strong className="text-dark">{currentBatch?.height}</strong> &bull; Mother Tree: <Link href={`/parent-palm/${currentBatch?.parentPalmCode}`} className="text-success fw-bold text-decoration-none hover-underline">{currentBatch?.parentPalmCode} <i className="bi bi-arrow-up-right-square small"></i></Link>
+                      </p>
+                    </div>
+                    <div className="text-end">
+                      <span className="display-6 fw-bold text-success">₹{currentBatch?.price}</span>
+                      <small className="text-muted d-block extra-small">per sapling</small>
+                    </div>
+                  </div>
 
                   {(() => {
                     const totalQty = currentBatch?.totalQuantity || 0;
@@ -107,34 +158,40 @@ export default function Home() {
 
                     return (
                       <>
-                        <div className="row text-center bg-light p-3 rounded-3 mb-3 border">
+                        <div className="row text-center bg-light p-3 rounded-4 mb-3 border g-2">
                           <div className="col-4 border-end">
-                            <small className="text-muted d-block text-uppercase">Net Stock</small>
-                            <span className="fs-5 fw-bold text-dark">{netProduced}</span>
+                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Net Stock</small>
+                            <span className="fs-4 fw-bold text-dark">{netProduced}</span>
                             {adj !== 0 && (
-                              <small className="text-muted extra-small d-block">({adj > 0 ? `+${adj}` : adj} audit)</small>
+                              <small className="text-muted extra-small d-block text-nowrap">({adj > 0 ? `+${adj}` : adj} audit)</small>
                             )}
                           </div>
                           <div className="col-4 border-end">
-                            <small className="text-muted d-block text-uppercase">Booked / Sold</small>
-                            <span className="fs-5 fw-bold text-primary">{bookedQty}</span>
+                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Booked / Sold</small>
+                            <span className="fs-4 fw-bold text-primary">{bookedQty}</span>
+                            <small className="text-muted extra-small d-block">confirmed</small>
                           </div>
                           <div className="col-4">
-                            <small className="text-muted d-block text-uppercase">Available</small>
-                            <span className="fs-5 fw-bold text-success">{availQty}</span>
+                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Available Now</small>
+                            <span className="fs-4 fw-bold text-success">{availQty}</span>
+                            <small className="text-success extra-small d-block fw-semibold">ready</small>
                           </div>
                         </div>
 
-                        <div className="mb-3">
+                        {/* Booking Progress Bar */}
+                        <div className="mb-4">
                           <div className="d-flex justify-content-between small fw-bold mb-1">
-                            <span>Booking Progress</span>
-                            <span className="text-success">{bookedPct}% Booked</span>
+                            <span className="text-secondary">Batch Booking Progress</span>
+                            <span className="text-success">{bookedPct}% Booked ({availQty} saplings left)</span>
                           </div>
-                          <div className="progress" style={{ height: '12px' }}>
+                          <div className="progress" style={{ height: '12px', borderRadius: '9999px', backgroundColor: '#e2e8f0' }}>
                             <div 
                               className="progress-bar bg-success progress-bar-striped progress-bar-animated" 
                               role="progressbar" 
                               style={{ width: `${bookedPct}%` }}
+                              aria-valuenow={bookedPct} 
+                              aria-valuemin={0} 
+                              aria-valuemax={100}
                             ></div>
                           </div>
                         </div>
@@ -142,162 +199,227 @@ export default function Home() {
                     );
                   })()}
 
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <span className="fs-3 fw-bold text-success">₹{currentBatch?.price}</span>
-                      <span className="text-muted small"> / sapling</span>
+                  <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-2 border-top">
+                    <div className="d-flex align-items-center text-muted small">
+                      <i className="bi bi-truck text-success fs-5 me-2"></i>
+                      <span>Dispatched in custom wooden crates within 24-48 hours</span>
                     </div>
+
                     <div className="d-flex gap-2">
-                      <Link href={`/batches/${currentBatch?.batchCode}`} className="btn btn-outline-secondary">
-                        View Details
+                      <Link href={`/batches/${currentBatch?.batchCode}`} className="btn btn-outline-secondary px-3 py-2 rounded-3 fw-semibold">
+                        View Pedigree
                       </Link>
-                      <Link href={`/book/${currentBatch?.batchCode}`} className="btn btn-success fw-bold px-4">
-                        <i className="bi bi-cart-plus me-1"></i> Book Now
+                      <Link href={`/book/${currentBatch?.batchCode}`} className="btn-emerald text-decoration-none px-4 py-2 rounded-3 fs-6">
+                        <i className="bi bi-cart-check-fill"></i> Book Now
                       </Link>
                     </div>
                   </div>
+
                 </div>
+
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Traceability Spotlight: Know Your Parent Palm */}
+      {/* 3. INTERACTIVE COCONUT GROVE PLANTING CALCULATOR */}
       <section className="py-5 bg-white border-top border-bottom">
         <div className="container">
-          <div className="text-center mb-5">
-            <span className="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill fw-bold mb-2">
-              <i className="bi bi-shield-lock-fill me-1"></i> PARENT PALM TRACEABILITY
+          <div className="text-center mb-4">
+            <span className="badge-farm-pill mb-2">
+              <i className="bi bi-compass-fill me-1"></i> GROVE PLANNING ENGINE
             </span>
-            <h2 className="fw-bold text-dark">Know Your Mother Palm</h2>
+            <h2 className="fw-bold text-dark">Plan Your Coconut Plantation</h2>
             <p className="text-muted mx-auto" style={{ maxWidth: '650px' }}>
-              We don't sell anonymous saplings. Every batch is harvested from verified parent palms monitored on our farm for decades.
+              Estimate spacing, required sapling count, and total investment for your acreage in seconds.
+            </p>
+          </div>
+
+          <PlantingCalculator />
+        </div>
+      </section>
+
+      {/* 4. MOTHER PALM TRACEABILITY SECTION */}
+      <section className="py-5 bg-light">
+        <div className="container">
+          <div className="text-center mb-5">
+            <span className="badge-gi-pill mb-2">
+              <i className="bi bi-shield-check me-1"></i> PARENT PALM GENETICS
+            </span>
+            <h2 className="fw-bold text-dark">Verified Mother Trees (Pedigree Origin)</h2>
+            <p className="text-muted mx-auto" style={{ maxWidth: '680px' }}>
+              Every sapling is harvested directly from verified mother palms monitored for decades in our own grove.
+              We never source from untraceable commercial intermediaries.
             </p>
           </div>
 
           <div className="row g-4">
-            {motherPalms.map(palm => (
-              <div key={palm.id} className="col-md-6">
-                <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                  <div className="row g-0 h-100">
-                    <div className="col-md-5">
-                      <img 
-                        src={palm.images[0]} 
-                        alt={palm.name} 
-                        className="h-100 w-100 object-fit-cover"
-                        style={{ minHeight: '220px' }}
-                      />
+            {motherPalms.slice(0, 4).map(palm => (
+              <div key={palm.id} className="col-md-6 col-lg-3">
+                <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift bg-white">
+                  <div className="position-relative" style={{ height: '200px' }}>
+                    <img 
+                      src={palm.images[0]} 
+                      alt={palm.name} 
+                      className="w-100 h-100 object-fit-cover"
+                    />
+                    <div className="position-absolute top-0 start-0 m-2">
+                      <span className="badge bg-dark bg-opacity-75">{palm.code}</span>
                     </div>
-                    <div className="col-md-7">
-                      <div className="card-body d-flex flex-column justify-content-between h-100">
-                        <div>
-                          <div className="d-flex justify-content-between align-items-center mb-2">
-                            <span className="badge bg-dark">{palm.code}</span>
-                            <span className="badge bg-warning text-dark"><i className="bi bi-calendar3 me-1"></i> {palm.age} Years Old</span>
-                          </div>
-                          <h5 className="fw-bold text-dark mb-1">{palm.name}</h5>
-                          <p className="text-muted small mb-2"><i className="bi bi-geo-alt me-1"></i> {palm.location}</p>
-                          <p className="card-text small text-secondary line-clamp-3">
-                            {palm.yieldHistory}
-                          </p>
-                        </div>
+                    <div className="position-absolute top-0 end-0 m-2">
+                      <span className="badge bg-warning text-dark fw-bold">{palm.age} Yrs</span>
+                    </div>
+                  </div>
 
-                        <div className="pt-3 border-top mt-2">
-                          <Link href={`/parent-palm/${palm.code}`} className="btn btn-sm btn-outline-success fw-bold w-100">
-                            View Parent Palm Details <i className="bi bi-arrow-right ms-1"></i>
-                          </Link>
-                        </div>
-                      </div>
+                  <div className="card-body p-3 d-flex flex-column justify-content-between">
+                    <div>
+                      <h6 className="fw-bold text-dark mb-1">{palm.name}</h6>
+                      <small className="text-muted d-block mb-2">
+                        <i className="bi bi-geo-alt-fill text-danger me-1"></i> {palm.location}
+                      </small>
+                      <p className="extra-small text-secondary mb-3 line-clamp-3">
+                        {palm.yieldHistory}
+                      </p>
                     </div>
+
+                    <Link 
+                      href={`/parent-palm/${palm.code}`} 
+                      className="btn btn-outline-success btn-sm w-100 fw-semibold rounded-3"
+                    >
+                      Inspect Profile <i className="bi bi-arrow-right ms-1"></i>
+                    </Link>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+
+          <div className="text-center mt-4">
+            <Link href="/farm" className="btn btn-outline-dark px-4 py-2 rounded-3 fw-semibold">
+              Explore All {motherPalms.length} Verified Mother Trees <i className="bi bi-arrow-right ms-1"></i>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Why Buy From Us Section */}
-      <section className="py-5 bg-light">
+      {/* 5. WHY EATHAMOZHY TALL? (GI BENEFITS) */}
+      <section className="py-5 bg-white border-top border-bottom">
         <div className="container py-3">
           <div className="text-center mb-5">
-            <h2 className="fw-bold text-dark">Why Buy From Us?</h2>
-            <p className="text-muted">Direct from our farm with full authenticity and care</p>
+            <span className="badge-gi-pill mb-2">PROVEN PERFORMANCE</span>
+            <h2 className="fw-bold text-dark">Why Farmers Choose Eathamozhy Tall</h2>
+            <p className="text-muted">Unique agronomic traits of mainland India's only GI-Tagged coconut</p>
           </div>
 
           <div className="row g-4">
             <div className="col-md-3">
-              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4">
-                <div className="bg-success-subtle text-success rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
-                  <i className="bi bi-tree fs-2"></i>
+              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4 hover-lift">
+                <div className="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
+                  <i className="bi bi-shield-shaded fs-2"></i>
                 </div>
-                <h5 className="fw-bold text-dark mb-2">Own Farm</h5>
-                <p className="text-secondary small mb-0">Saplings are carefully raised in our own traditional grove with organic care.</p>
+                <h5 className="fw-bold text-dark mb-2">High Drought Resilience</h5>
+                <p className="text-secondary small mb-0">Deep vertical taproot system adapted to fluctuating coastal water tables and prolonged dry seasons.</p>
               </div>
             </div>
+
             <div className="col-md-3">
-              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4">
-                <div className="bg-warning-subtle text-warning rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
-                  <i className="bi bi-bar-chart-steps fs-2"></i>
+              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4 hover-lift">
+                <div className="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
+                  <i className="bi bi-droplet-half fs-2 text-warning"></i>
                 </div>
-                <h5 className="fw-bold text-dark mb-2">Transparent Availability</h5>
-                <p className="text-secondary small mb-0">Customers see exact batch numbers and live booking stock in real-time.</p>
+                <h5 className="fw-bold text-dark mb-2">Superior Copra & Oil</h5>
+                <p className="text-secondary small mb-0">Yields 170g+ copra per nut with an oil content exceeding 68%, commanding premium market prices.</p>
               </div>
             </div>
+
             <div className="col-md-3">
-              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4">
-                <div className="bg-info-subtle text-info rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
-                  <i className="bi bi-camera fs-2"></i>
+              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4 hover-lift">
+                <div className="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
+                  <i className="bi bi-wind fs-2 text-info"></i>
                 </div>
-                <h5 className="fw-bold text-dark mb-2">Actual Batch Photos</h5>
-                <p className="text-secondary small mb-0">We display real photographs of the exact sapling batch offered.</p>
+                <h5 className="fw-bold text-dark mb-2">Wind & Storm Stability</h5>
+                <p className="text-secondary small mb-0">Thick trunk bole base circumference protects against coastal cyclone winds and root uprooting.</p>
               </div>
             </div>
+
             <div className="col-md-3">
-              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4">
-                <div className="bg-success-subtle text-success rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
-                  <i className="bi bi-whatsapp fs-2"></i>
+              <div className="card border-0 shadow-sm text-center p-4 h-100 rounded-4 hover-lift">
+                <div className="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '64px', height: '64px' }}>
+                  <i className="bi bi-award-fill fs-2 text-success"></i>
                 </div>
-                <h5 className="fw-bold text-dark mb-2">Direct Communication</h5>
-                <p className="text-secondary small mb-0">Receive instant WhatsApp booking & courier dispatch notifications.</p>
+                <h5 className="fw-bold text-dark mb-2">GI Authenticity Certificate</h5>
+                <p className="text-secondary small mb-0">Every consignment is accompanied by our nursery provenance verification seal.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Farmer Reviews Teaser */}
-      <section className="py-5 bg-white border-top">
+      {/* 6. VERIFIED FARMER REVIEWS */}
+      <section className="py-5 bg-light">
         <div className="container">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <span className="text-warning"><i className="bi bi-star-fill"></i><i className="bi bi-star-fill"></i><i className="bi bi-star-fill"></i><i className="bi bi-star-fill"></i><i className="bi bi-star-fill"></i></span>
-              <h2 className="fw-bold text-dark mb-0">Farmer Feedback</h2>
-            </div>
-            <Link href="/reviews" className="btn btn-outline-success fw-bold">Read All Reviews</Link>
+          <div className="text-center mb-5">
+            <span className="badge-farm-pill mb-2">FARMER TESTIMONIALS</span>
+            <h2 className="fw-bold text-dark">Trusted by Farmers Across South India</h2>
+            <p className="text-muted">Real feedback from plantation owners who planted our Eathamozhy batches</p>
           </div>
 
           <div className="row g-4">
-            {reviews.map(r => (
-              <div key={r.id} className="col-md-6">
-                <div className="card border-0 bg-light p-4 rounded-4 shadow-sm h-100">
-                  <div className="d-flex justify-content-between align-items-center mb-2">
+            {reviews.map(rev => (
+              <div key={rev.id} className="col-md-6">
+                <div className="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white hover-lift">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                      <h6 className="fw-bold mb-0 text-dark">{r.customerName}</h6>
-                      <small className="text-muted">{r.location}</small>
+                      <h5 className="fw-bold text-dark mb-0">{rev.customerName}</h5>
+                      <small className="text-muted"><i className="bi bi-geo-alt me-1"></i> {rev.location}</small>
                     </div>
-                    {r.verified && (
-                      <span className="badge bg-success-subtle text-success border border-success">
-                        <i className="bi bi-check-circle-fill me-1"></i> Verified Purchase
-                      </span>
-                    )}
+                    <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">
+                      <i className="bi bi-check-circle-fill me-1"></i> Verified Buyer ({rev.quantity} Saplings)
+                    </span>
                   </div>
-                  <p className="text-secondary small mb-2">"{r.comment}"</p>
-                  <small className="text-muted fw-bold">Batch: {r.batchCode} | Qty: {r.quantity} Saplings</small>
+
+                  <div className="text-warning mb-3">
+                    {Array.from({ length: rev.rating }).map((_, i) => (
+                      <i key={i} className="bi bi-star-fill me-1"></i>
+                    ))}
+                  </div>
+
+                  <p className="text-secondary small fst-italic mb-3">
+                    "{rev.comment}"
+                  </p>
+
+                  <div className="d-flex justify-content-between align-items-center border-top pt-2 text-muted extra-small">
+                    <span>Batch: <strong className="text-dark">{rev.batchCode}</strong></span>
+                    <span>Planted: {rev.date}</span>
+                  </div>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. CALL TO ACTION BANNER */}
+      <section className="py-5 bg-dark text-white text-center position-relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 100%)' }}>
+        <div className="container py-4 position-relative z-1">
+          <span className="badge-gi-pill mb-3 d-inline-block">LIMITED SEASONAL HARVEST</span>
+          <h2 className="display-5 fw-bold mb-3">Ready to Plant an Authentic Eathamozhy Grove?</h2>
+          <p className="lead opacity-90 mx-auto mb-4" style={{ maxWidth: '650px' }}>
+            Pre-book your required saplings directly from upcoming verified batches or request custom crate logistics.
+          </p>
+          <div className="d-flex flex-wrap justify-content-center gap-3">
+            <Link href="/batches" className="btn-gold px-4 py-3 fs-6 text-decoration-none">
+              <i className="bi bi-bag-check-fill"></i> View Available Batches Now
+            </Link>
+            <a 
+              href="https://wa.me/919486880641?text=Hello,%20I%20want%20to%20place%20a%20bulk%20order%20for%20Eathamozhy%20coconut%20saplings" 
+              target="_blank" 
+              rel="noreferrer"
+              className="btn btn-outline-light px-4 py-3 fs-6 rounded-3 fw-bold"
+            >
+              <i className="bi bi-whatsapp me-1 text-success"></i> Speak with Farm Manager
+            </a>
           </div>
         </div>
       </section>

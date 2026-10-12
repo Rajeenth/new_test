@@ -57,11 +57,7 @@ function TrackingContent() {
 
   return (
     <>
-      <section className="bg-dark text-white py-5 text-center position-relative overflow-hidden">
-        <div 
-          className="position-absolute top-0 start-0 w-100 h-100 opacity-30"
-          style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)' }}
-        ></div>
+      <section className="hero-ambient-mesh text-white py-5 position-relative overflow-hidden border-bottom border-success border-opacity-25">
         <div className="container position-relative py-3">
           <span className="badge bg-warning text-dark px-3 py-2 rounded-pill mb-2 fw-bold">REAL-TIME ORDER TRACKER</span>
           <h1 className="fw-bold mb-0 text-light">Track Your Sapling Orders</h1>
