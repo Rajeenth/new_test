@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import PatternVisualizer from '@/components/PatternVisualizer';
 
 export default function FarmingGuidePage() {
   const articles = [
@@ -76,10 +77,25 @@ export default function FarmingGuidePage() {
             ))}
           </div>
 
-          <div className="card border-0 shadow-sm rounded-4 p-4 mt-5 bg-white text-center">
-            <h4 className="fw-bold text-dark mb-2">Have a specific soil or pest question?</h4>
-            <p className="text-secondary mb-3">Our farm experts are available to assist you via WhatsApp.</p>
-            <a href="https://wa.me/919486880641" target="_blank" rel="noreferrer" className="btn btn-success fw-bold d-inline-flex align-items-center gap-2 mx-auto">
+          {/* Plantation Layout Visualizer Card */}
+          <div className="card border-0 shadow-sm rounded-4 p-4 p-md-5 mt-5 bg-white">
+            <div className="text-center mb-4">
+              <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-1 rounded-pill fw-bold">
+                <i className="bi bi-diagram-3-fill me-1"></i> FIELD GEOMETRY & SPACING GUIDE
+              </span>
+              <h3 className="fw-bold text-dark mt-2 mb-2">Planting Pattern Visual Guide: Triangular vs Square</h3>
+              <p className="text-secondary small mx-auto" style={{ maxWidth: '650px' }}>
+                Compare the field geometry, spacing dimensions, and palm population per acre between the two standard coconut planting systems.
+              </p>
+            </div>
+
+            <PatternVisualizer showComparison={true} />
+          </div>
+
+          <div className="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white text-center">
+            <h4 className="fw-bold text-dark mb-2">Have a specific soil, layout, or planting question?</h4>
+            <p className="text-secondary mb-3">Our farm experts are available to guide you on pit digging, manure mixing, and grove orientation.</p>
+            <a href="https://wa.me/919486880641?text=Hello%20Eathamozhy%20Farm,%20I%20have%20a%20question%20regarding%20plantation%20spacing%20patterns" target="_blank" rel="noreferrer" className="btn btn-success fw-bold d-inline-flex align-items-center gap-2 mx-auto">
               <i className="bi bi-whatsapp fs-5"></i> Ask Farm Expert on WhatsApp
             </a>
           </div>
