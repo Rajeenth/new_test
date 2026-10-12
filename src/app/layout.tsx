@@ -116,7 +116,7 @@ export default function RootLayout({
                   <i className="bi bi-envelope me-1 text-info"></i> contact@eathamozhycoconut.com
                 </p>
                 <p className="text-light opacity-75 small mb-3">
-                  <i className="bi bi-telephone-fill me-1 text-success"></i> +91 94868 80641 / 94433 22110
+                  <i className="bi bi-telephone-fill me-1 text-success"></i> +91 94868 80641
                 </p>
                 <div className="bg-dark bg-opacity-50 p-2 rounded-3 border border-secondary border-opacity-25 small text-light opacity-80">
                   <i className="bi bi-clock-history me-1 text-warning"></i> Farm visits welcomed by appointment (Mon&ndash;Sat 8:00 AM &ndash; 6:00 PM)

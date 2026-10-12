@@ -10,6 +10,8 @@ export default function PlantingCalculator() {
   const [showComparisonModal, setShowComparisonModal] = useState<boolean>(false);
   const unitPrice = 150; // Standard price per sapling
 
+  const [hoveredPattern, setHoveredPattern] = useState<'triangular' | 'square' | null>(null);
+
   // Triangular spacing yields ~70 trees/acre; Square yields ~65 trees/acre at 25x25 ft
   const treesPerAcre = spacingType === 'triangular' ? 70 : 65;
   const totalTrees = Math.round(acres * treesPerAcre);
@@ -83,11 +85,13 @@ export default function PlantingCalculator() {
               </button>
             </div>
 
-            <div className="d-flex gap-2 mb-3">
+            <div className="d-flex gap-2 mb-2">
               <button 
                 type="button" 
                 onClick={() => setSpacingType('triangular')}
-                className={`btn btn-sm px-3 py-2 rounded-3 flex-fill text-start transition-all ${
+                onMouseEnter={() => setHoveredPattern('triangular')}
+                onMouseLeave={() => setHoveredPattern(null)}
+                className={`btn btn-sm px-3 py-2 rounded-3 flex-fill text-start transition-all position-relative ${
                   spacingType === 'triangular' 
                     ? 'btn-success fw-bold shadow-sm' 
                     : 'btn-outline-secondary'
@@ -97,13 +101,15 @@ export default function PlantingCalculator() {
                   <span><i className="bi bi-triangle-fill me-1 small"></i> Triangular Pattern</span>
                   <span className="badge bg-warning text-dark extra-small">+15% Yield</span>
                 </div>
-                <small className="d-block extra-small opacity-75">~70 palms/acre (Recommended)</small>
+                <small className="d-block extra-small opacity-75">~70 palms/acre &bull; Hover for diagram</small>
               </button>
 
               <button 
                 type="button" 
                 onClick={() => setSpacingType('square')}
-                className={`btn btn-sm px-3 py-2 rounded-3 flex-fill text-start transition-all ${
+                onMouseEnter={() => setHoveredPattern('square')}
+                onMouseLeave={() => setHoveredPattern(null)}
+                className={`btn btn-sm px-3 py-2 rounded-3 flex-fill text-start transition-all position-relative ${
                   spacingType === 'square' 
                     ? 'btn-success fw-bold shadow-sm' 
                     : 'btn-outline-secondary'
@@ -113,23 +119,47 @@ export default function PlantingCalculator() {
                   <span><i className="bi bi-square-fill me-1 small"></i> Square Pattern</span>
                   <span className="badge bg-light text-dark extra-small">Grid</span>
                 </div>
-                <small className="d-block extra-small opacity-75">~65 palms/acre (Traditional)</small>
+                <small className="d-block extra-small opacity-75">~65 palms/acre &bull; Hover for diagram</small>
               </button>
             </div>
 
-            {/* Pattern Visual Diagram */}
-            <div className="border rounded-3 p-2 bg-light">
-              <div className="d-flex justify-content-between align-items-center mb-2 px-1">
-                <small className="fw-bold text-dark extra-small text-uppercase">
-                  <i className="bi bi-diagram-3-fill me-1 text-success"></i> Visual Field Layout (25 ft Distance)
-                </small>
-                <span className="extra-small text-muted">
-                  {spacingType === 'triangular' ? 'Staggered Quincunx System' : 'Orthogonal 90° Grid'}
-                </span>
-              </div>
+            {/* Pattern Visual Diagram - Revealed on Hover Only */}
+            {hoveredPattern ? (
+              <div 
+                className="border rounded-3 p-3 bg-light shadow-sm animate-fade-in"
+                onMouseEnter={() => setHoveredPattern(hoveredPattern)}
+                onMouseLeave={() => setHoveredPattern(null)}
+              >
+                <div className="d-flex justify-content-between align-items-center mb-2 px-1">
+                  <small className="fw-bold text-dark extra-small text-uppercase d-flex align-items-center gap-1">
+                    <i className="bi bi-eye-fill text-success"></i> Visual Preview: {hoveredPattern === 'triangular' ? 'Triangular Layout' : 'Square Layout'}
+                  </small>
+                  <span className="badge bg-success-subtle text-success border border-success extra-small">
+                    {hoveredPattern === 'triangular' ? 'Staggered Quincunx (25 ft)' : 'Orthogonal 90° Grid (25 ft)'}
+                  </span>
+                </div>
 
-              <PatternVisualizer selectedPattern={spacingType} onSelectPattern={setSpacingType} />
-            </div>
+                <PatternVisualizer 
+                  selectedPattern={hoveredPattern} 
+                  onSelectPattern={(p) => {
+                    setSpacingType(p);
+                    setHoveredPattern(p);
+                  }} 
+                />
+              </div>
+            ) : (
+              <div className="border border-dashed rounded-3 p-2 px-3 bg-light d-flex align-items-center justify-content-between text-muted">
+                <div className="d-flex align-items-center gap-2">
+                  <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-circle p-1">
+                    <i className="bi bi-cursor-fill extra-small"></i>
+                  </span>
+                  <span className="extra-small text-secondary">
+                    Hover over <strong>Triangular</strong> or <strong>Square</strong> above to view field geometry & spacing details
+                  </span>
+                </div>
+                <span className="badge bg-white text-muted border extra-small d-none d-sm-inline-block">Hover only</span>
+              </div>
+            )}
           </div>
         </div>
 

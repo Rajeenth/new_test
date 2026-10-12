@@ -144,13 +144,22 @@ h1, h2, h3, h4, h5, h6 {
   100% { transform: scale(2.2); opacity: 0; }
 }
 
-/* Hero Background Mesh */
+/* Hero Background with Authentic Coconut Farm Overlay */
 .hero-ambient-mesh {
+  position: relative;
   background: 
-    radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.22) 0%, transparent 40%),
-    radial-gradient(circle at 85% 30%, rgba(5, 150, 105, 0.18) 0%, transparent 45%),
-    radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 40%),
-    linear-gradient(180deg, #022319 0%, #041f17 50%, #03140e 100%);
+    linear-gradient(180deg, rgba(2, 35, 25, 0.90) 0%, rgba(4, 31, 23, 0.93) 50%, rgba(2, 19, 14, 0.96) 100%),
+    url('/images/parent-palms/EM-MP-001/tree_1.jpeg') center/cover no-repeat;
+  background-attachment: scroll;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Buttons */
