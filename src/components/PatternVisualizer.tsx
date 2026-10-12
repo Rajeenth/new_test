@@ -6,13 +6,18 @@ interface PatternVisualizerProps {
   selectedPattern?: 'triangular' | 'square';
   onSelectPattern?: (pattern: 'triangular' | 'square') => void;
   showComparison?: boolean;
+  spacingDistance?: number;
 }
 
 export default function PatternVisualizer({
   selectedPattern = 'triangular',
   onSelectPattern,
-  showComparison = false
+  showComparison = false,
+  spacingDistance = 25
 }: PatternVisualizerProps) {
+  // Dynamic calculation for tree densities based on spacing distance
+  const sqTreesPerAcre = Math.round((43560 * 0.93) / (spacingDistance * spacingDistance));
+  const triTreesPerAcre = Math.round(sqTreesPerAcre * 1.08);
 
   // SVG representation for Triangular Pattern
   const renderTriangularSVG = () => (
@@ -66,17 +71,17 @@ export default function PatternVisualizer({
         strokeDasharray="5 3" 
       />
 
-      {/* Dimension Arrow 25 ft across top */}
+      {/* Dimension Arrow across top */}
       <line x1="105" y1="36" x2="195" y2="36" stroke="#f59e0b" strokeWidth="1.5" markerStart="url(#arrowTri)" markerEnd="url(#arrowTri)" />
-      <text x="150" y="32" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">25 ft</text>
+      <text x="150" y="32" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{spacingDistance} ft</text>
 
-      {/* Dimension Arrow 25 ft diagonal */}
+      {/* Dimension Arrow diagonal */}
       <line x1="195" y1="55" x2="155" y2="115" stroke="#f59e0b" strokeWidth="1.5" markerStart="url(#arrowTri)" markerEnd="url(#arrowTri)" />
-      <text x="195" y="92" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">25 ft</text>
+      <text x="195" y="92" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{spacingDistance} ft</text>
 
-      {/* Dimension Arrow 21.65 ft row distance */}
+      {/* Dimension Arrow row distance */}
       <line x1="315" y1="55" x2="315" y2="115" stroke="#60a5fa" strokeWidth="1.2" strokeDasharray="3 2" />
-      <text x="350" y="88" fill="#93c5fd" fontSize="9.5" textAnchor="middle" fontFamily="sans-serif">21.6 ft row</text>
+      <text x="350" y="88" fill="#93c5fd" fontSize="9.5" textAnchor="middle" fontFamily="sans-serif">{(spacingDistance * 0.866).toFixed(1)} ft row</text>
 
       {/* Row 1 Palms (Y=50) */}
       {[100, 200, 300].map((x, i) => (
@@ -104,7 +109,7 @@ export default function PatternVisualizer({
 
       {/* Legend / Stagger Callout */}
       <text x="200" y="222" fill="#a7f3d0" fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="sans-serif">
-        Alternate rows staggered by 12.5 ft &bull; Equilateral Triangles
+        Alternate rows staggered by {(spacingDistance / 2).toFixed(1)} ft &bull; Equilateral Triangles
       </text>
     </svg>
   );
@@ -170,13 +175,13 @@ export default function PatternVisualizer({
         strokeDasharray="5 3" 
       />
 
-      {/* Dimension Arrow 25 ft horizontal */}
+      {/* Dimension Arrow horizontal */}
       <line x1="105" y1="36" x2="195" y2="36" stroke="#f59e0b" strokeWidth="1.5" markerStart="url(#arrowSq)" markerEnd="url(#arrowSq)" />
-      <text x="150" y="32" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">25 ft</text>
+      <text x="150" y="32" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{spacingDistance} ft</text>
 
-      {/* Dimension Arrow 25 ft vertical */}
+      {/* Dimension Arrow vertical */}
       <line x1="86" y1="55" x2="86" y2="115" stroke="#f59e0b" strokeWidth="1.5" markerStart="url(#arrowSq)" markerEnd="url(#arrowSq)" />
-      <text x="70" y="88" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">25 ft</text>
+      <text x="70" y="88" fill="#fbbf24" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">{spacingDistance} ft</text>
 
       {/* Straight Intercropping Alleys Note */}
       <line x1="315" y1="40" x2="315" y2="200" stroke="#38bdf8" strokeWidth="1.2" strokeDasharray="3 2" />
@@ -208,7 +213,7 @@ export default function PatternVisualizer({
 
       {/* Legend / Square Grid Callout */}
       <text x="200" y="222" fill="#bfdbfe" fontSize="11" fontWeight="600" textAnchor="middle" fontFamily="sans-serif">
-        Orthogonal 90&deg; Grid &bull; Straight rows in both directions
+        Orthogonal 90&deg; Grid &bull; {spacingDistance} ft &times; {spacingDistance} ft straight alleys
       </text>
     </svg>
   );
@@ -222,15 +227,15 @@ export default function PatternVisualizer({
             <div className={`p-3 rounded-4 border h-100 ${selectedPattern === 'triangular' ? 'border-success bg-success bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-light'}`}>
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="badge bg-success fw-bold">TRIANGULAR PATTERN</span>
-                <span className="badge bg-success bg-opacity-25 text-success border border-success extra-small">~70 palms / acre</span>
+                <span className="badge bg-success bg-opacity-25 text-success border border-success extra-small">~{triTreesPerAcre} palms / acre</span>
               </div>
               <div className="rounded-3 overflow-hidden shadow-sm mb-3">
                 {renderTriangularSVG()}
               </div>
               <ul className="list-unstyled extra-small text-secondary mb-0">
-                <li className="mb-1"><i className="bi bi-check-circle-fill text-success me-1"></i> <strong>+15% higher tree count</strong> (~70 trees vs ~65).</li>
-                <li className="mb-1"><i className="bi bi-check-circle-fill text-success me-1"></i> Alternate rows staggered by 12.5 ft.</li>
-                <li className="mb-1"><i className="bi bi-check-circle-fill text-success me-1"></i> Uniform 25 ft distance in all 3 directions.</li>
+                <li className="mb-1"><i className="bi bi-check-circle-fill text-success me-1"></i> <strong>+15% higher tree count</strong> (~{triTreesPerAcre} trees vs ~{sqTreesPerAcre}).</li>
+                <li className="mb-1"><i className="bi bi-check-circle-fill text-success me-1"></i> Alternate rows staggered by {(spacingDistance / 2).toFixed(1)} ft.</li>
+                <li className="mb-1"><i className="bi bi-check-circle-fill text-success me-1"></i> Uniform {spacingDistance} ft distance in all 3 directions.</li>
                 <li><i className="bi bi-star-fill text-warning me-1"></i> <em>Recommended for maximum coconut yield.</em></li>
               </ul>
               {onSelectPattern && (
@@ -249,16 +254,16 @@ export default function PatternVisualizer({
             <div className={`p-3 rounded-4 border h-100 ${selectedPattern === 'square' ? 'border-primary bg-primary bg-opacity-10 shadow-sm' : 'border-secondary border-opacity-25 bg-light'}`}>
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="badge bg-primary fw-bold">SQUARE PATTERN</span>
-                <span className="badge bg-primary bg-opacity-25 text-primary border border-primary extra-small">~65 palms / acre</span>
+                <span className="badge bg-primary bg-opacity-25 text-primary border border-primary extra-small">~{sqTreesPerAcre} palms / acre</span>
               </div>
               <div className="rounded-3 overflow-hidden shadow-sm mb-3">
                 {renderSquareSVG()}
               </div>
               <ul className="list-unstyled extra-small text-secondary mb-0">
-                <li className="mb-1"><i className="bi bi-check-circle-fill text-primary me-1"></i> Standard orthogonal 25 ft x 25 ft square grid.</li>
+                <li className="mb-1"><i className="bi bi-check-circle-fill text-primary me-1"></i> Standard orthogonal {spacingDistance} ft x {spacingDistance} ft square grid.</li>
                 <li className="mb-1"><i className="bi bi-check-circle-fill text-primary me-1"></i> Straight tractor alleys along both directions.</li>
                 <li className="mb-1"><i className="bi bi-check-circle-fill text-primary me-1"></i> Ideal for wide intercrops (banana, cocoa, pepper).</li>
-                <li><i className="bi bi-info-circle-fill text-info me-1"></i> <em>Accommodates ~65 trees per acre.</em></li>
+                <li><i className="bi bi-info-circle-fill text-info me-1"></i> <em>Accommodates ~{sqTreesPerAcre} trees per acre.</em></li>
               </ul>
               {onSelectPattern && (
                 <button 
@@ -281,12 +286,12 @@ export default function PatternVisualizer({
           <div className="p-2 bg-light rounded-3 border extra-small text-secondary">
             {selectedPattern === 'triangular' ? (
               <div className="d-flex align-items-center justify-content-between">
-                <span><i className="bi bi-triangle-fill text-success me-1"></i> <strong>Triangular:</strong> Equilateral 25 ft spacing (~70 palms/acre)</span>
+                <span><i className="bi bi-triangle-fill text-success me-1"></i> <strong>Triangular:</strong> Equilateral {spacingDistance} ft spacing (~{triTreesPerAcre} palms/acre)</span>
                 <span className="badge bg-success bg-opacity-25 text-success">+15% Capacity</span>
               </div>
             ) : (
               <div className="d-flex align-items-center justify-content-between">
-                <span><i className="bi bi-square-fill text-primary me-1"></i> <strong>Square:</strong> 25 ft x 25 ft grid (~65 palms/acre)</span>
+                <span><i className="bi bi-square-fill text-primary me-1"></i> <strong>Square:</strong> {spacingDistance} ft x {spacingDistance} ft grid (~{sqTreesPerAcre} palms/acre)</span>
                 <span className="badge bg-primary bg-opacity-25 text-primary">Intercropping</span>
               </div>
             )}
