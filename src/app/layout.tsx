@@ -129,10 +129,7 @@ export default function RootLayout({
 
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center text-secondary extra-small">
               <p className="mb-2 mb-md-0">&copy; {new Date().getFullYear()} Eathamozhy Coconut Farm. All rights reserved. Mainland India GI Tag Cultivar.</p>
-              <div className="d-flex gap-2">
-                <span className="badge bg-success bg-opacity-25 text-success">Protected Wooden Crate Transit</span>
                 <span className="badge bg-secondary bg-opacity-25 text-light">Pan-India Freight Delivery</span>
-              </div>
             </div>
 
           </div>

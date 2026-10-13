@@ -59,6 +59,7 @@ export default function ImageCarousel({
           src={images[activeIndex]} 
           alt={`${title} - photo ${activeIndex + 1}`} 
           className="w-100 h-100"
+          onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
           style={{ 
             height: '100%', 
             width: '100%', 
@@ -122,6 +123,7 @@ export default function ImageCarousel({
                   src={img} 
                   alt={`Thumbnail ${idx + 1}`} 
                   className="w-100 h-100"
+                  onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
                   style={{ objectFit: 'cover', display: 'block' }} 
                 />
               </button>

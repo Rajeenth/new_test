@@ -200,8 +200,24 @@ export default function AdminOrdersPage() {
                           </select>
                         </td>
                         <td>
-                          <a href={`https://wa.me/91${ord.whatsapp}`} target="_blank" rel="noreferrer" className="btn btn-sm btn-outline-success">
-                            <i className="bi bi-whatsapp"></i> Chat
+                          <a
+                            href={`https://wa.me/91${ord.whatsapp}?text=${encodeURIComponent(
+                              `Hello ${ord.customerName},\n\nThis is Eathamozhy Coconut Farm regarding your order:\n\n` +
+                              `📋 *Booking ID:* ${ord.bookingId}\n` +
+                              `🌿 *Batch:* ${ord.batchCode}\n` +
+                              `🪴 *Saplings:* ${ord.quantity}\n` +
+                              `💰 *Amount:* ₹${ord.totalAmount?.toLocaleString()}\n` +
+                              `🚚 *Courier:* ${ord.deliveryService || 'ST Couriers'} (${ord.nearestHub || 'Main Hub'})\n` +
+                              `📅 *Expected Delivery:* ${ord.expectedDeliveryDate || 'TBD'}\n` +
+                              `📦 *Status:* ${ord.bookingStatus}\n\n` +
+                              `Please feel free to reach out for any queries.`
+                            )}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn btn-sm btn-success"
+                            title="Open WhatsApp with order details"
+                          >
+                            <i className="bi bi-whatsapp me-1"></i> Chat
                           </a>
                         </td>
                       </tr>

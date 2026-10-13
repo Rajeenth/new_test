@@ -24,6 +24,8 @@ export default function AdminMotherTreesPage() {
   // Edit Modal State
   const [editingTree, setEditingTree] = useState<any | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [savingImages, setSavingImages] = useState(false);
+  const [newTreeImageUrl, setNewTreeImageUrl] = useState('');
 
   const handleUploadTreeFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0 || !editingTree) return;
@@ -201,6 +203,45 @@ export default function AdminMotherTreesPage() {
     } catch (err) {
       alert('Error updating mother tree');
     }
+  };
+
+  // Save ONLY images array via PATCH for parent palm
+  const handleSaveTreeImageUrls = async () => {
+    if (!editingTree) return;
+    setSavingImages(true);
+    try {
+      const res = await fetch(`/api/parent-palms/${editingTree.code}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: editingTree.images || [] })
+      });
+      if (res.ok) {
+        alert(`✅ Image URLs saved for Mother Tree ${editingTree.code}. All pages now show updated photos.`);
+        fetchPalms();
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Failed to save image URLs');
+      }
+    } catch (e) {
+      alert('Network error saving image URLs');
+    } finally {
+      setSavingImages(false);
+    }
+  };
+
+  const addTreeImageUrl = () => {
+    const url = newTreeImageUrl.trim();
+    if (!url) return;
+    if ((editingTree?.images || []).includes(url)) { alert('This URL is already in the list.'); return; }
+    setEditingTree((prev: any) => prev ? { ...prev, images: [...(prev.images || []), url] } : null);
+    setNewTreeImageUrl('');
+  };
+
+  const updateTreeImageUrl = (idx: number, val: string) => {
+    setEditingTree((prev: any) => prev ? {
+      ...prev,
+      images: (prev.images || []).map((u: string, i: number) => i === idx ? val : u)
+    } : null);
   };
 
   const handleDeleteTree = async (code: string) => {
@@ -481,62 +522,96 @@ export default function AdminMotherTreesPage() {
                     ></textarea>
                   </div>
 
-                  {/* Mother Tree Images Gallery & Uploader */}
+                  {/* Mother Tree Images — URL Manager + Upload */}
                   <div className="col-12 bg-light p-3 rounded-3 border">
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div>
-                        <label className="form-label small fw-bold text-dark mb-0">
-                          <i className="bi bi-images me-1 text-success"></i> Mother Tree Photos ({(editingTree.images || []).length})
-                        </label>
-                        <span className="d-block extra-small text-muted font-monospace">
-                          <i className="bi bi-folder-fill text-warning me-1"></i> /public/images/parent-palms/{editingTree.code}/
-                        </span>
-                      </div>
+                      <label className="form-label small fw-bold text-dark mb-0">
+                        <i className="bi bi-images me-1 text-success"></i> Mother Tree Photos
+                        <span className="badge bg-success ms-2">{(editingTree.images || []).length} URLs in DB</span>
+                      </label>
                       {(editingTree.images || []).length > 0 && (
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           className="btn btn-sm btn-outline-danger py-0 px-2 extra-small"
                           onClick={removeAllTreeImages}
                         >
-                          <i className="bi bi-trash me-1"></i> Clear All Photos
+                          <i className="bi bi-trash me-1"></i> Clear All
                         </button>
                       )}
                     </div>
-                    
+
+                    {/* Editable URL list */}
                     {(editingTree.images || []).length > 0 ? (
-                      <div className="d-flex flex-wrap gap-2 mb-3 max-vh-25 overflow-auto p-2 bg-white border rounded">
+                      <div className="mb-2">
                         {editingTree.images.map((imgUrl: string, idx: number) => (
-                          <div key={idx} className="position-relative d-inline-block">
-                            <img 
-                              src={imgUrl} 
-                              alt={`Mother Tree Photo ${idx+1}`} 
-                              className="rounded border"
-                              style={{ width: '65px', height: '65px', objectFit: 'cover' }}
+                          <div key={idx} className="d-flex align-items-center gap-2 mb-1">
+                            <img
+                              src={imgUrl}
+                              alt={`Tree Photo ${idx + 1}`}
+                              className="rounded border flex-shrink-0"
+                              style={{ width: '48px', height: '48px', objectFit: 'cover' }}
+                              onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
                             />
-                            <button 
-                              type="button" 
-                              className="btn btn-danger btn-sm py-0 px-1 position-absolute top-0 end-0 rounded-circle"
-                              style={{ fontSize: '0.65rem', transform: 'translate(30%, -30%)' }}
+                            <input
+                              type="text"
+                              className="form-control form-control-sm font-monospace"
+                              value={imgUrl}
+                              onChange={e => updateTreeImageUrl(idx, e.target.value)}
+                              placeholder="/images/parent-palms/… or https://…"
+                            />
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-danger px-2"
                               onClick={() => removeTreeImage(idx)}
-                              title="Remove image"
-                            >
-                              ✕
-                            </button>
+                              title="Remove"
+                            >✕</button>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <small className="text-muted d-block mb-2">No photos uploaded for this tree yet.</small>
+                      <small className="text-muted d-block mb-2">No photo URLs stored for this tree yet.</small>
                     )}
 
+                    {/* Add new URL */}
+                    <div className="d-flex gap-2 mb-3">
+                      <input
+                        type="text"
+                        className="form-control form-control-sm font-monospace"
+                        placeholder="Paste URL: /images/parent-palms/EM-MP-001/tree_1.jpg or https://…"
+                        value={newTreeImageUrl}
+                        onChange={e => setNewTreeImageUrl(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTreeImageUrl(); } }}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-success fw-bold text-nowrap"
+                        onClick={addTreeImageUrl}
+                      >
+                        <i className="bi bi-plus-lg me-1"></i> Add URL
+                      </button>
+                    </div>
+
+                    {/* Save image URLs immediately to DB */}
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm fw-bold w-100 mb-3"
+                      onClick={handleSaveTreeImageUrls}
+                      disabled={savingImages}
+                    >
+                      {savingImages
+                        ? <><i className="bi bi-hourglass-split me-1"></i> Saving to DB…</>
+                        : <><i className="bi bi-cloud-check-fill me-1"></i> Save Image URLs to DB (All Pages Update Instantly)</>}
+                    </button>
+
+                    {/* File upload */}
                     <div>
                       <label className="form-label extra-small text-muted mb-1">
-                        {uploading ? 'Uploading selected photos...' : 'Upload New Mother Tree Photographs:'}
+                        {uploading ? 'Uploading…' : 'Or upload photos from device (auto-adds URL to list above):'}
                       </label>
-                      <input 
-                        type="file" 
-                        className="form-control form-control-sm" 
-                        multiple 
+                      <input
+                        type="file"
+                        className="form-control form-control-sm"
+                        multiple
                         accept="image/*"
                         disabled={uploading}
                         onChange={handleUploadTreeFiles}

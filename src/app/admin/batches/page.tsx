@@ -21,6 +21,7 @@ export default function AdminBatchesPage() {
   const [editDescription, setEditDescription] = useState<string>('');
   const [editImages, setEditImages] = useState<string[]>([]);
   const [newImageUrl, setNewImageUrl] = useState<string>('');
+  const [savingImages, setSavingImages] = useState(false);
 
   // Auto-generate Batch Code (e.g. EM-1226-D)
   const generateAutoBatchCode = () => {
@@ -268,6 +269,42 @@ export default function AdminBatchesPage() {
     } catch (err) {
       alert('Error updating batch');
     }
+  };
+
+  // Save ONLY images array via PATCH (used by URL manager)
+  const handleSaveImageUrls = async () => {
+    if (!editingBatch) return;
+    setSavingImages(true);
+    try {
+      const res = await fetch(`/api/batches/${editingBatch.batchCode}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: editImages })
+      });
+      if (res.ok) {
+        alert(`✅ Image URLs saved for batch ${editingBatch.batchCode}. All pages now show updated photos.`);
+        fetchBatchesData();
+      } else {
+        const err = await res.json();
+        alert(err.error || 'Failed to save image URLs');
+      }
+    } catch (e) {
+      alert('Network error saving image URLs');
+    } finally {
+      setSavingImages(false);
+    }
+  };
+
+  const addImageUrl = () => {
+    const url = newImageUrl.trim();
+    if (!url) return;
+    if (editImages.includes(url)) { alert('This URL is already in the list.'); return; }
+    setEditImages(prev => [...prev, url]);
+    setNewImageUrl('');
+  };
+
+  const updateImageUrl = (idx: number, val: string) => {
+    setEditImages(prev => prev.map((u, i) => i === idx ? val : u));
   };
 
   const handleDeleteBatch = async (batchCode: string) => {
@@ -592,62 +629,96 @@ export default function AdminBatchesPage() {
                   ></textarea>
                 </div>
 
-                {/* Batch Images Gallery & Uploader */}
+                {/* Batch Images — Gallery, URL Manager & Uploader */}
                 <div className="mb-3 p-3 bg-light rounded-3 border">
                   <div className="d-flex justify-content-between align-items-center mb-2">
-                    <div>
-                      <label className="form-label small fw-bold text-dark mb-0">
-                        <i className="bi bi-images me-1 text-success"></i> Customer Photo Gallery ({editImages.length})
-                      </label>
-                      <span className="d-block extra-small text-muted font-monospace">
-                        <i className="bi bi-folder-fill text-warning me-1"></i> /public/images/batches/{editingBatch.batchCode}/
-                      </span>
-                    </div>
+                    <label className="form-label small fw-bold text-dark mb-0">
+                      <i className="bi bi-images me-1 text-success"></i> Batch Photo Gallery
+                      <span className="badge bg-success ms-2">{editImages.length} URLs in DB</span>
+                    </label>
                     {editImages.length > 0 && (
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className="btn btn-sm btn-outline-danger py-0 px-2 extra-small"
                         onClick={removeAllEditImages}
                       >
-                        <i className="bi bi-trash me-1"></i> Clear All Photos
+                        <i className="bi bi-trash me-1"></i> Clear All
                       </button>
                     )}
                   </div>
-                  
+
+                  {/* URL list — editable inline */}
                   {editImages.length > 0 ? (
-                    <div className="d-flex flex-wrap gap-2 mb-3 max-vh-25 overflow-auto p-2 bg-white border rounded">
+                    <div className="mb-2">
                       {editImages.map((imgUrl, idx) => (
-                        <div key={idx} className="position-relative d-inline-block">
-                          <img 
-                            src={imgUrl} 
-                            alt={`Batch Photo ${idx+1}`} 
-                            className="rounded border"
-                            style={{ width: '65px', height: '65px', objectFit: 'cover' }}
+                        <div key={idx} className="d-flex align-items-center gap-2 mb-1">
+                          <img
+                            src={imgUrl}
+                            alt={`Photo ${idx + 1}`}
+                            className="rounded border flex-shrink-0"
+                            style={{ width: '48px', height: '48px', objectFit: 'cover' }}
+                            onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.png'; }}
                           />
-                          <button 
-                            type="button" 
-                            className="btn btn-danger btn-sm py-0 px-1 position-absolute top-0 end-0 rounded-circle"
-                            style={{ fontSize: '0.65rem', transform: 'translate(30%, -30%)' }}
+                          <input
+                            type="text"
+                            className="form-control form-control-sm font-monospace"
+                            value={imgUrl}
+                            onChange={e => updateImageUrl(idx, e.target.value)}
+                            placeholder="/images/batches/… or https://…"
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger px-2"
                             onClick={() => removeEditImage(idx)}
-                            title="Remove image"
-                          >
-                            ✕
-                          </button>
+                            title="Remove"
+                          >✕</button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <small className="text-muted d-block mb-2">No photos in this batch. Upload replacement images below.</small>
+                    <small className="text-muted d-block mb-2">No photo URLs stored for this batch yet.</small>
                   )}
 
-                  <div className="mb-2">
+                  {/* Add new URL */}
+                  <div className="d-flex gap-2 mb-3">
+                    <input
+                      type="text"
+                      className="form-control form-control-sm font-monospace"
+                      placeholder="Paste image URL: /images/batches/EM-0126-A/batch_1.jpg or https://…"
+                      value={newImageUrl}
+                      onChange={e => setNewImageUrl(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addImageUrl(); } }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-success fw-bold text-nowrap"
+                      onClick={addImageUrl}
+                    >
+                      <i className="bi bi-plus-lg me-1"></i> Add URL
+                    </button>
+                  </div>
+
+                  {/* Save image URLs immediately to DB */}
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm fw-bold w-100 mb-3"
+                    onClick={handleSaveImageUrls}
+                    disabled={savingImages}
+                  >
+                    {savingImages
+                      ? <><i className="bi bi-hourglass-split me-1"></i> Saving to DB…</>
+                      : <><i className="bi bi-cloud-check-fill me-1"></i> Save Image URLs to DB (All Pages Update Instantly)</>}
+                  </button>
+
+                  {/* File upload */}
+                  <div>
                     <label className="form-label extra-small text-muted mb-1">
-                      {uploading ? 'Uploading selected photos...' : 'Upload New Replacement Photos from Device:'}
+                      {uploading ? 'Uploading…' : 'Or upload photos from device (auto-adds URL to list above):'}
                     </label>
-                    <input 
-                      type="file" 
-                      className="form-control form-control-sm" 
-                      multiple 
+                    <input
+                      type="file"
+                      className="form-control form-control-sm"
+                      multiple
                       accept="image/*"
                       disabled={uploading}
                       onChange={handleAddEditFiles}

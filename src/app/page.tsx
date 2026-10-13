@@ -211,7 +211,7 @@ export default function Home() {
                   <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-2 border-top">
                     <div className="d-flex align-items-center text-muted small">
                       <i className="bi bi-truck text-success fs-5 me-2"></i>
-                      <span>Dispatched in custom wooden crates within 24-48 hours</span>
+                      <span>Dispatched securely within 24-48 hours of confirmation</span>
                     </div>
 
                     <div className="d-flex gap-2">
@@ -269,7 +269,7 @@ export default function Home() {
                 <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift bg-white">
                   <div className="position-relative" style={{ height: '200px' }}>
                     <img 
-                      src={palm.images[0]} 
+                      src={palm.images && palm.images.length > 0 ? palm.images[0] : '/images/placeholder.png'} 
                       alt={palm.name} 
                       className="w-100 h-100 object-fit-cover"
                     />

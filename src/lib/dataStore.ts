@@ -162,8 +162,7 @@ let parentPalms: ParentPalm[] = [
     "nutCharacteristics": "Large spherical nuts with 180g dry copra content and sweet water volume > 350ml.",
     "whySelected": "Unmatched germination rate (>94%) and strong wind tolerance during coastal storms.",
     "images": [
-      "/images/parent-palms/EM-MP-001/tree_1.jpeg",
-      "/images/parent-palms/EM-MP-001/tree_2.jpg"
+      "/images/parent-palms/EM-MP-001/1791893869628_WhatsApp_Image_2026-10-13_at_5.31.07_PM__1_.jpeg"
     ]
   },
   {
@@ -178,8 +177,7 @@ let parentPalms: ParentPalm[] = [
     "nutCharacteristics": "Medium-large green seed nuts with thick fibrous husk providing natural drought shield.",
     "whySelected": "High sapling survival rate in farm seedbed and rapid initial growth phase.",
     "images": [
-      "/images/parent-palms/EM-MP-002/tree_1.jpeg",
-      "/images/parent-palms/EM-MP-002/tree_2.jpeg"
+      "/images/parent-palms/EM-MP-002/1791893855443_WhatsApp_Image_2026-10-13_at_5.31.07_PM.jpeg"
     ]
   },
   {
@@ -329,8 +327,8 @@ let batches: Batch[] = [
     "description": "Fully matured 12-month saplings ready for immediate orchard planting. Strong root systems and thick collars.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0126-A/batch_1.jpeg",
-      "/images/batches/EM-0126-A/batch_2.jpg"
+      "/images/batches/EM-0126-A/1791893428452_WhatsApp_Image_2026-10-13_at_5.32.57_PM.jpeg",
+      "/images/batches/EM-0126-A/1791893438300_WhatsApp_Image_2026-10-13_at_5.32.58_PM__1_.jpeg"
     ]
   },
   {
@@ -349,8 +347,9 @@ let batches: Batch[] = [
     "description": "Vigorous 11-month saplings from River Bank parent tree. High leaf frond count and dark green color.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0226-B/batch_1.jpeg",
-      "/images/batches/EM-0226-B/batch_2.jpeg"
+      "/images/batches/EM-0226-B/1791893468990_WhatsApp_Image_2026-10-13_at_5.32.58_PM__1_.jpeg",
+      "/images/batches/EM-0226-B/1791893468994_WhatsApp_Image_2026-10-13_at_5.33.28_PM.jpeg",
+      "/images/batches/EM-0226-B/1791893468997_WhatsApp_Image_2026-10-13_at_5.33.29_PM__1_.jpeg"
     ]
   },
   {
@@ -369,8 +368,8 @@ let batches: Batch[] = [
     "description": "Coastal shield cultivar batch. Engineered for wind resistance and saline soil adaptability.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0326-C/batch_1.jpeg",
-      "/images/batches/EM-0326-C/batch_2.jpeg"
+      "/images/batches/EM-0326-C/1791893490267_WhatsApp_Image_2026-10-13_at_5.35.08_PM.jpeg",
+      "/images/batches/EM-0326-C/1791893490273_WhatsApp_Image_2026-10-13_at_5.35.09_PM__1_.jpeg"
     ]
   },
   {
@@ -389,8 +388,8 @@ let batches: Batch[] = [
     "description": "Heavy collar saplings raised under drip irrigation with balanced organic compost nutrition.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0426-D/batch_1.jpeg",
-      "/images/batches/EM-0426-D/batch_2.jpeg"
+      "/images/batches/EM-0426-D/1791893523072_WhatsApp_Image_2026-10-13_at_5.32.07_PM.jpeg",
+      "/images/batches/EM-0426-D/1791893523076_WhatsApp_Image_2026-10-13_at_5.32.08_PM.jpeg"
     ]
   },
   {
@@ -409,8 +408,7 @@ let batches: Batch[] = [
     "description": "Hardened saplings with high heat tolerance. Excellent candidate for dry zone planting.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0526-E/batch_1.jpeg",
-      "/images/batches/EM-0526-E/batch_2.jpeg"
+      "/images/batches/EM-0526-E/1791893552971_WhatsApp_Image_2026-10-13_at_5.33.31_PM.jpeg"
     ]
   },
   {
@@ -429,8 +427,7 @@ let batches: Batch[] = [
     "description": "Special monsoon edition batch. Prepared for planting at the start of South-West monsoon.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0626-F/batch_1.jpeg",
-      "/images/batches/EM-0626-F/batch_2.jpeg"
+      "/images/batches/EM-0626-F/1791893569761_WhatsApp_Image_2026-10-13_at_5.33.32_PM.jpeg"
     ]
   },
   {
@@ -449,8 +446,7 @@ let batches: Batch[] = [
     "description": "Offspring of 91-year old Giant Mother Tree #7. High genetic purity and extra large nut potential.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0726-G/batch_1.jpg",
-      "/images/batches/EM-0726-G/batch_2.jpeg"
+      "/images/batches/EM-0726-G/1791893590270_WhatsApp_Image_2026-10-13_at_5.33.31_PM.jpeg"
     ]
   },
   {
@@ -469,8 +465,7 @@ let batches: Batch[] = [
     "description": "Rapid sprouting batch with quick root anchorage and dense frond emergence.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0826-H/batch_1.jpg",
-      "/images/batches/EM-0826-H/batch_2.jpeg"
+      "/images/batches/EM-0826-H/1791893653192_WhatsApp_Image_2026-10-13_at_5.31.10_PM__1_.jpeg"
     ]
   },
   {
@@ -489,8 +484,9 @@ let batches: Batch[] = [
     "description": "Drought resilient sapling lineage from Highland Block parent palm.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-0926-I/batch_1.jpeg",
-      "/images/batches/EM-0926-I/batch_2.jpeg"
+      "/images/batches/EM-0926-I/1791893677048_WhatsApp_Image_2026-10-13_at_5.32.06_PM__1_.jpeg",
+      "/images/batches/EM-0926-I/1791893677053_WhatsApp_Image_2026-10-13_at_5.32.07_PM.jpeg",
+      "/images/batches/EM-0926-I/1791893677056_WhatsApp_Image_2026-10-13_at_5.32.08_PM.jpeg"
     ]
   },
   {
@@ -509,8 +505,11 @@ let batches: Batch[] = [
     "description": "Dual-purpose saplings. Ideal for both tender coconut harvesting and copra production.",
     "viewsCount": 120,
     "images": [
-      "/images/batches/EM-1026-J/batch_1.jpeg",
-      "/images/batches/EM-1026-J/batch_2.jpeg"
+      "/images/batches/EM-1026-J/1791893696732_WhatsApp_Image_2026-10-13_at_5.32.06_PM.jpeg",
+      "/images/batches/EM-1026-J/1791893712664_WhatsApp_Image_2026-10-13_at_5.31.10_PM__1_.jpeg",
+      "/images/batches/EM-1026-J/1791893712667_WhatsApp_Image_2026-10-13_at_5.33.31_PM.jpeg",
+      "/images/batches/EM-1026-J/1791893712714_WhatsApp_Image_2026-10-13_at_5.33.32_PM.jpeg",
+      "/images/batches/EM-1026-J/1791893712717_WhatsApp_Image_2026-10-13_at_5.33.27_PM.jpeg"
     ]
   }
 ];
@@ -768,7 +767,7 @@ const faqs: FAQ[] = [
   {
     id: 'faq-2',
     question: 'How are saplings packaged for long-distance transport?',
-    answer: 'Saplings are rooted in nutrient-rich media and secured inside custom-fitted wooden crates to protect the fronds and collar stem during transit.',
+    answer: 'Saplings are carefully rooted in nutrient-rich growing media and wrapped with protective moisture-retaining material to safeguard the fronds and collar stem during transit. Each consignment is securely packed and dispatched via trusted freight partners.',
     category: 'Logistics'
   }
 ];
@@ -784,6 +783,141 @@ let enquiries: Enquiry[] = [
     createdAt: '2026-10-04T14:30:00Z'
   }
 ];
+
+// Persistent File Storage (JSON DB in src/data/db.json)
+function getNodeModule(moduleName: string) {
+  if (typeof window === 'undefined' && typeof process !== 'undefined' && process.versions?.node) {
+    try {
+      const req = eval('require');
+      return req(moduleName);
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+const fsModule = getNodeModule('fs');
+const pathModule = getNodeModule('path');
+
+const DB_FILE = pathModule && typeof process !== 'undefined'
+  ? pathModule.join(process.cwd(), 'src', 'data', 'db.json')
+  : null;
+
+function loadFromDb() {
+  if (!fsModule || !DB_FILE) return;
+  try {
+    if (fsModule.existsSync(DB_FILE)) {
+      const raw = fsModule.readFileSync(DB_FILE, 'utf-8');
+      const data = JSON.parse(raw);
+      if (Array.isArray(data.parentPalms) && data.parentPalms.length > 0) parentPalms = data.parentPalms;
+      if (Array.isArray(data.batches) && data.batches.length > 0) batches = data.batches;
+      if (Array.isArray(data.bookings)) bookings = data.bookings;
+      if (Array.isArray(data.adjustments)) adjustments = data.adjustments;
+      if (Array.isArray(data.enquiries)) enquiries = data.enquiries;
+    }
+  } catch (err) {
+    console.error('Failed to load from DB file:', err);
+  }
+}
+
+function saveToDb() {
+  if (!fsModule || !pathModule || !DB_FILE) return;
+  try {
+    const dir = pathModule.dirname(DB_FILE);
+    if (!fsModule.existsSync(dir)) {
+      fsModule.mkdirSync(dir, { recursive: true });
+    }
+    const payload = {
+      parentPalms,
+      batches,
+      bookings,
+      adjustments,
+      enquiries,
+      reviews,
+      faqs
+    };
+    fsModule.writeFileSync(DB_FILE, JSON.stringify(payload, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save to DB file:', err);
+  }
+}
+
+// Auto-scan to ensure newly uploaded or existing photos on disk are never missed
+function syncDiskImages() {
+  if (!fsModule || !pathModule || typeof process === 'undefined') return;
+  try {
+    const batchesBase = pathModule.join(process.cwd(), 'public', 'images', 'batches');
+    const palmsBase = pathModule.join(process.cwd(), 'public', 'images', 'parent-palms');
+
+    // Sync batches
+    if (fsModule.existsSync(batchesBase)) {
+      batches.forEach(b => {
+        const folder = pathModule.join(batchesBase, b.batchCode);
+        if (fsModule.existsSync(folder)) {
+          const files = fsModule.readdirSync(folder).filter((f: string) => /\.(jpe?g|png|webp)$/i.test(f));
+          if (files.length > 0) {
+            const diskUrls = files.map((f: string) => `/images/batches/${b.batchCode}/${f}`);
+            const validCurrent = (b.images || []).filter(img => {
+              if (img.startsWith('/images/')) {
+                const diskPath = pathModule.join(process.cwd(), 'public', img.replace(/^\//, ''));
+                return fsModule.existsSync(diskPath);
+              }
+              return true;
+            });
+            if (validCurrent.length === 0) {
+              b.images = diskUrls;
+            } else {
+              const combined = [...validCurrent];
+              diskUrls.forEach(url => {
+                if (!combined.includes(url)) combined.push(url);
+              });
+              b.images = combined;
+            }
+          }
+        }
+      });
+    }
+
+    // Sync parent palms
+    if (fsModule.existsSync(palmsBase)) {
+      parentPalms.forEach(p => {
+        const folder = pathModule.join(palmsBase, p.code);
+        if (fsModule.existsSync(folder)) {
+          const files = fsModule.readdirSync(folder).filter((f: string) => /\.(jpe?g|png|webp)$/i.test(f));
+          if (files.length > 0) {
+            const diskUrls = files.map((f: string) => `/images/parent-palms/${p.code}/${f}`);
+            const validCurrent = (p.images || []).filter(img => {
+              if (img.startsWith('/images/')) {
+                const diskPath = pathModule.join(process.cwd(), 'public', img.replace(/^\//, ''));
+                return fsModule.existsSync(diskPath);
+              }
+              return true;
+            });
+            if (validCurrent.length === 0) {
+              p.images = diskUrls;
+            } else {
+              const combined = [...validCurrent];
+              diskUrls.forEach(url => {
+                if (!combined.includes(url)) combined.push(url);
+              });
+              p.images = combined;
+            }
+          }
+        }
+      });
+    }
+  } catch (e) {
+    console.error('Error syncing disk images:', e);
+  }
+}
+
+// Initial hydration from DB and sync with disk
+if (typeof window === 'undefined') {
+  loadFromDb();
+  syncDiskImages();
+  saveToDb();
+}
 
 // Helper Functions
 export const DataStore = {
@@ -856,6 +990,7 @@ export const DataStore = {
     };
 
     batches.unshift(created);
+    saveToDb();
     return DataStore.getBatchByCode(created.batchCode);
   },
 
@@ -880,11 +1015,13 @@ export const DataStore = {
       if (parent) target.parentPalmId = parent.id;
     }
 
+    saveToDb();
     return DataStore.getBatchByCode(code);
   },
 
   deleteBatch: (code: string) => {
     batches = batches.filter(b => b.batchCode.toLowerCase() !== code.toLowerCase());
+    saveToDb();
     return true;
   },
 
@@ -902,6 +1039,7 @@ export const DataStore = {
       images: data.images && data.images.length > 0 ? data.images : defaultTreeImages
     };
     parentPalms.unshift(created);
+    saveToDb();
     return created;
   },
 
@@ -912,11 +1050,13 @@ export const DataStore = {
     );
     if (!target) throw new Error('Parent palm mother tree not found');
     Object.assign(target, updatedFields);
+    saveToDb();
     return target;
   },
 
   deleteParentPalm: (codeOrId: string) => {
     parentPalms = parentPalms.filter(p => p.id !== codeOrId && p.code.toLowerCase() !== codeOrId.toLowerCase());
+    saveToDb();
     return true;
   },
 
@@ -930,12 +1070,14 @@ export const DataStore = {
       createdAt: new Date().toISOString()
     };
     enquiries.unshift(created);
+    saveToDb();
     return created;
   },
 
   updateEnquiryStatus: (id: string, status: 'NEW' | 'CONTACTED' | 'RESOLVED') => {
     const target = enquiries.find(e => e.id === id);
     if (target) target.status = status;
+    saveToDb();
     return target;
   },
 
@@ -981,6 +1123,7 @@ export const DataStore = {
     };
 
     bookings.unshift(newBooking);
+    saveToDb();
     return newBooking;
   },
 
@@ -994,6 +1137,7 @@ export const DataStore = {
     if (courierName) bk.courierName = courierName;
     if (trackingId) bk.trackingId = trackingId;
     if (status === 'Dispatched') bk.dispatchDate = new Date().toISOString().split('T')[0];
+    saveToDb();
     return bk;
   },
 
@@ -1013,7 +1157,14 @@ export const DataStore = {
     };
     
     adjustments.unshift(newAdj);
+    saveToDb();
     return newAdj;
+  },
+
+  syncImagesWithDisk: () => {
+    syncDiskImages();
+    saveToDb();
+    return true;
   },
 
   getAdjustments: () => adjustments,

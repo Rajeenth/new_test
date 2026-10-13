@@ -1,9 +1,32 @@
 import Link from 'next/link';
+import { DataStore } from '@/lib/dataStore';
+
+export const dynamic = 'force-dynamic';
 
 export default function OurFarmPage() {
+  // Pull images from DB so any admin update is instantly reflected here
+  const palms = DataStore.getParentPalms();
+  const batches = DataStore.getBatches();
+
+  // Helper: get first image URL from a list, with a fallback
+  const img = (urls: string[] | undefined) =>
+    urls && urls.length > 0 ? urls[0] : '/images/placeholder.png';
+
+  const palm1 = palms.find(p => p.code === 'EM-MP-001');
+  const palm2 = palms.find(p => p.code === 'EM-MP-002');
+  const batch1 = batches.find(b => b.batchCode === 'EM-0126-A');
+  const batch2 = batches.find(b => b.batchCode === 'EM-0226-B');
+
+  // Gallery: 3 photos from DB
+  const galleryPhotos = [
+    { src: img(batch1?.images), alt: 'Farm Seedbeds', label: 'Farm Seedbeds' },
+    { src: img(palm1?.images), alt: 'Mother Palms', label: 'Ancestral Mother Tree Grove' },
+    { src: img(batch2?.images), alt: 'Saplings Row', label: '7–9 Month Sapling Rows' },
+  ];
+
   return (
     <>
-      {/* Hero with Local Folder Background */}
+      {/* Hero */}
       <section className="hero-ambient-mesh text-white py-5 position-relative overflow-hidden border-bottom border-success border-opacity-25">
         <div className="container position-relative py-5">
           <span className="badge bg-success px-3 py-2 fs-6 rounded-pill mb-3">OUR HERITAGE</span>
@@ -31,7 +54,13 @@ export default function OurFarmPage() {
               </p>
             </div>
             <div className="col-md-6">
-              <img src="/images/parent-palms/EM-MP-001/tree_1.jpg" alt="Ancestral Grove" className="img-fluid rounded-4 shadow-sm" style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }} />
+              {/* Image URL read from DB — updates instantly when admin changes it */}
+              <img
+                src={img(palm1?.images)}
+                alt="Ancestral Grove"
+                className="img-fluid rounded-4 shadow-sm"
+                style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }}
+              />
             </div>
           </div>
 
@@ -44,7 +73,12 @@ export default function OurFarmPage() {
               </p>
             </div>
             <div className="col-md-6">
-              <img src="/images/batches/EM-0126-A/batch_1.jpg" alt="Mother Palms Selection" className="img-fluid rounded-4 shadow-sm" style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }} />
+              <img
+                src={img(batch1?.images)}
+                alt="Mother Palms Selection"
+                className="img-fluid rounded-4 shadow-sm"
+                style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }}
+              />
             </div>
           </div>
 
@@ -57,7 +91,12 @@ export default function OurFarmPage() {
               </p>
             </div>
             <div className="col-md-6">
-              <img src="/images/parent-palms/EM-MP-002/tree_1.jpg" alt="Online Farm Platform" className="img-fluid rounded-4 shadow-sm" style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }} />
+              <img
+                src={img(palm2?.images)}
+                alt="Online Farm Platform"
+                className="img-fluid rounded-4 shadow-sm"
+                style={{ maxHeight: '300px', objectFit: 'cover', width: '100%' }}
+              />
             </div>
           </div>
         </div>
@@ -72,30 +111,21 @@ export default function OurFarmPage() {
           </div>
 
           <div className="row g-3">
-            <div className="col-md-4 col-6">
-              <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <img src="/images/batches/EM-0126-A/batch_1.jpg" alt="Farm Plot" className="img-fluid object-fit-cover" style={{ height: '220px', width: '100%' }} />
-                <div className="card-body p-2 text-center bg-white">
-                  <small className="fw-bold text-dark">Farm Seedbeds</small>
+            {galleryPhotos.map((photo, idx) => (
+              <div key={idx} className="col-md-4 col-6">
+                <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
+                  <img
+                    src={photo.src}
+                    alt={photo.alt}
+                    className="img-fluid object-fit-cover"
+                    style={{ height: '220px', width: '100%' }}
+                  />
+                  <div className="card-body p-2 text-center bg-white">
+                    <small className="fw-bold text-dark">{photo.label}</small>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-4 col-6">
-              <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <img src="/images/parent-palms/EM-MP-001/tree_1.jpg" alt="Mother Palms" className="img-fluid object-fit-cover" style={{ height: '220px', width: '100%' }} />
-                <div className="card-body p-2 text-center bg-white">
-                  <small className="fw-bold text-dark">Ancestral Mother Tree Grove</small>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 col-6">
-              <div className="card border-0 shadow-sm rounded-4 overflow-hidden">
-                <img src="/images/batches/EM-0226-B/batch_1.jpg" alt="Saplings Row" className="img-fluid object-fit-cover" style={{ height: '220px', width: '100%' }} />
-                <div className="card-body p-2 text-center bg-white">
-                  <small className="fw-bold text-dark">7-9 Month Sapling Rows</small>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
           <div className="text-center mt-5">

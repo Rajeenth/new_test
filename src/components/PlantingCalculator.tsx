@@ -21,7 +21,7 @@ export default function PlantingCalculator() {
   const treesPerAcre = spacingType === 'triangular' ? triangularPerAcre : squarePerAcre;
   const totalTrees = Math.round(acres * treesPerAcre);
   const totalCost = totalTrees * unitPrice;
-  const cratesNeeded = Math.ceil(totalTrees / 12);
+  const batchesNeeded = Math.ceil(totalTrees / 25);
   const pitSize = spacingDistance <= 22 ? '2.5 ft × 2.5 ft × 2.5 ft' : '3 ft × 3 ft × 3 ft';
 
   return (
@@ -294,9 +294,9 @@ export default function PlantingCalculator() {
               </div>
 
               <div className="col-6 pt-2">
-                <small className="text-light opacity-75 d-block extra-small text-uppercase">Transport Crates</small>
-                <span className="fw-bold text-light">~{cratesNeeded} Wooden Crates</span>
-                <small className="d-block text-light opacity-75 extra-small">Protective transit</small>
+                <small className="text-light opacity-75 d-block extra-small text-uppercase">Batches Needed</small>
+                <span className="fw-bold text-light">~{batchesNeeded} Batches</span>
+                <small className="d-block text-light opacity-75 extra-small">25 saplings / batch</small>
               </div>
             </div>
 
