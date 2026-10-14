@@ -17,8 +17,12 @@ export async function POST(request: Request) {
     const safeTag = tag.replace(/[^a-zA-Z0-9_-]/g, '');
     const targetDir = path.join(process.cwd(), 'public', 'images', category, safeTag);
 
-    // Ensure directory exists
-    await mkdir(targetDir, { recursive: true });
+    let canWriteToDisk = true;
+    try {
+      await mkdir(targetDir, { recursive: true });
+    } catch {
+      canWriteToDisk = false;
+    }
 
     const savedUrls: string[] = [];
 
@@ -26,22 +30,34 @@ export async function POST(request: Request) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // Generate clean filename
-      const timeStamp = Date.now();
-      const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
-      const filename = `${timeStamp}_${sanitizedFilename}`;
-      const filePath = path.join(targetDir, filename);
+      let savedToDisk = false;
+      if (canWriteToDisk) {
+        try {
+          const timeStamp = Date.now();
+          const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+          const filename = `${timeStamp}_${sanitizedFilename}`;
+          const filePath = path.join(targetDir, filename);
+          await writeFile(filePath, buffer);
+          const publicUrl = `/images/${category}/${safeTag}/${filename}`;
+          savedUrls.push(publicUrl);
+          savedToDisk = true;
+        } catch {
+          savedToDisk = false;
+        }
+      }
 
-      await writeFile(filePath, buffer);
-      
-      const publicUrl = `/images/${category}/${safeTag}/${filename}`;
-      savedUrls.push(publicUrl);
+      // If read-only filesystem (e.g. Vercel serverless /var/task), fall back to base64 Data URL
+      if (!savedToDisk) {
+        const mimeType = file.type || 'image/jpeg';
+        const base64 = buffer.toString('base64');
+        savedUrls.push(`data:${mimeType};base64,${base64}`);
+      }
     }
 
     return NextResponse.json({ 
       success: true, 
       urls: savedUrls,
-      message: `Uploaded ${savedUrls.length} image(s) to /images/${category}/${safeTag}/` 
+      message: `Processed ${savedUrls.length} image(s)` 
     });
   } catch (error: any) {
     console.error('File upload error:', error);

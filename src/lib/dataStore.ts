@@ -804,11 +804,23 @@ const DB_FILE = pathModule && typeof process !== 'undefined'
   ? pathModule.join(process.cwd(), 'src', 'data', 'db.json')
   : null;
 
+const TMP_DB_FILE = pathModule && typeof process !== 'undefined'
+  ? pathModule.join('/tmp', 'coconut_db.json')
+  : null;
+
 function loadFromDb() {
-  if (!fsModule || !DB_FILE) return;
+  if (!fsModule) return;
   try {
-    if (fsModule.existsSync(DB_FILE)) {
-      const raw = fsModule.readFileSync(DB_FILE, 'utf-8');
+    let raw: string | null = null;
+    // Prefer /tmp file if runtime mutations occurred in this serverless container
+    if (TMP_DB_FILE && fsModule.existsSync(TMP_DB_FILE)) {
+      try { raw = fsModule.readFileSync(TMP_DB_FILE, 'utf-8'); } catch {}
+    }
+    if (!raw && DB_FILE && fsModule.existsSync(DB_FILE)) {
+      try { raw = fsModule.readFileSync(DB_FILE, 'utf-8'); } catch {}
+    }
+
+    if (raw) {
       const data = JSON.parse(raw);
       if (Array.isArray(data.parentPalms) && data.parentPalms.length > 0) parentPalms = data.parentPalms;
       if (Array.isArray(data.batches) && data.batches.length > 0) batches = data.batches;
@@ -817,17 +829,13 @@ function loadFromDb() {
       if (Array.isArray(data.enquiries)) enquiries = data.enquiries;
     }
   } catch (err) {
-    console.error('Failed to load from DB file:', err);
+    // Non-fatal fallback to initial data
   }
 }
 
 function saveToDb() {
-  if (!fsModule || !pathModule || !DB_FILE) return;
+  if (!fsModule || !pathModule) return;
   try {
-    const dir = pathModule.dirname(DB_FILE);
-    if (!fsModule.existsSync(dir)) {
-      fsModule.mkdirSync(dir, { recursive: true });
-    }
     const payload = {
       parentPalms,
       batches,
@@ -837,9 +845,31 @@ function saveToDb() {
       reviews,
       faqs
     };
-    fsModule.writeFileSync(DB_FILE, JSON.stringify(payload, null, 2), 'utf-8');
+    const jsonStr = JSON.stringify(payload, null, 2);
+
+    let saved = false;
+    // Try saving to DB_FILE first (local dev / persistent storage)
+    if (DB_FILE) {
+      try {
+        const dir = pathModule.dirname(DB_FILE);
+        if (!fsModule.existsSync(dir)) {
+          fsModule.mkdirSync(dir, { recursive: true });
+        }
+        fsModule.writeFileSync(DB_FILE, jsonStr, 'utf-8');
+        saved = true;
+      } catch {
+        // Read-only filesystem in serverless production
+      }
+    }
+
+    // In serverless environments (e.g. Vercel), fall back to writable /tmp
+    if (!saved && TMP_DB_FILE) {
+      try {
+        fsModule.writeFileSync(TMP_DB_FILE, jsonStr, 'utf-8');
+      } catch {}
+    }
   } catch (err) {
-    console.error('Failed to save to DB file:', err);
+    // Silently continue with in-memory state if filesystem is strictly read-only
   }
 }
 

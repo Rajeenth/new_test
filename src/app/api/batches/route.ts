@@ -16,10 +16,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'batchCode is required' }, { status: 400 });
     }
 
-    // Automatically create dedicated folder for new batch on disk
-    const safeCode = body.batchCode.replace(/[^a-zA-Z0-9_-]/g, '');
-    const folderPath = path.join(process.cwd(), 'public', 'images', 'batches', safeCode);
-    await mkdir(folderPath, { recursive: true });
+    // In local environments, attempt creating dedicated folder on disk; ignore in read-only serverless environments
+    try {
+      const safeCode = body.batchCode.replace(/[^a-zA-Z0-9_-]/g, '');
+      const folderPath = path.join(process.cwd(), 'public', 'images', 'batches', safeCode);
+      await mkdir(folderPath, { recursive: true });
+    } catch {
+      // In serverless / read-only production environments (e.g. Vercel), disk folder creation is non-fatal
+    }
 
     const newBatch = DataStore.addBatch(body);
     return NextResponse.json(newBatch, { status: 201 });

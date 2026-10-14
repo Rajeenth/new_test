@@ -15,10 +15,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Mother tree code and name required' }, { status: 400 });
     }
 
-    // Automatically create dedicated folder for new Mother Tree on disk
-    const safeCode = body.code.replace(/[^a-zA-Z0-9_-]/g, '');
-    const folderPath = path.join(process.cwd(), 'public', 'images', 'parent-palms', safeCode);
-    await mkdir(folderPath, { recursive: true });
+    // In local environments, attempt creating dedicated folder on disk; ignore in read-only serverless environments
+    try {
+      const safeCode = body.code.replace(/[^a-zA-Z0-9_-]/g, '');
+      const folderPath = path.join(process.cwd(), 'public', 'images', 'parent-palms', safeCode);
+      await mkdir(folderPath, { recursive: true });
+    } catch {
+      // In serverless / read-only production environments (e.g. Vercel), disk folder creation is non-fatal
+    }
 
     const created = DataStore.addParentPalm(body);
     return NextResponse.json(created, { status: 201 });
