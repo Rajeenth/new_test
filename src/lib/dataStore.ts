@@ -857,8 +857,8 @@ function syncDiskImages() {
         if (fsModule.existsSync(folder)) {
           const files = fsModule.readdirSync(folder).filter((f: string) => /\.(jpe?g|png|webp)$/i.test(f));
           if (files.length > 0) {
-            const diskUrls = files.map((f: string) => `/images/batches/${b.batchCode}/${f}`);
-            const validCurrent = (b.images || []).filter(img => {
+            const diskUrls: string[] = files.map((f: string) => `/images/batches/${b.batchCode}/${f}`);
+            const validCurrent: string[] = (b.images || []).filter((img: string) => {
               if (img.startsWith('/images/')) {
                 const diskPath = pathModule.join(process.cwd(), 'public', img.replace(/^\//, ''));
                 return fsModule.existsSync(diskPath);
@@ -868,8 +868,8 @@ function syncDiskImages() {
             if (validCurrent.length === 0) {
               b.images = diskUrls;
             } else {
-              const combined = [...validCurrent];
-              diskUrls.forEach(url => {
+              const combined: string[] = [...validCurrent];
+              diskUrls.forEach((url: string) => {
                 if (!combined.includes(url)) combined.push(url);
               });
               b.images = combined;
@@ -886,8 +886,8 @@ function syncDiskImages() {
         if (fsModule.existsSync(folder)) {
           const files = fsModule.readdirSync(folder).filter((f: string) => /\.(jpe?g|png|webp)$/i.test(f));
           if (files.length > 0) {
-            const diskUrls = files.map((f: string) => `/images/parent-palms/${p.code}/${f}`);
-            const validCurrent = (p.images || []).filter(img => {
+            const diskUrls: string[] = files.map((f: string) => `/images/parent-palms/${p.code}/${f}`);
+            const validCurrent: string[] = (p.images || []).filter((img: string) => {
               if (img.startsWith('/images/')) {
                 const diskPath = pathModule.join(process.cwd(), 'public', img.replace(/^\//, ''));
                 return fsModule.existsSync(diskPath);
@@ -897,8 +897,8 @@ function syncDiskImages() {
             if (validCurrent.length === 0) {
               p.images = diskUrls;
             } else {
-              const combined = [...validCurrent];
-              diskUrls.forEach(url => {
+              const combined: string[] = [...validCurrent];
+              diskUrls.forEach((url: string) => {
                 if (!combined.includes(url)) combined.push(url);
               });
               p.images = combined;
