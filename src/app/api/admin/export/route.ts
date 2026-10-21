@@ -1,0 +1,156 @@
+import { NextResponse } from 'next/server';
+import { DataStore } from '@/lib/dataStore';
+import * as XLSX from 'xlsx';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const type = (searchParams.get('type') || 'all').toLowerCase();
+
+    const batches = DataStore.getBatches();
+    const bookings = DataStore.getBookings();
+    const palms = DataStore.getParentPalms();
+    const enquiries = DataStore.getEnquiries();
+    const adjustments = DataStore.getAdjustments();
+
+    const wb = XLSX.utils.book_new();
+
+    // 1. Executive Summary
+    const totalProduced = batches.reduce((acc, b) => acc + (b.totalQuantity || 0) + (b.inventoryAdjustments || 0), 0);
+    const totalBooked = batches.reduce((acc, b) => acc + (b.bookedQuantity || 0), 0);
+    const totalAvailable = batches.reduce((acc, b) => acc + (b.availableQuantity || 0), 0);
+    const totalRevenue = bookings.filter(b => b.paymentStatus === 'PAID').reduce((acc, b) => acc + (b.totalAmount || 0), 0);
+
+    const summaryData = [
+      { 'Metric': 'Export Generated At', 'Value': new Date().toLocaleString('en-IN') },
+      { 'Metric': 'Farm Name', 'Value': 'Eathamozhy Coconut Farm (GI-Tagged Cultivar)' },
+      { 'Metric': 'Total Batches Managed', 'Value': batches.length },
+      { 'Metric': 'Total Mother Trees Registered', 'Value': palms.length },
+      { 'Metric': 'Total Saplings Produced (Net)', 'Value': totalProduced },
+      { 'Metric': 'Total Saplings Booked / Sold', 'Value': totalBooked },
+      { 'Metric': 'Total Saplings Available Now', 'Value': totalAvailable },
+      { 'Metric': 'Total Orders Logged', 'Value': bookings.length },
+      { 'Metric': 'Confirmed Paid Revenue', 'Value': `₹${totalRevenue.toLocaleString('en-IN')}` },
+      { 'Metric': 'Total Customer Enquiries', 'Value': enquiries.length },
+      { 'Metric': 'Total Inventory Audit Logs', 'Value': adjustments.length },
+    ];
+
+    // 2. Orders Sheet
+    const ordersData = bookings.map(b => ({
+      'Booking ID': b.bookingId,
+      'Customer Name': b.customerName,
+      'Mobile': b.mobile,
+      'WhatsApp': b.whatsapp,
+      'Batch Code': b.batchCode,
+      'Quantity (Saplings)': b.quantity,
+      'Subtotal (₹)': b.subtotal,
+      'Delivery Charge (₹)': b.deliveryCharge,
+      'Total Amount (₹)': b.totalAmount,
+      'Payment Status': b.paymentStatus,
+      'Order Status': b.bookingStatus,
+      'Delivery Address': b.address,
+      'District': b.district,
+      'State': b.state,
+      'PIN Code': b.pinCode,
+      'Expected Delivery Date': b.expectedDeliveryDate || 'N/A',
+      'Delivery Service / Courier': b.courierName || 'Pending Assignment',
+      'Tracking ID / Hub': b.trackingId || 'Pending',
+      'Dispatch Date': b.dispatchDate || 'N/A',
+      'Booking Created At': b.createdAt ? new Date(b.createdAt).toLocaleString('en-IN') : 'N/A',
+    }));
+
+    // 3. Batches Sheet
+    const batchesData = batches.map(b => {
+      const net = (b.totalQuantity || 0) + (b.inventoryAdjustments || 0);
+      return {
+        'Batch Code': b.batchCode,
+        'Batch Name': b.name,
+        'Mother Tree Code': b.parentPalmCode,
+        'Sapling Age': b.age || 'N/A',
+        'Average Height': b.height || 'N/A',
+        'Harvest Date': b.harvestDate,
+        'Seeded Date': b.seededDate,
+        'Initial Total Quantity': b.totalQuantity,
+        'Inventory Adjustments': b.inventoryAdjustments || 0,
+        'Net Stock (Produced)': net,
+        'Booked / Sold Quantity': b.bookedQuantity,
+        'Available Live Stock': b.availableQuantity,
+        'Price per Sapling (₹)': b.price,
+        'Batch Status': b.status,
+        'Views Count': b.viewsCount || 0,
+        'Description': b.description,
+      };
+    });
+
+    // 4. Mother Trees Sheet
+    const treesData = palms.map(p => ({
+      'Tree Code': p.code,
+      'Mother Tree Name': p.name,
+      'Age (Years)': p.age,
+      'Grove Location': p.location,
+      'Health Status': p.healthStatus,
+      'Recorded Yield History': p.yieldHistory,
+      'Nut & Water Characteristics': p.nutCharacteristics,
+      'Why Selected': p.whySelected,
+      'Description': p.description,
+      'Photos Count': p.images ? p.images.length : 0,
+    }));
+
+    // 5. Enquiries Sheet
+    const enquiriesData = enquiries.map(e => ({
+      'Enquiry ID': e.id,
+      'Customer Name': e.name,
+      'Mobile': e.mobile,
+      'Location': e.location || 'N/A',
+      'Message / Requirement': e.message,
+      'Status': e.status,
+      'Received At': e.createdAt ? new Date(e.createdAt).toLocaleString('en-IN') : 'N/A',
+    }));
+
+    // 6. Inventory Audit Sheet
+    const auditData = adjustments.map(a => ({
+      'Audit ID': a.id,
+      'Batch Code': a.batchCode,
+      'Quantity Change (+/-)': a.quantityChange,
+      'Audit Reason': a.reason,
+      'Admin Staff Name': a.adminName,
+      'Logged At': a.createdAt ? new Date(a.createdAt).toLocaleString('en-IN') : 'N/A',
+    }));
+
+    if (type === 'orders') {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(ordersData), 'Orders');
+    } else if (type === 'batches') {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(batchesData), 'Batches');
+    } else if (type === 'trees' || type === 'mother-trees') {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(treesData), 'Mother Trees');
+    } else if (type === 'enquiries') {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(enquiriesData), 'Enquiries');
+    } else if (type === 'audit' || type === 'inventory') {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(auditData), 'Inventory Audit');
+    } else {
+      // Complete export: all tabs included
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summaryData), 'Overview Summary');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(ordersData), 'Customer Orders');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(batchesData), 'Batch Management');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(treesData), 'Mother Trees Registry');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(enquiriesData), 'Customer Enquiries');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(auditData), 'Inventory Audit Log');
+    }
+
+    const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    const today = new Date().toISOString().split('T')[0];
+    const filename = `Eathamozhy_${type === 'all' ? 'Complete_Farm_Data' : type}_${today}.xlsx`;
+
+    return new NextResponse(buf, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': `attachment; filename="${filename}"`,
+      },
+    });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Export failed' }, { status: 500 });
+  }
+}

@@ -99,7 +99,7 @@ export default function ContactPage() {
                         type="text" 
                         className="form-control" 
                         required 
-                        placeholder="Full name" 
+                        placeholder="Name" 
                         value={formData.name}
                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                       />

@@ -71,9 +71,19 @@ export default function AdminInventoryAdjustmentPage() {
             <span className="badge bg-warning text-dark me-2">AUDIT LOG ENFORCED</span>
             <h3 className="fw-bold mb-0 text-light d-inline align-middle">Inventory Adjustment</h3>
           </div>
-          <Link href="/admin" className="btn btn-outline-light btn-sm">
-            <i className="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
-          </Link>
+          <div className="d-flex gap-2 align-items-center">
+            <a 
+              href="/api/admin/export?type=audit" 
+              download 
+              className="btn btn-outline-success btn-sm text-light border-success"
+              title="Download Audit Logs in Excel"
+            >
+              <i className="bi bi-file-earmark-excel-fill text-success me-1"></i> Export Audit Logs (.xlsx)
+            </a>
+            <Link href="/admin" className="btn btn-outline-light btn-sm">
+              <i className="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
+            </Link>
+          </div>
         </div>
       </section>
 

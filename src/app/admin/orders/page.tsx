@@ -80,9 +80,19 @@ export default function AdminOrdersPage() {
             <span className="badge bg-primary me-2">ORDERS ADMIN</span>
             <h3 className="fw-bold mb-0 text-light d-inline align-middle">Order & Payment Verification</h3>
           </div>
-          <Link href="/admin" className="btn btn-outline-light btn-sm">
-            <i className="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
-          </Link>
+          <div className="d-flex gap-2 align-items-center">
+            <a 
+              href="/api/admin/export?type=orders" 
+              download 
+              className="btn btn-outline-success btn-sm text-light border-success"
+              title="Download Orders in Excel"
+            >
+              <i className="bi bi-file-earmark-excel-fill text-success me-1"></i> Export Orders (.xlsx)
+            </a>
+            <Link href="/admin" className="btn btn-outline-light btn-sm">
+              <i className="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
+            </Link>
+          </div>
         </div>
       </section>
 

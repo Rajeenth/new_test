@@ -388,7 +388,7 @@ Please confirm our order and dispatch details. Thank you!`;
                         name="customerName" 
                         className="form-control" 
                         required 
-                        placeholder="e.g. Rajeenth Kumar"
+                        placeholder="Name"
                         value={formData.customerName}
                         onChange={handleInputChange}
                       />

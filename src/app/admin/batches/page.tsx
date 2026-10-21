@@ -335,9 +335,19 @@ export default function AdminBatchesPage() {
             <span className="badge bg-success me-2">ADMIN PORTAL</span>
             <h3 className="fw-bold mb-0 text-light d-inline align-middle">Batch & Image Management</h3>
           </div>
-          <Link href="/admin" className="btn btn-outline-light btn-sm">
-            <i className="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
-          </Link>
+          <div className="d-flex gap-2 align-items-center">
+            <a 
+              href="/api/admin/export?type=batches" 
+              download 
+              className="btn btn-outline-success btn-sm text-light border-success"
+              title="Download Batches in Excel"
+            >
+              <i className="bi bi-file-earmark-excel-fill text-success me-1"></i> Export Batches (.xlsx)
+            </a>
+            <Link href="/admin" className="btn btn-outline-light btn-sm">
+              <i className="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
+            </Link>
+          </div>
         </div>
       </section>
 

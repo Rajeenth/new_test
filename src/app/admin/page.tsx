@@ -40,14 +40,25 @@ export default function AdminDashboardPage() {
     <>
       <section className="bg-dark text-white py-4 border-bottom border-success border-3">
         <div className="container">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
               <span className="badge bg-danger mb-1">SECURE ADMIN PORTAL</span>
               <h1 className="fw-bold mb-0 text-light">Eathamozhy Farm Admin Dashboard</h1>
             </div>
-            <Link href="/" className="btn btn-outline-light btn-sm">
-              <i className="bi bi-box-arrow-right me-1"></i> Exit Admin
-            </Link>
+            <div className="d-flex align-items-center gap-2">
+              <a 
+                href="/api/admin/export?type=all" 
+                download
+                className="btn btn-success fw-bold btn-sm d-inline-flex align-items-center gap-1 shadow-sm"
+                title="Download all farm records in Excel spreadsheet"
+              >
+                <i className="bi bi-file-earmark-excel-fill fs-6"></i>
+                <span>Download All Data (Excel)</span>
+              </a>
+              <Link href="/" className="btn btn-outline-light btn-sm">
+                <i className="bi bi-box-arrow-right me-1"></i> Exit Admin
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -106,6 +117,57 @@ export default function AdminDashboardPage() {
               <span className="badge bg-info-subtle text-info border border-info p-2">
                 <i className="bi bi-shield-lock me-1"></i> Audit Logging: Enabled
               </span>
+            </div>
+          </div>
+
+          {/* Farm Data Export & Excel Reports Center */}
+          <div className="card border-0 shadow-sm rounded-4 p-4 mb-5 bg-white border-start border-success border-4">
+            <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+              <div>
+                <h5 className="fw-bold text-dark mb-1">
+                  <i className="bi bi-file-earmark-spreadsheet-fill text-success me-2"></i>
+                  Farm Data Export &amp; Excel Reports
+                </h5>
+                <p className="text-secondary small mb-0">
+                  Download all verified records (Mother Trees, Customer Orders, Batch Stock, Enquiries, Inventory Audit) directly to Excel (.xlsx).
+                </p>
+              </div>
+              <a 
+                href="/api/admin/export?type=all" 
+                download
+                className="btn btn-success fw-bold px-4 py-2 d-inline-flex align-items-center gap-2 shadow-sm"
+              >
+                <i className="bi bi-cloud-arrow-down-fill fs-5"></i>
+                <span>Download Complete Farm Workbook (.xlsx)</span>
+              </a>
+            </div>
+
+            <div className="row g-2 pt-3 border-top">
+              <div className="col-6 col-lg">
+                <a href="/api/admin/export?type=trees" download className="btn btn-outline-secondary btn-sm w-100 text-dark fw-semibold d-flex align-items-center justify-content-center gap-1 py-2 rounded-3 hover-lift-subtle">
+                  <i className="bi bi-tree-fill text-success"></i> Mother Trees (.xlsx)
+                </a>
+              </div>
+              <div className="col-6 col-lg">
+                <a href="/api/admin/export?type=orders" download className="btn btn-outline-secondary btn-sm w-100 text-dark fw-semibold d-flex align-items-center justify-content-center gap-1 py-2 rounded-3 hover-lift-subtle">
+                  <i className="bi bi-bag-check-fill text-primary"></i> Orders &amp; Bookings (.xlsx)
+                </a>
+              </div>
+              <div className="col-6 col-lg">
+                <a href="/api/admin/export?type=batches" download className="btn btn-outline-secondary btn-sm w-100 text-dark fw-semibold d-flex align-items-center justify-content-center gap-1 py-2 rounded-3 hover-lift-subtle">
+                  <i className="bi bi-grid-3x3-gap-fill text-success"></i> Batches Inventory (.xlsx)
+                </a>
+              </div>
+              <div className="col-6 col-lg">
+                <a href="/api/admin/export?type=enquiries" download className="btn btn-outline-secondary btn-sm w-100 text-dark fw-semibold d-flex align-items-center justify-content-center gap-1 py-2 rounded-3 hover-lift-subtle">
+                  <i className="bi bi-envelope-paper-fill text-warning"></i> Enquiries (.xlsx)
+                </a>
+              </div>
+              <div className="col-6 col-lg">
+                <a href="/api/admin/export?type=audit" download className="btn btn-outline-secondary btn-sm w-100 text-dark fw-semibold d-flex align-items-center justify-content-center gap-1 py-2 rounded-3 hover-lift-subtle">
+                  <i className="bi bi-shield-check text-secondary"></i> Inventory Audit (.xlsx)
+                </a>
+              </div>
             </div>
           </div>
 
