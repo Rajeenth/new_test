@@ -732,7 +732,7 @@ let adjustments: InventoryAdjustment[] = [
   }
 ];
 
-const reviews: Review[] = [
+let reviews: Review[] = [
   {
     id: 'rev-1',
     customerName: 'Murugan K.',
@@ -757,7 +757,7 @@ const reviews: Review[] = [
   }
 ];
 
-const faqs: FAQ[] = [
+let faqs: FAQ[] = [
   {
     id: 'faq-1',
     question: 'Where are your saplings grown?',
@@ -827,6 +827,8 @@ function loadFromDb() {
       if (Array.isArray(data.bookings)) bookings = data.bookings;
       if (Array.isArray(data.adjustments)) adjustments = data.adjustments;
       if (Array.isArray(data.enquiries)) enquiries = data.enquiries;
+      if (Array.isArray(data.reviews) && data.reviews.length > 0) reviews = data.reviews;
+      if (Array.isArray(data.faqs) && data.faqs.length > 0) faqs = data.faqs;
     }
   } catch (err) {
     // Non-fatal fallback to initial data
@@ -952,6 +954,7 @@ if (typeof window === 'undefined') {
 // Helper Functions
 export const DataStore = {
   getBatches: () => {
+    loadFromDb();
     return batches.map(b => {
       // Dynamically sum active (non-cancelled) bookings for this batch
       const activeBookings = bookings.filter(
@@ -977,6 +980,7 @@ export const DataStore = {
   },
 
   getOldestAvailableBatch: () => {
+    loadFromDb();
     const all = DataStore.getBatches();
     const readyAvailable = all.filter(b => b.availableQuantity > 0 && b.status !== 'COMING_SOON');
     readyAvailable.sort((a, b) => new Date(a.seededDate).getTime() - new Date(b.seededDate).getTime());
@@ -984,6 +988,7 @@ export const DataStore = {
   },
 
   getBatchByCode: (code: string) => {
+    loadFromDb();
     const all = DataStore.getBatches();
     const b = all.find(x => x.batchCode.toLowerCase() === code.toLowerCase());
     if (!b) return null;
@@ -995,6 +1000,7 @@ export const DataStore = {
   },
 
   addBatch: (newBatchData: any) => {
+    loadFromDb();
     const combinedName = newBatchData.name.includes(newBatchData.batchCode) 
       ? newBatchData.name 
       : `${newBatchData.name} (${newBatchData.batchCode})`;
@@ -1025,6 +1031,7 @@ export const DataStore = {
   },
 
   updateBatch: (code: string, updatedFields: Partial<Batch>) => {
+    loadFromDb();
     const target = batches.find(b => b.batchCode.toLowerCase() === code.toLowerCase());
     if (!target) throw new Error('Batch not found');
 
@@ -1050,18 +1057,24 @@ export const DataStore = {
   },
 
   deleteBatch: (code: string) => {
+    loadFromDb();
     batches = batches.filter(b => b.batchCode.toLowerCase() !== code.toLowerCase());
     saveToDb();
     return true;
   },
 
-  getParentPalms: () => parentPalms,
+  getParentPalms: () => {
+    loadFromDb();
+    return parentPalms;
+  },
 
   getParentPalmByCode: (code: string) => {
+    loadFromDb();
     return parentPalms.find(p => p.code.toLowerCase() === code.toLowerCase()) || null;
   },
 
   addParentPalm: (data: Omit<ParentPalm, 'id'>) => {
+    loadFromDb();
     const defaultTreeImages = [`/images/parent-palms/${data.code}/tree_1.jpg`];
     const created: ParentPalm = {
       ...data,
@@ -1074,6 +1087,7 @@ export const DataStore = {
   },
 
   updateParentPalm: (identifier: string, updatedFields: Partial<ParentPalm>) => {
+    loadFromDb();
     const target = parentPalms.find(p => 
       p.id === identifier || 
       p.code.toLowerCase() === identifier.toLowerCase()
@@ -1085,14 +1099,19 @@ export const DataStore = {
   },
 
   deleteParentPalm: (codeOrId: string) => {
+    loadFromDb();
     parentPalms = parentPalms.filter(p => p.id !== codeOrId && p.code.toLowerCase() !== codeOrId.toLowerCase());
     saveToDb();
     return true;
   },
 
-  getEnquiries: () => enquiries,
+  getEnquiries: () => {
+    loadFromDb();
+    return enquiries;
+  },
 
   addEnquiry: (data: Omit<Enquiry, 'id' | 'status' | 'createdAt'>) => {
+    loadFromDb();
     const created: Enquiry = {
       ...data,
       id: `enq-${Date.now()}`,
@@ -1105,15 +1124,20 @@ export const DataStore = {
   },
 
   updateEnquiryStatus: (id: string, status: 'NEW' | 'CONTACTED' | 'RESOLVED') => {
+    loadFromDb();
     const target = enquiries.find(e => e.id === id);
     if (target) target.status = status;
     saveToDb();
     return target;
   },
 
-  getBookings: () => bookings,
+  getBookings: () => {
+    loadFromDb();
+    return bookings;
+  },
 
   getBookingsByMobile: (mobile: string) => {
+    loadFromDb();
     const cleanMob = mobile.trim();
     if (!cleanMob) return [];
     return bookings.filter(b => 
@@ -1124,6 +1148,7 @@ export const DataStore = {
   },
 
   getBookingById: (bookingId: string, mobile?: string) => {
+    loadFromDb();
     const cleanId = bookingId.trim().toUpperCase();
     return bookings.find(b => {
       const matchId = b.bookingId.toUpperCase() === cleanId;
@@ -1135,6 +1160,7 @@ export const DataStore = {
   },
 
   createBooking: (data: Omit<Booking, 'id' | 'bookingId' | 'createdAt' | 'paymentStatus' | 'bookingStatus'> & { paymentScreenshotUrl?: string }) => {
+    loadFromDb();
     const batch = DataStore.getBatchByCode(data.batchCode);
     if (!batch || batch.availableQuantity < data.quantity) {
       throw new Error('Requested quantity exceeds available stock.');
@@ -1158,6 +1184,7 @@ export const DataStore = {
   },
 
   updateBookingStatus: (bookingId: string, status: Booking['bookingStatus'], courierName?: string, trackingId?: string) => {
+    loadFromDb();
     const bk = bookings.find(b => b.bookingId === bookingId);
     if (!bk) return null;
     bk.bookingStatus = status;
@@ -1172,6 +1199,7 @@ export const DataStore = {
   },
 
   adjustInventory: (batchCode: string, change: number, reason: string, adminName: string) => {
+    loadFromDb();
     const targetBatch = batches.find(b => b.batchCode.toLowerCase() === batchCode.toLowerCase());
     if (!targetBatch) throw new Error('Batch not found');
     
@@ -1197,7 +1225,16 @@ export const DataStore = {
     return true;
   },
 
-  getAdjustments: () => adjustments,
-  getReviews: () => reviews,
-  getFaqs: () => faqs
+  getAdjustments: () => {
+    loadFromDb();
+    return adjustments;
+  },
+  getReviews: () => {
+    loadFromDb();
+    return reviews;
+  },
+  getFaqs: () => {
+    loadFromDb();
+    return faqs;
+  }
 };

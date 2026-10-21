@@ -132,20 +132,13 @@ export default function Navbar() {
                 })}
 
                 <div className="d-flex gap-2 pt-2 mt-2 border-top border-secondary border-opacity-25">
-                  <Link 
-                    href="/admin" 
-                    onClick={() => setIsOpen(false)}
-                    className="btn btn-sm btn-outline-secondary w-50 py-2 text-light"
-                  >
-                    <i className="bi bi-shield-lock me-1"></i> Admin Portal
-                  </Link>
                   <a 
                     href="https://wa.me/919486880641" 
                     target="_blank" 
                     rel="noreferrer"
-                    className="btn btn-sm btn-success w-50 py-2 fw-semibold"
+                    className="btn btn-sm btn-success w-100 py-2 fw-semibold"
                   >
-                    <i className="bi bi-whatsapp me-1"></i> WhatsApp
+                    <i className="bi bi-whatsapp me-1"></i> WhatsApp Helpline
                   </a>
                 </div>
               </div>

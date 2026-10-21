@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { DataStore } from '@/lib/dataStore';
-import ImageCarousel from '@/components/ImageCarousel';
+import LiveStockTerminal from '@/components/LiveStockTerminal';
 import PlantingCalculator from '@/components/PlantingCalculator';
 
 export const dynamic = 'force-dynamic';
@@ -97,140 +97,7 @@ export default function Home() {
       </section>
 
       {/* 2. REAL-TIME LIVE STOCK TERMINAL CARD */}
-      <section className="py-5 bg-light position-relative">
-        <div className="container">
-          <div 
-            className="card border-0 shadow-lg rounded-4 overflow-hidden position-relative mt-n5 hover-lift"
-            style={{ marginTop: '-4.5rem', zIndex: 10, background: '#ffffff' }}
-          >
-            {/* Terminal Header */}
-            <div className="py-3 px-4 d-flex flex-wrap justify-content-between align-items-center" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 100%)' }}>
-              <div className="d-flex align-items-center gap-2">
-                <span className="pulse-indicator"></span>
-                <span className="badge bg-warning text-dark fw-bold px-2 py-1">LIVE STOCK TERMINAL</span>
-                <span className="text-light fw-bold small d-none d-sm-inline">Ready for Immediate Booking & Dispatch</span>
-              </div>
-              <div className="d-flex align-items-center gap-2">
-                <span className="badge bg-success bg-opacity-25 border border-success text-white fw-bold px-3 py-1">
-                  Batch: {currentBatch?.batchCode}
-                </span>
-              </div>
-            </div>
-
-            <div className="card-body p-4 p-md-5">
-              <div className="row align-items-center g-4">
-                
-                {/* Photo Carousel Preview */}
-                <div className="col-lg-5">
-                  <div className="rounded-4 overflow-hidden shadow-sm bg-dark position-relative w-100" style={{ height: '360px' }}>
-                    <ImageCarousel 
-                      images={currentBatch?.images || []} 
-                      title={currentBatch?.name || 'Featured Batch'} 
-                      carouselId="home-featured-carousel" 
-                      height="360px"
-                      showThumbnails={false}
-                      objectFit="cover"
-                    />
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center mt-2 px-1">
-                    <span className="badge bg-light text-secondary border extra-small">
-                      <i className="bi bi-camera-fill me-1"></i> Real Batch Photos
-                    </span>
-                    <span className="text-danger small fw-semibold">
-                      <i className="bi bi-eye-fill me-1"></i> 🔥 {currentBatch?.viewsCount || 140} farmers viewed today
-                    </span>
-                  </div>
-                </div>
-
-                {/* Stock Numbers & Live Math */}
-                <div className="col-lg-7">
-                  <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
-                    <div>
-                      <h3 className="fw-bold text-dark mb-1">{currentBatch?.name}</h3>
-                      <p className="text-secondary small mb-3">
-                        Age: <strong className="text-dark">{currentBatch?.age}</strong> &bull; Avg Height: <strong className="text-dark">{currentBatch?.height}</strong> &bull; Mother Tree: <Link href={`/parent-palm/${currentBatch?.parentPalmCode}`} className="text-success fw-bold text-decoration-none hover-underline">{currentBatch?.parentPalmCode} <i className="bi bi-arrow-up-right-square small"></i></Link>
-                      </p>
-                    </div>
-                    <div className="text-end">
-                      <span className="display-6 fw-bold text-success">₹{currentBatch?.price}</span>
-                      <small className="text-muted d-block extra-small">per sapling</small>
-                    </div>
-                  </div>
-
-                  {(() => {
-                    const totalQty = currentBatch?.totalQuantity || 0;
-                    const adj = currentBatch?.inventoryAdjustments || 0;
-                    const netProduced = totalQty + adj;
-                    const bookedQty = currentBatch?.bookedQuantity || 0;
-                    const availQty = currentBatch?.availableQuantity || 0;
-                    const bookedPct = netProduced > 0 ? Number(((bookedQty / netProduced) * 100).toFixed(1)) : 0;
-
-                    return (
-                      <>
-                        <div className="row text-center bg-light p-3 rounded-4 mb-3 border g-2">
-                          <div className="col-4 border-end">
-                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Net Stock</small>
-                            <span className="fs-4 fw-bold text-dark">{netProduced}</span>
-                            {adj !== 0 && (
-                              <small className="text-muted extra-small d-block text-nowrap">({adj > 0 ? `+${adj}` : adj} audit)</small>
-                            )}
-                          </div>
-                          <div className="col-4 border-end">
-                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Booked / Sold</small>
-                            <span className="fs-4 fw-bold text-primary">{bookedQty}</span>
-                            <small className="text-muted extra-small d-block">confirmed</small>
-                          </div>
-                          <div className="col-4">
-                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Available Now</small>
-                            <span className="fs-4 fw-bold text-success">{availQty}</span>
-                            <small className="text-success extra-small d-block fw-semibold">ready</small>
-                          </div>
-                        </div>
-
-                        {/* Booking Progress Bar */}
-                        <div className="mb-4">
-                          <div className="d-flex justify-content-between small fw-bold mb-1">
-                            <span className="text-secondary">Batch Booking Progress</span>
-                            <span className="text-success">{bookedPct}% Booked ({availQty} saplings left)</span>
-                          </div>
-                          <div className="progress" style={{ height: '12px', borderRadius: '9999px', backgroundColor: '#e2e8f0' }}>
-                            <div 
-                              className="progress-bar bg-success progress-bar-striped progress-bar-animated" 
-                              role="progressbar" 
-                              style={{ width: `${bookedPct}%` }}
-                              aria-valuenow={bookedPct} 
-                              aria-valuemin={0} 
-                              aria-valuemax={100}
-                            ></div>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })()}
-
-                  <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-2 border-top">
-                    <div className="d-flex align-items-center text-muted small">
-                      <i className="bi bi-truck text-success fs-5 me-2"></i>
-                      <span>Dispatched securely within 24-48 hours of confirmation</span>
-                    </div>
-
-                    <div className="d-flex gap-2">
-                      <Link href={`/batches/${currentBatch?.batchCode}`} className="btn btn-outline-secondary px-3 py-2 rounded-3 fw-semibold">
-                        View Pedigree
-                      </Link>
-                      <Link href={`/book/${currentBatch?.batchCode}`} className="btn-emerald text-decoration-none px-4 py-2 rounded-3 fs-6">
-                        <i className="bi bi-cart-check-fill"></i> Book Now
-                      </Link>
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <LiveStockTerminal initialBatch={currentBatch} initialBatches={batches} />
 
       {/* 3. INTERACTIVE COCONUT GROVE PLANTING CALCULATOR */}
       <section className="py-5 bg-white border-top border-bottom">
@@ -254,7 +121,7 @@ export default function Home() {
         <div className="container">
           <div className="text-center mb-5">
             <span className="badge-gi-pill mb-2">
-              <i className="bi bi-shield-check me-1"></i> PARENT PALM GENETICS
+              <i className="bi bi-tree-fill me-1"></i> MOTHER TREE REGISTRY
             </span>
             <h2 className="fw-bold text-dark">Verified Mother Trees (Pedigree Origin)</h2>
             <p className="text-muted mx-auto" style={{ maxWidth: '680px' }}>
@@ -287,8 +154,14 @@ export default function Home() {
                       <small className="text-muted d-block mb-2">
                         <i className="bi bi-geo-alt-fill text-danger me-1"></i> {palm.location}
                       </small>
-                      <p className="extra-small text-secondary mb-3 line-clamp-3">
+                      <div className="d-flex gap-1 mb-2 flex-wrap">
+                        <span className="badge bg-success-subtle text-success border border-success extra-small">{palm.healthStatus.split(' ')[0]}</span>
+                      </div>
+                      <p className="extra-small text-secondary mb-1" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                         {palm.yieldHistory}
+                      </p>
+                      <p className="extra-small text-primary mb-2" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                        <i className="bi bi-droplet-half me-1"></i>{palm.nutCharacteristics}
                       </p>
                     </div>
 
@@ -296,7 +169,7 @@ export default function Home() {
                       href={`/parent-palm/${palm.code}`} 
                       className="btn btn-outline-success btn-sm w-100 fw-semibold rounded-3"
                     >
-                      Inspect Profile <i className="bi bi-arrow-right ms-1"></i>
+                      Inspect Full Profile <i className="bi bi-arrow-right ms-1"></i>
                     </Link>
                   </div>
                 </div>

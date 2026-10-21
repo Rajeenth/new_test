@@ -102,7 +102,6 @@ export default function RootLayout({
                   <li className="mb-2"><Link href="/guide" className="text-decoration-none text-light opacity-80 hover-opacity-100">Coconut Planting Guide</Link></li>
                   <li className="mb-2"><Link href="/faq" className="text-decoration-none text-light opacity-80 hover-opacity-100">Frequently Asked Questions</Link></li>
                   <li className="mb-2"><Link href="/contact" className="text-decoration-none text-light opacity-80 hover-opacity-100">Contact Farm Office</Link></li>
-                  <li className="mb-2"><Link href="/admin" className="text-decoration-none text-light opacity-80 hover-opacity-100">Admin Portal</Link></li>
                 </ul>
               </div>
 
