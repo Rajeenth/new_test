@@ -2,12 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import * as XLSX from 'xlsx';
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('ALL');
+
+  // Date Range Filters
+  const [orderStartDate, setOrderStartDate] = useState('');
+  const [orderEndDate, setOrderEndDate] = useState('');
+  const [deliveryStartDate, setDeliveryStartDate] = useState('');
+  const [deliveryEndDate, setDeliveryEndDate] = useState('');
 
   // Modal / Dispatch State
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -64,33 +71,152 @@ export default function AdminOrdersPage() {
     }
   };
 
+  // Filtered orders with date range & expected delivery date range
   const filteredOrders = orders.filter(o => {
-    const matchSearch = o.bookingId.toLowerCase().includes(search.toLowerCase()) || 
-                        o.customerName.toLowerCase().includes(search.toLowerCase()) ||
-                        o.mobile.includes(search);
+    const matchSearch = !search || 
+      o.bookingId?.toLowerCase().includes(search.toLowerCase()) || 
+      o.customerName?.toLowerCase().includes(search.toLowerCase()) ||
+      o.mobile?.includes(search) ||
+      o.batchCode?.toLowerCase().includes(search.toLowerCase()) ||
+      o.district?.toLowerCase().includes(search.toLowerCase());
+
     const matchStatus = filterStatus === 'ALL' || o.bookingStatus === filterStatus;
-    return matchSearch && matchStatus;
+
+    // Order Placed Date (from o.createdAt YYYY-MM-DD)
+    const orderDate = o.createdAt ? o.createdAt.split('T')[0] : '';
+    const matchOrderStart = !orderStartDate || (orderDate && orderDate >= orderStartDate);
+    const matchOrderEnd = !orderEndDate || (orderDate && orderDate <= orderEndDate);
+
+    // Expected Delivery Date (from o.expectedDeliveryDate YYYY-MM-DD)
+    const delivDate = o.expectedDeliveryDate ? o.expectedDeliveryDate.split('T')[0] : '';
+    const matchDelivStart = !deliveryStartDate || (delivDate && delivDate >= deliveryStartDate);
+    const matchDelivEnd = !deliveryEndDate || (delivDate && delivDate <= deliveryEndDate);
+
+    return matchSearch && matchStatus && matchOrderStart && matchOrderEnd && matchDelivStart && matchDelivEnd;
   });
+
+  const isAnyFilterActive = Boolean(
+    search || 
+    filterStatus !== 'ALL' || 
+    orderStartDate || 
+    orderEndDate || 
+    deliveryStartDate || 
+    deliveryEndDate
+  );
+
+  const clearAllFilters = () => {
+    setSearch('');
+    setFilterStatus('ALL');
+    setOrderStartDate('');
+    setOrderEndDate('');
+    setDeliveryStartDate('');
+    setDeliveryEndDate('');
+  };
+
+  const handlePreset = (preset: string) => {
+    const today = new Date().toISOString().split('T')[0];
+    if (preset === 'today') {
+      setOrderStartDate(today);
+      setOrderEndDate(today);
+    } else if (preset === 'oct-orders') {
+      setOrderStartDate('2026-10-01');
+      setOrderEndDate('2026-10-31');
+    } else if (preset === 'deliv-oct') {
+      setDeliveryStartDate('2026-10-01');
+      setDeliveryEndDate('2026-10-31');
+    } else if (preset === 'deliv-upcoming') {
+      setDeliveryStartDate('2026-10-20');
+      setDeliveryEndDate('2026-10-31');
+    }
+  };
+
+  // Construct dynamic API export URL
+  const getExportUrl = () => {
+    const params = new URLSearchParams();
+    params.set('type', 'orders');
+    if (search.trim()) params.set('search', search.trim());
+    if (filterStatus !== 'ALL') params.set('status', filterStatus);
+    if (orderStartDate) params.set('orderStartDate', orderStartDate);
+    if (orderEndDate) params.set('orderEndDate', orderEndDate);
+    if (deliveryStartDate) params.set('deliveryStartDate', deliveryStartDate);
+    if (deliveryEndDate) params.set('deliveryEndDate', deliveryEndDate);
+    return `/api/admin/export?${params.toString()}`;
+  };
+
+  // Instant Client-Side Excel Export for the filtered set
+  const downloadFilteredOrdersExcel = () => {
+    if (filteredOrders.length === 0) {
+      alert('⚠️ No orders match your active filter criteria to export.');
+      return;
+    }
+
+    const exportRows = filteredOrders.map(b => ({
+      'Booking ID': b.bookingId,
+      'Order Date': b.createdAt ? b.createdAt.split('T')[0] : 'N/A',
+      'Expected Delivery Date': b.expectedDeliveryDate || 'N/A',
+      'Customer Name': b.customerName,
+      'Mobile': b.mobile,
+      'WhatsApp': b.whatsapp || b.mobile,
+      'Batch Code': b.batchCode,
+      'Quantity (Saplings)': b.quantity,
+      'Subtotal (₹)': b.subtotal,
+      'Delivery Charge (₹)': b.deliveryCharge,
+      'Total Amount (₹)': b.totalAmount,
+      'Payment Status': b.paymentStatus,
+      'Order Status': b.bookingStatus,
+      'Delivery Address': b.address,
+      'District': b.district,
+      'State': b.state,
+      'PIN Code': b.pinCode,
+      'Delivery Service / Courier': b.deliveryService || b.courierName || 'ST Couriers',
+      'Nearest Delivery Hub': b.nearestHub || 'District Main Hub',
+      'Tracking ID': b.trackingId || 'Pending',
+      'Dispatch Date': b.dispatchDate || 'N/A',
+      'Special Instructions': b.specialInstructions || 'None',
+      'Booking Created Timestamp': b.createdAt ? new Date(b.createdAt).toLocaleString('en-IN') : 'N/A',
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(exportRows);
+    XLSX.utils.book_append_sheet(wb, ws, 'Filtered Orders');
+
+    const parts: string[] = ['Eathamozhy_Orders'];
+    if (orderStartDate || orderEndDate) parts.push(`Placed_${orderStartDate || 'Start'}_to_${orderEndDate || 'End'}`);
+    if (deliveryStartDate || deliveryEndDate) parts.push(`Deliv_${deliveryStartDate || 'Start'}_to_${deliveryEndDate || 'End'}`);
+    if (filterStatus !== 'ALL') parts.push(filterStatus.replace(/\s+/g, '_'));
+    parts.push(new Date().toISOString().split('T')[0]);
+
+    XLSX.writeFile(wb, `${parts.join('_')}.xlsx`);
+  };
 
   return (
     <>
       <section className="bg-dark text-white py-3 border-bottom">
-        <div className="container d-flex justify-content-between align-items-center">
+        <div className="container d-flex flex-wrap justify-content-between align-items-center gap-2">
           <div>
             <span className="badge bg-primary me-2">ORDERS ADMIN</span>
-            <h3 className="fw-bold mb-0 text-light d-inline align-middle">Order & Payment Verification</h3>
+            <h3 className="fw-bold mb-0 text-light d-inline align-middle">Order &amp; Payment Verification</h3>
           </div>
-          <div className="d-flex gap-2 align-items-center">
-            <a 
-              href="/api/admin/export?type=orders" 
-              download 
-              className="btn btn-outline-success btn-sm text-light border-success"
-              title="Download Orders in Excel"
+          <div className="d-flex flex-wrap gap-2 align-items-center">
+            <button 
+              type="button"
+              onClick={downloadFilteredOrdersExcel}
+              className="btn btn-success btn-sm fw-bold shadow-sm d-flex align-items-center gap-1"
+              title="Download only the currently filtered orders in Excel"
             >
-              <i className="bi bi-file-earmark-excel-fill text-success me-1"></i> Export Orders (.xlsx)
+              <i className="bi bi-file-earmark-excel-fill text-white"></i>
+              <span>Download Filtered ({filteredOrders.length})</span>
+            </button>
+            <a 
+              href={getExportUrl()} 
+              download 
+              className="btn btn-outline-light btn-sm"
+              title="Download via API endpoint"
+            >
+              <i className="bi bi-cloud-arrow-down me-1"></i> API Link
             </a>
-            <Link href="/admin" className="btn btn-outline-light btn-sm">
-              <i className="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
+            <Link href="/admin" className="btn btn-outline-secondary btn-sm text-light">
+              <i className="bi bi-arrow-left me-1"></i> Admin Dashboard
             </Link>
           </div>
         </div>
@@ -99,20 +225,42 @@ export default function AdminOrdersPage() {
       <section className="py-5 bg-light">
         <div className="container">
           
-          {/* Search & Filter Bar */}
+          {/* Advanced Search & Filter Bar */}
           <div className="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h5 className="fw-bold text-dark mb-0">
+                <i className="bi bi-funnel-fill text-success me-2"></i> Filter &amp; Search Orders
+              </h5>
+              {isAnyFilterActive && (
+                <button 
+                  onClick={clearAllFilters} 
+                  className="btn btn-outline-danger btn-sm py-1 px-3 rounded-pill extra-small fw-semibold"
+                >
+                  <i className="bi bi-x-circle me-1"></i> Clear All Filters
+                </button>
+              )}
+            </div>
+
             <div className="row g-3">
-              <div className="col-md-6">
+              {/* Keyword Search */}
+              <div className="col-md-7">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  <i className="bi bi-search me-1"></i> Search Order
+                </label>
                 <input 
                   type="text" 
                   className="form-control" 
-                  placeholder="Search by Booking ID, Customer Name, or Mobile..."
+                  placeholder="Search by Booking ID, Customer Name, Mobile, District, Batch..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
               </div>
 
-              <div className="col-md-6">
+              {/* Status Filter */}
+              <div className="col-md-5">
+                <label className="form-label small fw-bold text-secondary mb-1">
+                  <i className="bi bi-flag-fill me-1"></i> Fulfillment Status
+                </label>
                 <select 
                   className="form-select"
                   value={filterStatus}
@@ -128,12 +276,171 @@ export default function AdminOrdersPage() {
                   <option value="Cancelled">Cancelled</option>
                 </select>
               </div>
+
+              {/* Order Date Range */}
+              <div className="col-md-6">
+                <div className="p-3 bg-light rounded-3 border">
+                  <label className="form-label small fw-bold text-dark mb-2 d-flex align-items-center gap-1">
+                    <i className="bi bi-calendar-event text-primary"></i>
+                    <span>Order Placed Date Range</span>
+                    {(orderStartDate || orderEndDate) && (
+                      <span className="badge bg-primary-subtle text-primary extra-small ms-auto">Active</span>
+                    )}
+                  </label>
+                  <div className="row g-2">
+                    <div className="col-6">
+                      <small className="text-muted d-block extra-small">From Date</small>
+                      <input 
+                        type="date" 
+                        className="form-control form-control-sm"
+                        value={orderStartDate}
+                        onChange={e => setOrderStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="col-6">
+                      <small className="text-muted d-block extra-small">To Date</small>
+                      <input 
+                        type="date" 
+                        className="form-control form-control-sm"
+                        value={orderEndDate}
+                        onChange={e => setOrderEndDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expected Delivery Date Range */}
+              <div className="col-md-6">
+                <div className="p-3 bg-light rounded-3 border">
+                  <label className="form-label small fw-bold text-dark mb-2 d-flex align-items-center gap-1">
+                    <i className="bi bi-truck text-success"></i>
+                    <span>Expected Delivery Date Range</span>
+                    {(deliveryStartDate || deliveryEndDate) && (
+                      <span className="badge bg-success-subtle text-success extra-small ms-auto">Active</span>
+                    )}
+                  </label>
+                  <div className="row g-2">
+                    <div className="col-6">
+                      <small className="text-muted d-block extra-small">From Date</small>
+                      <input 
+                        type="date" 
+                        className="form-control form-control-sm"
+                        value={deliveryStartDate}
+                        onChange={e => setDeliveryStartDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="col-6">
+                      <small className="text-muted d-block extra-small">To Date</small>
+                      <input 
+                        type="date" 
+                        className="form-control form-control-sm"
+                        value={deliveryEndDate}
+                        onChange={e => setDeliveryEndDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Preset Buttons & Export Bar */}
+              <div className="col-12 pt-2 border-top">
+                <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                  <div className="d-flex flex-wrap align-items-center gap-1">
+                    <small className="text-muted fw-bold me-1 extra-small">QUICK PRESETS:</small>
+                    <button 
+                      type="button" 
+                      onClick={() => handlePreset('oct-orders')} 
+                      className="btn btn-sm btn-outline-secondary py-1 extra-small rounded-pill"
+                    >
+                      Oct 2026 Placed
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => handlePreset('deliv-upcoming')} 
+                      className="btn btn-sm btn-outline-secondary py-1 extra-small rounded-pill"
+                    >
+                      Delivering Late Oct (20-31)
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => handlePreset('deliv-oct')} 
+                      className="btn btn-sm btn-outline-secondary py-1 extra-small rounded-pill"
+                    >
+                      All Oct Deliveries
+                    </button>
+                    {isAnyFilterActive && (
+                      <button 
+                        type="button" 
+                        onClick={clearAllFilters} 
+                        className="btn btn-sm btn-link text-danger py-1 extra-small text-decoration-none"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Primary Download Filtered Data Button */}
+                  <button 
+                    type="button"
+                    onClick={downloadFilteredOrdersExcel}
+                    className="btn btn-success fw-bold px-3 py-2 shadow-sm d-inline-flex align-items-center gap-2"
+                  >
+                    <i className="bi bi-file-earmark-excel-fill fs-5"></i>
+                    <span>Download Only Filtered Data (.xlsx) — {filteredOrders.length} {filteredOrders.length === 1 ? 'Order' : 'Orders'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Active Filter Pills Bar */}
+              {isAnyFilterActive && (
+                <div className="col-12 pt-1">
+                  <div className="d-flex flex-wrap align-items-center gap-2 bg-light p-2 rounded-3 border">
+                    <small className="text-muted fw-bold extra-small">ACTIVE FILTERS ({filteredOrders.length} of {orders.length} orders match):</small>
+                    {search && (
+                      <span className="badge bg-secondary">
+                        Search: &ldquo;{search}&rdquo;
+                        <i className="bi bi-x ms-1 cursor-pointer" onClick={() => setSearch('')}></i>
+                      </span>
+                    )}
+                    {filterStatus !== 'ALL' && (
+                      <span className="badge bg-primary">
+                        Status: {filterStatus}
+                        <i className="bi bi-x ms-1 cursor-pointer" onClick={() => setFilterStatus('ALL')}></i>
+                      </span>
+                    )}
+                    {(orderStartDate || orderEndDate) && (
+                      <span className="badge bg-info text-dark">
+                        Order Date: {orderStartDate || 'Any'} &rarr; {orderEndDate || 'Any'}
+                        <i className="bi bi-x ms-1 cursor-pointer" onClick={() => { setOrderStartDate(''); setOrderEndDate(''); }}></i>
+                      </span>
+                    )}
+                    {(deliveryStartDate || deliveryEndDate) && (
+                      <span className="badge bg-success">
+                        Delivery Date: {deliveryStartDate || 'Any'} &rarr; {deliveryEndDate || 'Any'}
+                        <i className="bi bi-x ms-1 cursor-pointer" onClick={() => { setDeliveryStartDate(''); setDeliveryEndDate(''); }}></i>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Orders Table */}
           <div className="card border-0 shadow-sm rounded-4 p-4 bg-white">
-            <h4 className="fw-bold text-dark mb-3">Customer Bookings ({filteredOrders.length})</h4>
+            <div className="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+              <h4 className="fw-bold text-dark mb-0">
+                Customer Bookings ({filteredOrders.length} / {orders.length})
+              </h4>
+              <button 
+                type="button"
+                onClick={downloadFilteredOrdersExcel}
+                className="btn btn-outline-success btn-sm fw-bold d-inline-flex align-items-center gap-1"
+              >
+                <i className="bi bi-download"></i> Export This Filtered View (.xlsx)
+              </button>
+            </div>
 
             {loading ? (
               <div className="text-center py-4">Loading orders...</div>
@@ -142,13 +449,13 @@ export default function AdminOrdersPage() {
                 <table className="table table-hover align-middle">
                   <thead className="table-dark">
                     <tr>
-                      <th>Booking ID</th>
+                      <th>Booking ID &amp; Order Date</th>
                       <th>Customer Details</th>
                       <th>Expected Delivery</th>
                       <th>Batch</th>
                       <th>Qty</th>
                       <th>Amount</th>
-                      <th>UPI & Screenshot</th>
+                      <th>UPI &amp; Screenshot</th>
                       <th>Fulfillment Status</th>
                       <th>Action</th>
                     </tr>
@@ -156,15 +463,30 @@ export default function AdminOrdersPage() {
                   <tbody>
                     {filteredOrders.map(ord => (
                       <tr key={ord.id}>
-                        <td><strong className="text-success">{ord.bookingId}</strong></td>
+                        <td>
+                          <strong className="text-success d-block">{ord.bookingId}</strong>
+                          <small className="text-muted d-block extra-small mt-1">
+                            <i className="bi bi-calendar-event me-1 text-primary"></i>
+                            {ord.createdAt ? ord.createdAt.split('T')[0] : 'N/A'}
+                          </small>
+                        </td>
                         <td>
                           <strong className="d-block">{ord.customerName}</strong>
                           <small className="text-muted d-block"><i className="bi bi-phone me-1"></i>{ord.mobile} | {ord.district}</small>
                           <small className="badge bg-light text-dark border extra-small mt-1">
-                            <i className="bi bi-truck me-1"></i>{ord.deliveryService || 'ST Couriers'} ({ord.nearestHub || 'Main Hub'})
+                            <i className="bi bi-truck me-1 text-success"></i>{ord.deliveryService || 'ST Couriers'} ({ord.nearestHub || 'Main Hub'})
                           </small>
                         </td>
-                        <td><span className="badge bg-success-subtle text-success border me-1">{ord.expectedDeliveryDate || 'N/A'}</span></td>
+                        <td>
+                          <span className="badge bg-success-subtle text-success border me-1 d-block fw-bold py-1">
+                            <i className="bi bi-calendar-check me-1"></i>{ord.expectedDeliveryDate || 'N/A'}
+                          </span>
+                          {ord.dispatchDate && (
+                            <small className="badge bg-info-subtle text-info border extra-small d-block mt-1">
+                              Dispatched: {ord.dispatchDate}
+                            </small>
+                          )}
+                        </td>
                         <td><span className="badge bg-secondary">{ord.batchCode}</span></td>
                         <td><strong className="fs-6">{ord.quantity} Saplings</strong></td>
                         <td><strong className="text-success">₹{ord.totalAmount.toLocaleString()}</strong></td>

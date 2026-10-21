@@ -37,12 +37,61 @@ export async function GET(request: Request) {
       { 'Metric': 'Total Inventory Audit Logs', 'Value': adjustments.length },
     ];
 
+    // Parse filter parameters
+    const search = (searchParams.get('search') || '').trim();
+    const status = (searchParams.get('status') || 'ALL').trim();
+    const orderStartDate = (searchParams.get('orderStartDate') || '').trim();
+    const orderEndDate = (searchParams.get('orderEndDate') || '').trim();
+    const deliveryStartDate = (searchParams.get('deliveryStartDate') || '').trim();
+    const deliveryEndDate = (searchParams.get('deliveryEndDate') || '').trim();
+
+    let targetBookings = bookings;
+    if (search) {
+      const q = search.toLowerCase();
+      targetBookings = targetBookings.filter(b => 
+        b.bookingId?.toLowerCase().includes(q) ||
+        b.customerName?.toLowerCase().includes(q) ||
+        b.mobile?.includes(q) ||
+        b.batchCode?.toLowerCase().includes(q) ||
+        b.district?.toLowerCase().includes(q)
+      );
+    }
+    if (status && status !== 'ALL') {
+      targetBookings = targetBookings.filter(b => b.bookingStatus === status);
+    }
+    if (orderStartDate) {
+      targetBookings = targetBookings.filter(b => {
+        const d = b.createdAt ? b.createdAt.split('T')[0] : '';
+        return d ? d >= orderStartDate : false;
+      });
+    }
+    if (orderEndDate) {
+      targetBookings = targetBookings.filter(b => {
+        const d = b.createdAt ? b.createdAt.split('T')[0] : '';
+        return d ? d <= orderEndDate : false;
+      });
+    }
+    if (deliveryStartDate) {
+      targetBookings = targetBookings.filter(b => {
+        const d = b.expectedDeliveryDate ? b.expectedDeliveryDate.split('T')[0] : '';
+        return d ? d >= deliveryStartDate : false;
+      });
+    }
+    if (deliveryEndDate) {
+      targetBookings = targetBookings.filter(b => {
+        const d = b.expectedDeliveryDate ? b.expectedDeliveryDate.split('T')[0] : '';
+        return d ? d <= deliveryEndDate : false;
+      });
+    }
+
     // 2. Orders Sheet
-    const ordersData = bookings.map(b => ({
+    const ordersData = targetBookings.map(b => ({
       'Booking ID': b.bookingId,
+      'Order Date': b.createdAt ? b.createdAt.split('T')[0] : 'N/A',
+      'Expected Delivery Date': b.expectedDeliveryDate || 'N/A',
       'Customer Name': b.customerName,
       'Mobile': b.mobile,
-      'WhatsApp': b.whatsapp,
+      'WhatsApp': b.whatsapp || b.mobile,
       'Batch Code': b.batchCode,
       'Quantity (Saplings)': b.quantity,
       'Subtotal (₹)': b.subtotal,
@@ -54,11 +103,12 @@ export async function GET(request: Request) {
       'District': b.district,
       'State': b.state,
       'PIN Code': b.pinCode,
-      'Expected Delivery Date': b.expectedDeliveryDate || 'N/A',
-      'Delivery Service / Courier': b.courierName || 'Pending Assignment',
-      'Tracking ID / Hub': b.trackingId || 'Pending',
+      'Delivery Service / Courier': b.deliveryService || b.courierName || 'ST Couriers',
+      'Nearest Delivery Hub': b.nearestHub || 'District Main Hub',
+      'Tracking ID': b.trackingId || 'Pending',
       'Dispatch Date': b.dispatchDate || 'N/A',
-      'Booking Created At': b.createdAt ? new Date(b.createdAt).toLocaleString('en-IN') : 'N/A',
+      'Special Instructions': b.specialInstructions || 'None',
+      'Booking Created Timestamp': b.createdAt ? new Date(b.createdAt).toLocaleString('en-IN') : 'N/A',
     }));
 
     // 3. Batches Sheet
@@ -141,7 +191,9 @@ export async function GET(request: Request) {
 
     const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
     const today = new Date().toISOString().split('T')[0];
-    const filename = `Eathamozhy_${type === 'all' ? 'Complete_Farm_Data' : type}_${today}.xlsx`;
+    const isFiltered = Boolean(search || (status && status !== 'ALL') || orderStartDate || orderEndDate || deliveryStartDate || deliveryEndDate);
+    const filterTag = isFiltered ? '_Filtered' : '';
+    const filename = `Eathamozhy_${type === 'all' ? 'Complete_Farm_Data' : type}${filterTag}_${today}.xlsx`;
 
     return new NextResponse(buf, {
       status: 200,

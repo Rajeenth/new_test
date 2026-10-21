@@ -169,6 +169,16 @@ export default function AdminDashboardPage() {
                 </a>
               </div>
             </div>
+
+            <div className="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <small className="text-secondary extra-small">
+                <i className="bi bi-info-circle-fill text-success me-1"></i>
+                <strong>Need custom date-range exports?</strong> In <Link href="/admin/orders" className="text-success fw-semibold text-decoration-none">Orders Admin</Link>, you can filter by Order Date range and Expected Delivery Date range and click <em>&ldquo;Download Only Filtered Data&rdquo;</em>.
+              </small>
+              <Link href="/admin/orders" className="btn btn-sm btn-outline-success extra-small fw-semibold py-1">
+                <i className="bi bi-funnel me-1"></i> Filter &amp; Export Orders
+              </Link>
+            </div>
           </div>
 
           {/* Quick Admin Actions */}
