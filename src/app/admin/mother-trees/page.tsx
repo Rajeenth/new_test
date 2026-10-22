@@ -146,30 +146,51 @@ export default function AdminMotherTreesPage() {
       });
       const data = await res.json();
       if (res.ok && data.urls && data.urls.length > 0) {
-        if (makePrimaryOnUpload) {
-          // Prepend as primary cover photo
-          setEditTreeImages(prev => [...data.urls, ...prev]);
-        } else {
-          setEditTreeImages(prev => [...prev, ...data.urls]);
+        const newImages = makePrimaryOnUpload
+          ? [...data.urls, ...editTreeImages]
+          : [...editTreeImages, ...data.urls];
+        setEditTreeImages(newImages);
+
+        // Auto-save updated photos immediately to DB so they persist across all pages
+        try {
+          await fetch(`/api/parent-palms/${editingTree.code}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ images: newImages })
+          });
+          setPalms(prev => prev.map(p => 
+            (p.id === editingTree.id || p.code === editingTree.code) 
+              ? { ...p, images: newImages } 
+              : p
+          ));
+          fetchPalms();
+        } catch (saveErr) {
+          console.error('Error auto-persisting uploaded images:', saveErr);
         }
-        alert(`Successfully uploaded ${data.urls.length} photo(s)! ${makePrimaryOnUpload ? 'Set as new primary cover photo.' : 'Added to gallery.'}\n\nClick "Save Changes" to apply across all pages.`);
+
+        alert(`Successfully uploaded and saved ${data.urls.length} photo(s)! ${makePrimaryOnUpload ? 'Set as new primary cover photo.' : 'Added to gallery.'}\nAll pages now reflect the updated image.`);
       } else {
         // Fallback to FileReader base64 if server upload cannot write disk
         files.forEach(file => {
           const reader = new FileReader();
-          reader.onload = (evt) => {
+          reader.onload = async (evt) => {
             const url = evt.target?.result as string;
             if (url) {
-              if (makePrimaryOnUpload) {
-                setEditTreeImages(prev => [url, ...prev]);
-              } else {
-                setEditTreeImages(prev => [...prev, url]);
-              }
+              const newImages = makePrimaryOnUpload ? [url, ...editTreeImages] : [...editTreeImages, url];
+              setEditTreeImages(newImages);
+              try {
+                await fetch(`/api/parent-palms/${editingTree.code}`, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ images: newImages })
+                });
+                fetchPalms();
+              } catch {}
             }
           };
           reader.readAsDataURL(file);
         });
-        alert(`Uploaded ${files.length} photo(s) locally. Click "Save Changes" to save.`);
+        alert(`Uploaded ${files.length} photo(s).`);
       }
     } catch (err) {
       alert('Error uploading images');
@@ -197,19 +218,36 @@ export default function AdminMotherTreesPage() {
   };
 
   // Set any photo as the primary cover photo (index 0)
-  const setAsPrimaryImage = (idx: number) => {
-    if (idx === 0) return;
-    setEditTreeImages(prev => {
-      const selected = prev[idx];
-      const remaining = prev.filter((_, i) => i !== idx);
-      return [selected, ...remaining];
-    });
+  const setAsPrimaryImage = async (idx: number) => {
+    if (idx === 0 || !editingTree) return;
+    const selected = editTreeImages[idx];
+    const remaining = editTreeImages.filter((_, i) => i !== idx);
+    const newImages = [selected, ...remaining];
+    setEditTreeImages(newImages);
+
+    // Auto-save new primary cover
+    try {
+      await fetch(`/api/parent-palms/${editingTree.code}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: newImages })
+      });
+      setPalms(prev => prev.map(p => 
+        (p.id === editingTree.id || p.code === editingTree.code) 
+          ? { ...p, images: newImages } 
+          : p
+      ));
+      fetchPalms();
+    } catch {}
   };
 
   // Remove photo
   const removeTreeImage = async (idxToRemove: number) => {
+    if (!editingTree) return;
     const targetUrl = editTreeImages[idxToRemove];
-    setEditTreeImages(prev => prev.filter((_, idx) => idx !== idxToRemove));
+    const newImages = editTreeImages.filter((_, idx) => idx !== idxToRemove);
+    setEditTreeImages(newImages);
+
     if (targetUrl && targetUrl.startsWith('/images/')) {
       try {
         await fetch(`/api/upload?path=${encodeURIComponent(targetUrl)}`, { method: 'DELETE' });
@@ -217,13 +255,29 @@ export default function AdminMotherTreesPage() {
         console.error('Failed to unlink deleted tree image:', e);
       }
     }
+
+    // Auto-save removal to DB
+    try {
+      await fetch(`/api/parent-palms/${editingTree.code}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: newImages })
+      });
+      setPalms(prev => prev.map(p => 
+        (p.id === editingTree.id || p.code === editingTree.code) 
+          ? { ...p, images: newImages } 
+          : p
+      ));
+      fetchPalms();
+    } catch {}
   };
 
   // Clear all photos
   const removeAllTreeImages = async () => {
-    if (!confirm('Are you sure you want to clear all photos for this mother tree?')) return;
+    if (!confirm('Are you sure you want to clear all photos for this mother tree?') || !editingTree) return;
     const toDelete = [...editTreeImages];
     setEditTreeImages([]);
+
     for (const imgUrl of toDelete) {
       if (imgUrl && imgUrl.startsWith('/images/')) {
         try {
@@ -231,6 +285,21 @@ export default function AdminMotherTreesPage() {
         } catch (e) {}
       }
     }
+
+    // Auto-save empty images array
+    try {
+      await fetch(`/api/parent-palms/${editingTree.code}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images: [] })
+      });
+      setPalms(prev => prev.map(p => 
+        (p.id === editingTree.id || p.code === editingTree.code) 
+          ? { ...p, images: [] } 
+          : p
+      ));
+      fetchPalms();
+    } catch {}
   };
 
   // Save changes (both metadata and photos)
@@ -249,15 +318,6 @@ export default function AdminMotherTreesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-
-      // Also sync PATCH to /api/parent-palms/[code]
-      try {
-        await fetch(`/api/parent-palms/${editingTree.code}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ images: editTreeImages })
-        });
-      } catch {}
 
       if (res.ok) {
         // Immediately update local state so table updates visually without waiting

@@ -1,12 +1,27 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { DataStore } from '@/lib/dataStore';
 import ImageCarousel from '@/components/ImageCarousel';
 
-export const dynamic = 'force-dynamic';
-
 export default function MotherTreesPage() {
-  const palms = DataStore.getParentPalms();
-  const batches = DataStore.getBatches();
+  const [palms, setPalms] = useState<any[]>([]);
+  const [batches, setBatches] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/parent-palms').then(r => r.json()),
+      fetch('/api/batches').then(r => r.json())
+    ]).then(([palmsData, batchesData]) => {
+      if (Array.isArray(palmsData)) setPalms(palmsData);
+      if (Array.isArray(batchesData)) setBatches(batchesData);
+      setLoading(false);
+    }).catch(err => {
+      console.error('Failed to load mother trees', err);
+      setLoading(false);
+    });
+  }, []);
 
   const getActiveBatchesForPalm = (palmCode: string) => {
     return batches.filter(b => {
@@ -16,6 +31,7 @@ export default function MotherTreesPage() {
   };
 
   const getHealthBadgeColor = (status: string) => {
+    if (!status) return 'info';
     const s = status.toLowerCase();
     if (s.includes('excellent') || s.includes('vigorous') || s.includes('prime') || s.includes('robust') || s.includes('resilient')) return 'success';
     if (s.includes('peak')) return 'warning';
@@ -36,7 +52,7 @@ export default function MotherTreesPage() {
             </h1>
             <p className="lead text-light opacity-90 mx-auto mb-4" style={{ maxWidth: '700px' }}>
               Every sapling we sell is directly traceable to one of our{' '}
-              <strong className="text-white">{palms.length} verified ancestral mother trees</strong>.{' '}
+              <strong className="text-white">{palms.length > 0 ? palms.length : '30+'} verified ancestral mother trees</strong>.{' '}
               Inspect each tree&apos;s pedigree, yield history, nut characteristics, and available sapling batches.
             </p>
             <div className="d-flex flex-wrap justify-content-center gap-3">
@@ -103,124 +119,133 @@ export default function MotherTreesPage() {
             </p>
           </div>
 
-          <div className="row g-4">
-            {palms.map((palm) => {
-              const activeBatches = getActiveBatchesForPalm(palm.code);
-              const totalAvailable = activeBatches.reduce((s, b) => s + b.availableQuantity, 0);
-              const healthColor = getHealthBadgeColor(palm.healthStatus);
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-success mb-2" role="status">
+                <span className="visually-hidden">Loading mother trees...</span>
+              </div>
+              <p className="text-muted small">Loading live mother tree registry...</p>
+            </div>
+          ) : (
+            <div className="row g-4">
+              {palms.map((palm) => {
+                const activeBatches = getActiveBatchesForPalm(palm.code);
+                const totalAvailable = activeBatches.reduce((s, b) => s + (b.availableQuantity || 0), 0);
+                const healthColor = getHealthBadgeColor(palm.healthStatus);
 
-              return (
-                <div key={palm.id} className="col-md-6 col-lg-4">
-                  <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift bg-white">
+                return (
+                  <div key={palm.id || palm.code} className="col-md-6 col-lg-4">
+                    <div className="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift bg-white">
 
-                    {/* Image */}
-                    <div className="position-relative" style={{ height: '220px' }}>
-                      {palm.images && palm.images.length > 1 ? (
-                        <ImageCarousel
-                          images={palm.images}
-                          title={palm.name}
-                          carouselId={`palm-card-${palm.code}`}
-                          height="220px"
-                          showThumbnails={false}
-                          objectFit="cover"
-                        />
-                      ) : (
-                        <img
-                          src={palm.images && palm.images.length > 0 ? palm.images[0] : '/images/placeholder.png'}
-                          alt={palm.name}
-                          className="w-100 h-100 object-fit-cover"
-                        />
-                      )}
+                      {/* Image */}
+                      <div className="position-relative" style={{ height: '220px' }}>
+                        {palm.images && palm.images.length > 1 ? (
+                          <ImageCarousel
+                            images={palm.images}
+                            title={palm.name}
+                            carouselId={`palm-card-${palm.code}`}
+                            height="220px"
+                            showThumbnails={false}
+                            objectFit="cover"
+                          />
+                        ) : (
+                          <img
+                            src={palm.images && palm.images.length > 0 ? palm.images[0] : '/images/placeholder.png'}
+                            alt={palm.name}
+                            className="w-100 h-100 object-fit-cover"
+                          />
+                        )}
 
-                      {/* Overlays */}
-                      <div className="position-absolute top-0 start-0 m-2 d-flex gap-1 flex-wrap">
-                        <span className="badge bg-dark bg-opacity-80 fw-bold">{palm.code}</span>
-                        <span className="badge bg-warning text-dark fw-bold">{palm.age} Yrs Old</span>
-                      </div>
-                      <div className="position-absolute top-0 end-0 m-2">
-                        <span className={`badge bg-${healthColor}`}>
-                          <i className="bi bi-heart-pulse-fill me-1"></i>{palm.healthStatus.split(' ')[0]}
-                        </span>
-                      </div>
-                      {totalAvailable > 0 && (
-                        <div className="position-absolute bottom-0 start-0 m-2">
-                          <span className="badge bg-success bg-opacity-90 fw-bold">
-                            <i className="bi bi-check-circle-fill me-1"></i>{totalAvailable} Saplings Available
+                        {/* Overlays */}
+                        <div className="position-absolute top-0 start-0 m-2 d-flex gap-1 flex-wrap">
+                          <span className="badge bg-dark bg-opacity-80 fw-bold">{palm.code}</span>
+                          <span className="badge bg-warning text-dark fw-bold">{palm.age} Yrs Old</span>
+                        </div>
+                        <div className="position-absolute top-0 end-0 m-2">
+                          <span className={`badge bg-${healthColor}`}>
+                            <i className="bi bi-heart-pulse-fill me-1"></i>{(palm.healthStatus || 'Good').split(' ')[0]}
                           </span>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="card-body p-4 d-flex flex-column">
-                      <h6 className="fw-bold text-dark mb-1 fs-5">{palm.name}</h6>
-                      <small className="text-muted d-flex align-items-center gap-1 mb-3">
-                        <i className="bi bi-geo-alt-fill text-danger"></i> {palm.location}
-                      </small>
-
-                      {/* Key Stats Row */}
-                      <div className="row g-2 mb-3">
-                        <div className="col-6">
-                          <div className="bg-light rounded-3 p-2 text-center">
-                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Age</small>
-                            <span className="fw-bold text-dark">{palm.age} Years</span>
-                          </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="bg-light rounded-3 p-2 text-center">
-                            <small className="text-muted d-block extra-small text-uppercase fw-bold">Active Batches</small>
-                            <span className={`fw-bold ${activeBatches.length > 0 ? 'text-success' : 'text-muted'}`}>
-                              {activeBatches.length > 0 ? activeBatches.length : 'None'}
+                        {totalAvailable > 0 && (
+                          <div className="position-absolute bottom-0 start-0 m-2">
+                            <span className="badge bg-success bg-opacity-90 fw-bold">
+                              <i className="bi bi-check-circle-fill me-1"></i>{totalAvailable} Saplings Available
                             </span>
                           </div>
-                        </div>
-                      </div>
-
-                      {/* Yield History */}
-                      <div className="mb-3">
-                        <small className="fw-bold text-success d-block mb-1">
-                          <i className="bi bi-graph-up-arrow me-1"></i>Yield History
-                        </small>
-                        <p className="text-secondary extra-small mb-0" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{palm.yieldHistory}</p>
-                      </div>
-
-                      {/* Nut Characteristics */}
-                      <div className="mb-3">
-                        <small className="fw-bold text-primary d-block mb-1">
-                          <i className="bi bi-droplet-half me-1"></i>Nut Profile
-                        </small>
-                        <p className="text-secondary extra-small mb-0" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{palm.nutCharacteristics}</p>
-                      </div>
-
-                      {/* Why Selected */}
-                      <div className="mb-3">
-                        <small className="fw-bold text-warning d-block mb-1">
-                          <i className="bi bi-award-fill me-1"></i>Why Selected
-                        </small>
-                        <p className="text-secondary extra-small mb-0" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{palm.whySelected}</p>
-                      </div>
-
-                      <div className="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                        {totalAvailable > 0 ? (
-                          <span className="badge bg-success-subtle text-success border border-success extra-small">
-                            <i className="bi bi-check2-circle me-1"></i>{totalAvailable} available
-                          </span>
-                        ) : (
-                          <span className="badge bg-secondary bg-opacity-10 text-secondary extra-small">No stock now</span>
                         )}
-                        <Link
-                          href={`/parent-palm/${palm.code}`}
-                          className="btn btn-outline-success btn-sm fw-semibold rounded-3"
-                        >
-                          Full Profile <i className="bi bi-arrow-right ms-1"></i>
-                        </Link>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="card-body p-4 d-flex flex-column">
+                        <h6 className="fw-bold text-dark mb-1 fs-5">{palm.name}</h6>
+                        <small className="text-muted d-flex align-items-center gap-1 mb-3">
+                          <i className="bi bi-geo-alt-fill text-danger"></i> {palm.location}
+                        </small>
+
+                        {/* Key Stats Row */}
+                        <div className="row g-2 mb-3">
+                          <div className="col-6">
+                            <div className="bg-light rounded-3 p-2 text-center">
+                              <small className="text-muted d-block extra-small text-uppercase fw-bold">Age</small>
+                              <span className="fw-bold text-dark">{palm.age} Years</span>
+                            </div>
+                          </div>
+                          <div className="col-6">
+                            <div className="bg-light rounded-3 p-2 text-center">
+                              <small className="text-muted d-block extra-small text-uppercase fw-bold">Active Batches</small>
+                              <span className={`fw-bold ${activeBatches.length > 0 ? 'text-success' : 'text-muted'}`}>
+                                {activeBatches.length > 0 ? activeBatches.length : 'None'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Yield History */}
+                        <div className="mb-3">
+                          <small className="fw-bold text-success d-block mb-1">
+                            <i className="bi bi-graph-up-arrow me-1"></i>Yield History
+                          </small>
+                          <p className="text-secondary extra-small mb-0" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{palm.yieldHistory}</p>
+                        </div>
+
+                        {/* Nut Characteristics */}
+                        <div className="mb-3">
+                          <small className="fw-bold text-primary d-block mb-1">
+                            <i className="bi bi-droplet-half me-1"></i>Nut Profile
+                          </small>
+                          <p className="text-secondary extra-small mb-0" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{palm.nutCharacteristics}</p>
+                        </div>
+
+                        {/* Why Selected */}
+                        <div className="mb-3">
+                          <small className="fw-bold text-warning d-block mb-1">
+                            <i className="bi bi-award-fill me-1"></i>Why Selected
+                          </small>
+                          <p className="text-secondary extra-small mb-0" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{palm.whySelected}</p>
+                        </div>
+
+                        <div className="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                          {totalAvailable > 0 ? (
+                            <span className="badge bg-success-subtle text-success border border-success extra-small">
+                              <i className="bi bi-check2-circle me-1"></i>{totalAvailable} available
+                            </span>
+                          ) : (
+                            <span className="badge bg-secondary bg-opacity-10 text-secondary extra-small">No stock now</span>
+                          )}
+                          <Link
+                            href={`/parent-palm/${palm.code}`}
+                            className="btn btn-outline-success btn-sm fw-semibold rounded-3"
+                          >
+                            Full Profile <i className="bi bi-arrow-right ms-1"></i>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
@@ -277,8 +302,8 @@ export default function MotherTreesPage() {
               <i className="bi bi-grid-fill me-1"></i> View All Available Batches
             </Link>
             <a 
-              href="https://wa.me/919486880641?text=Hello%20Eathamozhy%20Farm,%20I%20want%20to%20know%20more%20about%20your%20Mother%20Trees"
-              target="_blank"
+              href="https://wa.me/919486880641?text=Hello%20Eathamozhy%20Farm,%20I%20want%20to%20know%20more%20about%20your%20Mother%20Trees" 
+              target="_blank" 
               rel="noreferrer"
               className="btn btn-outline-light px-4 py-3 fs-6 rounded-3 fw-bold"
             >
