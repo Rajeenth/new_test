@@ -110,7 +110,19 @@ export default function BatchesPage() {
                         <div className="d-flex justify-content-between align-items-center mb-2">
                           <span className="badge bg-dark bg-opacity-75">{b.batchCode}</span>
                           <span className="text-muted extra-small">
-                            Mother Tree: <Link href={`/parent-palm/${b.parentPalmCode}`} className="text-success fw-bold text-decoration-none">{b.parentPalmCode}</Link>
+                            {(() => {
+                              const treeCodes = (b.parentPalmCodes && b.parentPalmCodes.length > 0) ? b.parentPalmCodes : [b.parentPalmCode];
+                              return (
+                                <>
+                                  Mother {treeCodes.length > 1 ? 'Trees' : 'Tree'}: {(treeCodes as string[]).map((c: string, i: number) => (
+                                    <span key={c}>
+                                      <Link href={`/parent-palm/${c}`} className="text-success fw-bold text-decoration-none">{c}</Link>
+                                      {i < treeCodes.length - 1 ? ', ' : ''}
+                                    </span>
+                                  ))}
+                                </>
+                              );
+                            })()}
                           </span>
                         </div>
 

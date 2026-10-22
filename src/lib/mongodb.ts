@@ -56,6 +56,7 @@ const BatchSchema = new mongoose.Schema({
   batchCode: { type: String, required: true, unique: true },
   parentPalmId: String,
   parentPalmCode: String,
+  parentPalmCodes: [String],
   name: String,
   plantingDate: String,
   age: String,

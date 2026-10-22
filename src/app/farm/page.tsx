@@ -9,7 +9,10 @@ export default function MotherTreesPage() {
   const batches = DataStore.getBatches();
 
   const getActiveBatchesForPalm = (palmCode: string) => {
-    return batches.filter(b => b.parentPalmCode === palmCode && b.availableQuantity > 0);
+    return batches.filter(b => {
+      const codes = (b.parentPalmCodes && b.parentPalmCodes.length > 0) ? b.parentPalmCodes : [b.parentPalmCode];
+      return codes.includes(palmCode) && (b.availableQuantity || 0) > 0;
+    });
   };
 
   const getHealthBadgeColor = (status: string) => {

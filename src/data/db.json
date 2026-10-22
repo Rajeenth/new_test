@@ -180,6 +180,10 @@
       "batchCode": "EM-1026-D",
       "parentPalmId": "mp-1",
       "parentPalmCode": "EM-MP-014",
+      "parentPalmCodes": [
+        "EM-MP-014",
+        "EM-MP-020"
+      ],
       "name": "December 2026 Batch (EM-1026-D)",
       "harvestDate": "2026-11-05",
       "seededDate": "2026-11-30",
@@ -199,6 +203,10 @@
       "batchCode": "EM-0126-A",
       "parentPalmId": "mp-1",
       "parentPalmCode": "EM-MP-001",
+      "parentPalmCodes": [
+        "EM-MP-001",
+        "EM-MP-003"
+      ],
       "name": "January 2026 Ready Batch (EM-0126-A)",
       "harvestDate": "2025-09-10",
       "seededDate": "2025-09-25",
@@ -234,6 +242,9 @@
         "/images/batches/EM-0226-B/1791893468990_WhatsApp_Image_2026-10-13_at_5.32.58_PM__1_.jpeg",
         "/images/batches/EM-0226-B/1791893468994_WhatsApp_Image_2026-10-13_at_5.33.28_PM.jpeg",
         "/images/batches/EM-0226-B/1791893468997_WhatsApp_Image_2026-10-13_at_5.33.29_PM__1_.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-002"
       ]
     },
     {
@@ -254,6 +265,9 @@
       "images": [
         "/images/batches/EM-0326-C/1791893490267_WhatsApp_Image_2026-10-13_at_5.35.08_PM.jpeg",
         "/images/batches/EM-0326-C/1791893490273_WhatsApp_Image_2026-10-13_at_5.35.09_PM__1_.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-003"
       ]
     },
     {
@@ -274,6 +288,9 @@
       "images": [
         "/images/batches/EM-0426-D/1791893523072_WhatsApp_Image_2026-10-13_at_5.32.07_PM.jpeg",
         "/images/batches/EM-0426-D/1791893523076_WhatsApp_Image_2026-10-13_at_5.32.08_PM.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-004"
       ]
     },
     {
@@ -293,6 +310,9 @@
       "viewsCount": 120,
       "images": [
         "/images/batches/EM-0526-E/1791893552971_WhatsApp_Image_2026-10-13_at_5.33.31_PM.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-005"
       ]
     },
     {
@@ -312,6 +332,9 @@
       "viewsCount": 120,
       "images": [
         "/images/batches/EM-0626-F/1791893569761_WhatsApp_Image_2026-10-13_at_5.33.32_PM.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-006"
       ]
     },
     {
@@ -331,6 +354,9 @@
       "viewsCount": 120,
       "images": [
         "/images/batches/EM-0726-G/1791893590270_WhatsApp_Image_2026-10-13_at_5.33.31_PM.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-007"
       ]
     },
     {
@@ -350,6 +376,9 @@
       "viewsCount": 120,
       "images": [
         "/images/batches/EM-0826-H/1791893653192_WhatsApp_Image_2026-10-13_at_5.31.10_PM__1_.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-008"
       ]
     },
     {
@@ -371,6 +400,9 @@
         "/images/batches/EM-0926-I/1791893677048_WhatsApp_Image_2026-10-13_at_5.32.06_PM__1_.jpeg",
         "/images/batches/EM-0926-I/1791893677053_WhatsApp_Image_2026-10-13_at_5.32.07_PM.jpeg",
         "/images/batches/EM-0926-I/1791893677056_WhatsApp_Image_2026-10-13_at_5.32.08_PM.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-009"
       ]
     },
     {
@@ -394,6 +426,9 @@
         "/images/batches/EM-1026-J/1791893712667_WhatsApp_Image_2026-10-13_at_5.33.31_PM.jpeg",
         "/images/batches/EM-1026-J/1791893712714_WhatsApp_Image_2026-10-13_at_5.33.32_PM.jpeg",
         "/images/batches/EM-1026-J/1791893712717_WhatsApp_Image_2026-10-13_at_5.33.27_PM.jpeg"
+      ],
+      "parentPalmCodes": [
+        "EM-MP-010"
       ]
     }
   ],

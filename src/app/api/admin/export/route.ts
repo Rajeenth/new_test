@@ -117,7 +117,7 @@ export async function GET(request: Request) {
       return {
         'Batch Code': b.batchCode,
         'Batch Name': b.name,
-        'Mother Tree Code': b.parentPalmCode,
+        'Mother Tree Code(s)': (b.parentPalmCodes && b.parentPalmCodes.length > 0) ? b.parentPalmCodes.join(', ') : b.parentPalmCode,
         'Sapling Age': b.age || 'N/A',
         'Average Height': b.height || 'N/A',
         'Harvest Date': b.harvestDate,

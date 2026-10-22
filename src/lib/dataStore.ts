@@ -17,6 +17,7 @@ export interface Batch {
   batchCode: string;
   parentPalmId: string;
   parentPalmCode: string;
+  parentPalmCodes?: string[];
   name: string;
   harvestDate: string; // Coconut Cut From Tree Date
   seededDate: string; // Seeded On Date
@@ -941,7 +942,14 @@ function loadFromDb() {
     if (raw) {
       const data = JSON.parse(raw);
       if (Array.isArray(data.parentPalms) && data.parentPalms.length > 0) parentPalms = data.parentPalms;
-      if (Array.isArray(data.batches) && data.batches.length > 0) batches = data.batches;
+      if (Array.isArray(data.batches) && data.batches.length > 0) {
+        batches = data.batches.map((b: any) => ({
+          ...b,
+          parentPalmCodes: (Array.isArray(b.parentPalmCodes) && b.parentPalmCodes.length > 0)
+            ? b.parentPalmCodes
+            : [b.parentPalmCode || 'EM-MP-001']
+        }));
+      }
       if (Array.isArray(data.bookings)) bookings = data.bookings;
       if (Array.isArray(data.adjustments)) adjustments = data.adjustments;
       if (Array.isArray(data.enquiries)) enquiries = data.enquiries;
@@ -1125,11 +1133,24 @@ export const DataStore = {
 
     const defaultFolderImages = [`/images/batches/${newBatchData.batchCode}/batch_1.jpg`];
 
+    // Multi-Mother tree support
+    let codes: string[] = [];
+    if (Array.isArray(newBatchData.parentPalmCodes) && newBatchData.parentPalmCodes.length > 0) {
+      codes = newBatchData.parentPalmCodes;
+    } else if (newBatchData.parentPalmCode) {
+      codes = [newBatchData.parentPalmCode];
+    } else {
+      codes = ['EM-MP-001'];
+    }
+    const primaryCode = codes[0];
+    const parent = parentPalms.find(p => p.code.toLowerCase() === primaryCode.toLowerCase());
+
     const created: Batch = {
       id: `b-${Date.now()}`,
       batchCode: newBatchData.batchCode,
-      parentPalmId: newBatchData.parentPalmId || 'mp-1',
-      parentPalmCode: newBatchData.parentPalmCode || 'EM-MP-001',
+      parentPalmId: parent ? parent.id : (newBatchData.parentPalmId || 'mp-1'),
+      parentPalmCode: primaryCode,
+      parentPalmCodes: codes,
       name: combinedName,
       harvestDate: newBatchData.harvestDate,
       seededDate: newBatchData.seededDate,
@@ -1148,7 +1169,7 @@ export const DataStore = {
     return DataStore.getBatchByCode(created.batchCode);
   },
 
-  updateBatch: (code: string, updatedFields: Partial<Batch>) => {
+  updateBatch: (code: string, updatedFields: Partial<Batch> & { parentPalmCodes?: string[] }) => {
     loadFromDb();
     const target = batches.find(b => b.batchCode.toLowerCase() === code.toLowerCase());
     if (!target) throw new Error('Batch not found');
@@ -1164,8 +1185,14 @@ export const DataStore = {
     if (updatedFields.images) {
       target.images = updatedFields.images;
     }
-    if (updatedFields.parentPalmCode) {
+    if (updatedFields.parentPalmCodes && Array.isArray(updatedFields.parentPalmCodes) && updatedFields.parentPalmCodes.length > 0) {
+      target.parentPalmCodes = updatedFields.parentPalmCodes;
+      target.parentPalmCode = updatedFields.parentPalmCodes[0];
+      const parent = parentPalms.find(p => p.code.toLowerCase() === target.parentPalmCode.toLowerCase());
+      if (parent) target.parentPalmId = parent.id;
+    } else if (updatedFields.parentPalmCode) {
       target.parentPalmCode = updatedFields.parentPalmCode;
+      target.parentPalmCodes = [updatedFields.parentPalmCode];
       const parent = parentPalms.find(p => p.code.toLowerCase() === updatedFields.parentPalmCode?.toLowerCase());
       if (parent) target.parentPalmId = parent.id;
     }

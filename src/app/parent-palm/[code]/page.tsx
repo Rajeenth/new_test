@@ -15,7 +15,10 @@ export default async function ParentPalmDetailPage({
   }
 
   const allBatches = DataStore.getBatches();
-  const relatedBatches = allBatches.filter(b => b.parentPalmCode.toLowerCase() === palm.code.toLowerCase());
+  const relatedBatches = allBatches.filter(b => {
+    const codes = (b.parentPalmCodes && b.parentPalmCodes.length > 0) ? b.parentPalmCodes : [b.parentPalmCode];
+    return codes.some(c => c.toLowerCase() === palm.code.toLowerCase());
+  });
 
   return (
     <>

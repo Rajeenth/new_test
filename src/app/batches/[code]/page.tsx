@@ -16,7 +16,12 @@ export default async function BatchDetailPage({
     notFound();
   }
 
-  const motherPalm = DataStore.getParentPalmByCode(batch.parentPalmCode);
+  const motherTreeCodes = (batch.parentPalmCodes && batch.parentPalmCodes.length > 0) 
+    ? batch.parentPalmCodes 
+    : [batch.parentPalmCode];
+  const motherPalms = motherTreeCodes
+    .map(c => DataStore.getParentPalmByCode(c))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   return (
     <>
@@ -72,25 +77,42 @@ export default async function BatchDetailPage({
                 </div>
               </div>
 
-              {/* Traceability Card: Connected Parent Palm */}
-              {motherPalm && (
+              {/* Traceability Card: Connected Parent Palms */}
+              {motherPalms.length > 0 && (
                 <div className="card border-0 shadow-sm rounded-4 p-4 border-start border-success border-4 bg-white">
                   <div className="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                      <span className="badge bg-success mb-1">PARENT PALM TRACEABILITY</span>
-                      <h5 className="fw-bold text-dark mb-0">Mother Tree: {motherPalm.code}</h5>
+                      <span className="badge bg-success mb-1">
+                        <i className="bi bi-shield-check me-1"></i> VERIFIED PARENT PALM TRACEABILITY
+                      </span>
+                      <h5 className="fw-bold text-dark mb-0">
+                        {motherPalms.length > 1 ? `Tagged Mother Trees (${motherPalms.length})` : `Mother Tree: ${motherPalms[0].code}`}
+                      </h5>
                     </div>
-                    <span className="badge bg-warning text-dark">{motherPalm.age} Years Old</span>
                   </div>
                   <p className="text-secondary small mb-3">
-                    These saplings were harvested directly from Mother Palm <strong>{motherPalm.code}</strong> located in <em>{motherPalm.location}</em>.
+                    These certified saplings were harvested directly from registered ancestral mother palms with documented high yield &amp; genetic pedigree:
                   </p>
-                  <div className="p-3 bg-light rounded-3 mb-3 small text-secondary">
-                    <strong>Yield Record:</strong> {motherPalm.yieldHistory}
+                  <div className="d-flex flex-column gap-3 mb-2">
+                    {motherPalms.map(palm => (
+                      <div key={palm.code} className="p-3 bg-light rounded-3 border">
+                        <div className="d-flex justify-content-between align-items-center mb-1">
+                          <strong className="text-dark">
+                            <i className="bi bi-tree-fill text-success me-1"></i>
+                            {palm.code} &mdash; {palm.name}
+                          </strong>
+                          <span className="badge bg-warning text-dark">{palm.age} Yrs Old</span>
+                        </div>
+                        <small className="text-muted d-block mb-1">
+                          <i className="bi bi-geo-alt-fill text-danger me-1"></i>{palm.location} &bull; <span className="text-success fw-semibold">{palm.healthStatus}</span>
+                        </small>
+                        <p className="text-secondary extra-small mb-2">{palm.yieldHistory}</p>
+                        <Link href={`/parent-palm/${palm.code}`} className="btn btn-outline-success btn-sm fw-bold extra-small">
+                          View {palm.code} Full Profile <i className="bi bi-arrow-right ms-1"></i>
+                        </Link>
+                      </div>
+                    ))}
                   </div>
-                  <Link href={`/parent-palm/${motherPalm.code}`} className="btn btn-outline-success btn-sm fw-bold align-self-start">
-                    View Mother Tree Photos & Profile <i className="bi bi-arrow-right ms-1"></i>
-                  </Link>
                 </div>
               )}
             </div>

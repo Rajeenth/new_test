@@ -35,6 +35,7 @@ export default function AdminBatchesPage() {
   // New Batch Form State
   const [newBatch, setNewBatch] = useState({
     batchCode: '',
+    parentPalmCodes: ['EM-MP-014'] as string[],
     parentPalmCode: 'EM-MP-014',
     name: 'December 2026 Batch',
     harvestDate: '2026-01-05',
@@ -44,6 +45,47 @@ export default function AdminBatchesPage() {
     status: 'AVAILABLE',
     description: ''
   });
+  const [treeSearchTerm, setTreeSearchTerm] = useState('');
+
+  // Edit Batch State
+  const [editParentPalmCodes, setEditParentPalmCodes] = useState<string[]>([]);
+  const [editTreeSearchTerm, setEditTreeSearchTerm] = useState('');
+
+  const toggleNewBatchTree = (code: string) => {
+    setNewBatch(prev => {
+      const exists = prev.parentPalmCodes.includes(code);
+      let nextCodes: string[];
+      if (exists) {
+        if (prev.parentPalmCodes.length <= 1) {
+          alert('A batch must have at least one mother tree assigned.');
+          return prev;
+        }
+        nextCodes = prev.parentPalmCodes.filter(c => c !== code);
+      } else {
+        nextCodes = [...prev.parentPalmCodes, code];
+      }
+      return {
+        ...prev,
+        parentPalmCodes: nextCodes,
+        parentPalmCode: nextCodes[0] || 'EM-MP-001'
+      };
+    });
+  };
+
+  const toggleEditBatchTree = (code: string) => {
+    setEditParentPalmCodes(prev => {
+      const exists = prev.includes(code);
+      if (exists) {
+        if (prev.length <= 1) {
+          alert('A batch must have at least one mother tree assigned.');
+          return prev;
+        }
+        return prev.filter(c => c !== code);
+      } else {
+        return [...prev, code];
+      }
+    });
+  };
 
   const calculatedMetrics = getSaplingMetrics(newBatch.seededDate);
 
@@ -137,12 +179,18 @@ export default function AdminBatchesPage() {
       finalImages = [`/images/batches/${newBatch.batchCode}/batch_1.jpg`];
     }
 
+    if (!newBatch.parentPalmCodes || newBatch.parentPalmCodes.length === 0) {
+      alert('Please select at least one mother tree for this batch.');
+      return;
+    }
+
     try {
       const res = await fetch('/api/batches', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newBatch,
+          parentPalmCode: newBatch.parentPalmCodes[0],
           images: finalImages
         })
       });
@@ -154,6 +202,7 @@ export default function AdminBatchesPage() {
         setBatchFiles([]);
         setNewBatch({
           batchCode: generateAutoBatchCode(),
+          parentPalmCodes: ['EM-MP-014'],
           parentPalmCode: 'EM-MP-014',
           name: 'December 2026 Batch',
           harvestDate: '2026-01-05',
@@ -163,6 +212,7 @@ export default function AdminBatchesPage() {
           status: 'AVAILABLE',
           description: ''
         });
+        setTreeSearchTerm('');
       } else {
         alert('Failed to save batch');
       }
@@ -178,6 +228,11 @@ export default function AdminBatchesPage() {
     setEditDescription(batch.description || '');
     setEditImages(batch.images && batch.images.length > 0 ? [...batch.images] : []);
     setNewImageUrl('');
+    const codes = (batch.parentPalmCodes && batch.parentPalmCodes.length > 0)
+      ? [...batch.parentPalmCodes]
+      : (batch.parentPalmCode ? [batch.parentPalmCode] : ['EM-MP-001']);
+    setEditParentPalmCodes(codes);
+    setEditTreeSearchTerm('');
   };
 
   const handleAddEditFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -246,6 +301,11 @@ export default function AdminBatchesPage() {
   const handleSaveEdit = async () => {
     if (!editingBatch) return;
 
+    if (editParentPalmCodes.length === 0) {
+      alert('Please select at least one mother tree for this batch.');
+      return;
+    }
+
     try {
       const res = await fetch('/api/batches', {
         method: 'PUT',
@@ -255,7 +315,9 @@ export default function AdminBatchesPage() {
           price: editPrice,
           totalQuantity: editTotalQuantity,
           description: editDescription,
-          images: editImages
+          images: editImages,
+          parentPalmCodes: editParentPalmCodes,
+          parentPalmCode: editParentPalmCodes[0]
         })
       });
 
@@ -371,7 +433,7 @@ export default function AdminBatchesPage() {
             
             <form onSubmit={handleCreateBatch}>
               <div className="row g-3">
-                <div className="col-md-3">
+                <div className="col-md-4">
                   <label className="form-label small fw-bold text-success">Batch Code (Auto-populated) *</label>
                   <input 
                     type="text" 
@@ -382,20 +444,7 @@ export default function AdminBatchesPage() {
                   />
                 </div>
 
-                <div className="col-md-3">
-                  <label className="form-label small fw-bold">Mother Tree / Parent Palm *</label>
-                  <select 
-                    className="form-select"
-                    value={newBatch.parentPalmCode}
-                    onChange={e => setNewBatch({ ...newBatch, parentPalmCode: e.target.value })}
-                  >
-                    {parentPalms.map(p => (
-                      <option key={p.code} value={p.code}>{p.code} ({p.name})</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="col-md-4">
+                <div className="col-md-5">
                   <label className="form-label small fw-bold">Base Batch Name *</label>
                   <input 
                     type="text" 
@@ -408,7 +457,7 @@ export default function AdminBatchesPage() {
                   <small className="text-muted extra-small">Combined Full Name: <strong>{newBatch.name} ({newBatch.batchCode})</strong></small>
                 </div>
 
-                <div className="col-md-2">
+                <div className="col-md-3">
                   <label className="form-label small fw-bold">Price (₹/sapling) *</label>
                   <input 
                     type="number" 
@@ -417,6 +466,123 @@ export default function AdminBatchesPage() {
                     value={newBatch.price}
                     onChange={e => setNewBatch({ ...newBatch, price: Number(e.target.value) })}
                   />
+                </div>
+
+                {/* Multiple Mother Trees Selection Section */}
+                <div className="col-12">
+                  <div className="p-3 bg-light rounded-3 border">
+                    <div className="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+                      <div>
+                        <label className="form-label small fw-bold text-dark mb-0">
+                          <i className="bi bi-tree-fill text-success me-1"></i>
+                          Mother Trees / Parent Palms Tagging * (Multiple Allowed)
+                        </label>
+                        <small className="text-muted d-block extra-small">
+                          A batch can be raised from nuts harvested across multiple mother trees. Select all contributing mother trees below.
+                        </small>
+                      </div>
+                      <div className="d-flex gap-2">
+                        <button 
+                          type="button" 
+                          className="btn btn-outline-success btn-sm py-0 px-2 extra-small"
+                          onClick={() => setNewBatch(prev => ({ 
+                            ...prev, 
+                            parentPalmCodes: parentPalms.map(p => p.code),
+                            parentPalmCode: parentPalms[0]?.code || 'EM-MP-001'
+                          }))}
+                        >
+                          <i className="bi bi-check-all me-1"></i> Select All ({parentPalms.length})
+                        </button>
+                        <button 
+                          type="button" 
+                          className="btn btn-outline-secondary btn-sm py-0 px-2 extra-small"
+                          onClick={() => setNewBatch(prev => ({ 
+                            ...prev, 
+                            parentPalmCodes: [parentPalms[0]?.code || 'EM-MP-001'],
+                            parentPalmCode: parentPalms[0]?.code || 'EM-MP-001'
+                          }))}
+                        >
+                          Reset to Primary
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Currently Tagged Badges Bar */}
+                    <div className="d-flex flex-wrap align-items-center gap-1 mb-2 p-2 bg-white rounded border">
+                      <small className="text-secondary fw-bold extra-small me-2">
+                        Tagged Trees ({newBatch.parentPalmCodes.length}):
+                      </small>
+                      {newBatch.parentPalmCodes.length === 0 ? (
+                        <span className="text-danger extra-small fw-semibold">
+                          <i className="bi bi-exclamation-triangle-fill me-1"></i> No mother trees selected. Please choose at least one option below.
+                        </span>
+                      ) : (
+                        newBatch.parentPalmCodes.map(code => {
+                          const palm = parentPalms.find(p => p.code === code);
+                          return (
+                            <span key={code} className="badge bg-success-subtle text-success border border-success d-inline-flex align-items-center gap-1 py-1 px-2">
+                              <i className="bi bi-patch-check-fill text-success"></i>
+                              <strong>{code}</strong> {palm ? `(${palm.name.split('#')[0].trim()})` : ''}
+                              <button 
+                                type="button"
+                                className="btn-close btn-close-sm ms-1"
+                                style={{ fontSize: '0.6rem' }}
+                                onClick={() => toggleNewBatchTree(code)}
+                                title={`Remove ${code}`}
+                              ></button>
+                            </span>
+                          );
+                        })
+                      )}
+                    </div>
+
+                    {/* Filter search within mother trees */}
+                    <div className="mb-2">
+                      <input 
+                        type="text" 
+                        className="form-control form-control-sm"
+                        placeholder="Filter mother trees by code, name, or location..."
+                        value={treeSearchTerm}
+                        onChange={e => setTreeSearchTerm(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Scrollable Mother Trees Choice Grid */}
+                    <div className="border rounded p-2 bg-white overflow-y-auto" style={{ maxHeight: '180px' }}>
+                      <div className="row g-2">
+                        {parentPalms
+                          .filter(p => !treeSearchTerm || p.code.toLowerCase().includes(treeSearchTerm.toLowerCase()) || p.name.toLowerCase().includes(treeSearchTerm.toLowerCase()) || p.location.toLowerCase().includes(treeSearchTerm.toLowerCase()))
+                          .map(p => {
+                            const isSelected = newBatch.parentPalmCodes.includes(p.code);
+                            return (
+                              <div key={p.code} className="col-md-6 col-lg-4">
+                                <div 
+                                  className={`p-2 rounded border h-100 d-flex align-items-center justify-content-between transition-all ${isSelected ? 'border-success bg-success-subtle' : 'border-light-subtle bg-light'}`}
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => toggleNewBatchTree(p.code)}
+                                >
+                                  <div className="form-check m-0 d-flex align-items-center gap-2">
+                                    <input 
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      id={`create-tree-${p.code}`}
+                                      checked={isSelected}
+                                      onChange={() => toggleNewBatchTree(p.code)}
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                    <label className="form-check-label extra-small" htmlFor={`create-tree-${p.code}`} style={{ cursor: 'pointer' }}>
+                                      <strong className="text-dark d-block">{p.code}</strong>
+                                      <span className="text-muted text-truncate d-inline-block" style={{ maxWidth: '180px' }}>{p.name}</span>
+                                    </label>
+                                  </div>
+                                  <span className="badge bg-light text-dark border extra-small">{p.age} Yrs</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* DATES SECTION */}
@@ -507,8 +673,11 @@ export default function AdminBatchesPage() {
                 </div>
 
                 <div className="col-md-4">
-                  <label className="form-label small fw-bold">Mother Tree Code</label>
-                  <input type="text" className="form-control" readOnly value={newBatch.parentPalmCode} />
+                  <label className="form-label small fw-bold">Tagged Mother Tree(s) ({newBatch.parentPalmCodes.length})</label>
+                  <div className="form-control bg-light text-truncate" title={newBatch.parentPalmCodes.join(', ')}>
+                    <i className="bi bi-tree-fill text-success me-1"></i>
+                    {newBatch.parentPalmCodes.join(', ')}
+                  </div>
                 </div>
 
                 <div className="col-12">
@@ -544,6 +713,7 @@ export default function AdminBatchesPage() {
                     <tr>
                       <th>Batch Code</th>
                       <th>Batch Name</th>
+                      <th>Mother Tree(s)</th>
                       <th>Dates (Cut / Seeded)</th>
                       <th>Age / Height</th>
                       <th>Total</th>
@@ -559,6 +729,20 @@ export default function AdminBatchesPage() {
                       <tr key={b.id}>
                         <td><strong className="text-success">{b.batchCode}</strong></td>
                         <td><small className="fw-bold">{b.name}</small></td>
+                        <td>
+                          <div className="d-flex flex-wrap gap-1" style={{ maxWidth: '180px' }}>
+                            {(((b.parentPalmCodes && b.parentPalmCodes.length > 0) ? b.parentPalmCodes : [b.parentPalmCode]) as string[]).map((c: string) => (
+                              <Link 
+                                key={c}
+                                href={`/parent-palm/${c}`}
+                                className="badge bg-success-subtle text-success border border-success text-decoration-none extra-small"
+                                title="View Mother Tree Profile"
+                              >
+                                <i className="bi bi-tree-fill me-1"></i>{c}
+                              </Link>
+                            ))}
+                          </div>
+                        </td>
                         <td className="small text-muted">
                           <div>Cut: {b.harvestDate || 'N/A'}</div>
                           <div>Seeded: {b.seededDate || 'N/A'}</div>
@@ -602,7 +786,7 @@ export default function AdminBatchesPage() {
           {/* EDIT BATCH MODAL */}
           {editingBatch && (
             <div className="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex align-items-center justify-content-center z-3">
-              <div className="card border-0 shadow-lg rounded-4 p-4 bg-white" style={{ maxWidth: '500px', width: '90%' }}>
+              <div className="card border-0 shadow-lg rounded-4 p-4 bg-white" style={{ maxWidth: '600px', width: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
                 <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
                   <h4 className="fw-bold text-dark mb-0"><i className="bi bi-pencil-square text-primary me-2"></i> Edit Batch {editingBatch.batchCode}</h4>
                   <button className="btn-close" onClick={() => setEditingBatch(null)}></button>
@@ -637,6 +821,81 @@ export default function AdminBatchesPage() {
                     value={editDescription}
                     onChange={e => setEditDescription(e.target.value)}
                   ></textarea>
+                </div>
+
+                {/* Edit Mother Trees Selection */}
+                <div className="mb-3 p-3 bg-light rounded-3 border">
+                  <div className="d-flex justify-content-between align-items-center mb-1">
+                    <label className="form-label small fw-bold text-dark mb-0">
+                      <i className="bi bi-tree-fill text-success me-1"></i> Tagged Mother Trees ({editParentPalmCodes.length}) *
+                    </label>
+                    <button 
+                      type="button" 
+                      className="btn btn-outline-success btn-sm py-0 px-2 extra-small"
+                      onClick={() => setEditParentPalmCodes(parentPalms.map(p => p.code))}
+                    >
+                      Select All
+                    </button>
+                  </div>
+                  <small className="text-muted d-block extra-small mb-2">Check or uncheck mother trees contributing to this batch.</small>
+
+                  {/* Selected badges */}
+                  <div className="d-flex flex-wrap gap-1 mb-2">
+                    {editParentPalmCodes.map(code => (
+                      <span key={code} className="badge bg-success-subtle text-success border border-success d-inline-flex align-items-center gap-1">
+                        <strong>{code}</strong>
+                        <button 
+                          type="button" 
+                          className="btn-close btn-close-sm" 
+                          style={{ fontSize: '0.6rem' }}
+                          onClick={() => toggleEditBatchTree(code)}
+                        ></button>
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Filter input */}
+                  <input 
+                    type="text" 
+                    className="form-control form-control-sm mb-2" 
+                    placeholder="Search trees..."
+                    value={editTreeSearchTerm}
+                    onChange={e => setEditTreeSearchTerm(e.target.value)}
+                  />
+
+                  {/* Options List */}
+                  <div className="border rounded p-2 bg-white overflow-y-auto" style={{ maxHeight: '140px' }}>
+                    <div className="d-flex flex-column gap-1">
+                      {parentPalms
+                        .filter(p => !editTreeSearchTerm || p.code.toLowerCase().includes(editTreeSearchTerm.toLowerCase()) || p.name.toLowerCase().includes(editTreeSearchTerm.toLowerCase()))
+                        .map(p => {
+                          const isSel = editParentPalmCodes.includes(p.code);
+                          return (
+                            <div 
+                              key={p.code} 
+                              className={`p-1 px-2 rounded border d-flex align-items-center justify-content-between ${isSel ? 'border-success bg-success-subtle' : 'bg-light'}`}
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => toggleEditBatchTree(p.code)}
+                            >
+                              <div className="form-check m-0 d-flex align-items-center gap-2">
+                                <input 
+                                  type="checkbox" 
+                                  className="form-check-input" 
+                                  id={`edit-tree-${p.code}`}
+                                  checked={isSel} 
+                                  onChange={() => toggleEditBatchTree(p.code)}
+                                  onClick={e => e.stopPropagation()}
+                                />
+                                <label className="form-check-label extra-small" htmlFor={`edit-tree-${p.code}`} style={{ cursor: 'pointer' }}>
+                                  <strong>{p.code}</strong> - {p.name}
+                                </label>
+                              </div>
+                              <span className="badge bg-light text-dark border extra-small">{p.age} Yrs</span>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Batch Images — Gallery, URL Manager & Uploader */}

@@ -139,12 +139,28 @@ export default function LiveStockTerminal({ initialBatch, initialBatches = [] }:
               {/* Stock Numbers & Live Math */}
               <div className="col-lg-7">
                 <div className="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
-                  <div>
-                    <h3 className="fw-bold text-dark mb-1">{currentBatch?.name}</h3>
-                    <p className="text-secondary small mb-3">
-                      Age: <strong className="text-dark">{currentBatch?.age}</strong> &bull; Avg Height: <strong className="text-dark">{currentBatch?.height}</strong> &bull; Mother Tree: <Link href={`/parent-palm/${currentBatch?.parentPalmCode}`} className="text-success fw-bold text-decoration-none hover-underline">{currentBatch?.parentPalmCode} <i className="bi bi-arrow-up-right-square small"></i></Link>
-                    </p>
-                  </div>
+                    <div>
+                      <h3 className="fw-bold text-dark mb-1">{currentBatch?.name}</h3>
+                      <p className="text-muted small mb-0">
+                        Age: <strong className="text-dark">{currentBatch?.age}</strong> &bull; Avg Height: <strong className="text-dark">{currentBatch?.height}</strong> &bull; {(() => {
+                          const treeCodes = (currentBatch?.parentPalmCodes && currentBatch.parentPalmCodes.length > 0)
+                            ? currentBatch.parentPalmCodes
+                            : (currentBatch?.parentPalmCode ? [currentBatch.parentPalmCode] : []);
+                          return (
+                            <>
+                              Mother {treeCodes.length > 1 ? 'Trees' : 'Tree'}: {(treeCodes as string[]).map((c: string, i: number) => (
+                                <span key={c}>
+                                  <Link href={`/parent-palm/${c}`} className="text-success fw-bold text-decoration-none hover-underline">
+                                    {c} <i className="bi bi-arrow-up-right-square small"></i>
+                                  </Link>
+                                  {i < treeCodes.length - 1 ? ', ' : ''}
+                                </span>
+                              ))}
+                            </>
+                          );
+                        })()}
+                      </p>
+                    </div>
                   <div className="text-end">
                     <span className="display-6 fw-bold text-success">₹{currentBatch?.price}</span>
                     <small className="text-muted d-block extra-small">per sapling</small>
