@@ -953,7 +953,7 @@ function loadFromDb() {
       if (Array.isArray(data.bookings)) bookings = data.bookings;
       if (Array.isArray(data.adjustments)) adjustments = data.adjustments;
       if (Array.isArray(data.enquiries)) enquiries = data.enquiries;
-      if (Array.isArray(data.reviews) && data.reviews.length > 0) reviews = data.reviews;
+      if (Array.isArray(data.reviews)) reviews = data.reviews;
       if (Array.isArray(data.faqs) && data.faqs.length > 0) faqs = data.faqs;
     }
   } catch (err) {
@@ -1377,6 +1377,56 @@ export const DataStore = {
   getReviews: () => {
     loadFromDb();
     return reviews;
+  },
+  getReviewById: (id: string) => {
+    loadFromDb();
+    return reviews.find(r => r.id === id) || null;
+  },
+  addReview: (reviewData: Partial<Review>) => {
+    loadFromDb();
+    const newReview: Review = {
+      id: reviewData.id || `rev-${Date.now()}`,
+      customerName: (reviewData.customerName || 'Verified Farmer').trim(),
+      location: (reviewData.location || 'Tamil Nadu').trim(),
+      batchCode: (reviewData.batchCode || 'EM-0126-A').trim(),
+      quantity: Math.max(1, Number(reviewData.quantity) || 1),
+      rating: Math.min(5, Math.max(1, Number(reviewData.rating) || 5)),
+      comment: (reviewData.comment || '').trim(),
+      verified: reviewData.verified !== undefined ? Boolean(reviewData.verified) : true,
+      date: reviewData.date || new Date().toISOString().split('T')[0]
+    };
+    reviews.unshift(newReview);
+    saveToDb();
+    return newReview;
+  },
+  updateReview: (id: string, updatedFields: Partial<Review>) => {
+    loadFromDb();
+    const index = reviews.findIndex(r => r.id === id);
+    if (index === -1) {
+      throw new Error(`Review with id ${id} not found`);
+    }
+    const current = reviews[index];
+    const updatedReview: Review = {
+      ...current,
+      customerName: updatedFields.customerName !== undefined ? updatedFields.customerName.trim() : current.customerName,
+      location: updatedFields.location !== undefined ? updatedFields.location.trim() : current.location,
+      batchCode: updatedFields.batchCode !== undefined ? updatedFields.batchCode.trim() : current.batchCode,
+      quantity: updatedFields.quantity !== undefined ? Math.max(1, Number(updatedFields.quantity) || 1) : current.quantity,
+      rating: updatedFields.rating !== undefined ? Math.min(5, Math.max(1, Number(updatedFields.rating) || 5)) : current.rating,
+      comment: updatedFields.comment !== undefined ? updatedFields.comment.trim() : current.comment,
+      verified: updatedFields.verified !== undefined ? Boolean(updatedFields.verified) : current.verified,
+      date: updatedFields.date !== undefined ? updatedFields.date.trim() : current.date
+    };
+    reviews[index] = updatedReview;
+    saveToDb();
+    return updatedReview;
+  },
+  deleteReview: (id: string) => {
+    loadFromDb();
+    const beforeCount = reviews.length;
+    reviews = reviews.filter(r => r.id !== id);
+    saveToDb();
+    return reviews.length < beforeCount;
   },
   getFaqs: () => {
     loadFromDb();

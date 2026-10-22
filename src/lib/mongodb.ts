@@ -103,7 +103,20 @@ const InventoryAdjustmentSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const ReviewSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  customerName: String,
+  location: String,
+  batchCode: String,
+  quantity: Number,
+  rating: Number,
+  comment: String,
+  verified: Boolean,
+  date: String
+});
+
 export const ParentPalmModel = mongoose.models.ParentPalm || mongoose.model('ParentPalm', ParentPalmSchema);
 export const BatchModel = mongoose.models.Batch || mongoose.model('Batch', BatchSchema);
 export const BookingModel = mongoose.models.Booking || mongoose.model('Booking', BookingSchema);
 export const InventoryAdjustmentModel = mongoose.models.InventoryAdjustment || mongoose.model('InventoryAdjustment', InventoryAdjustmentSchema);
+export const ReviewModel = mongoose.models.Review || mongoose.model('Review', ReviewSchema);

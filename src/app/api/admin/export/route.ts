@@ -14,6 +14,7 @@ export async function GET(request: Request) {
     const palms = DataStore.getParentPalms();
     const enquiries = DataStore.getEnquiries();
     const adjustments = DataStore.getAdjustments();
+    const reviews = DataStore.getReviews();
 
     const wb = XLSX.utils.book_new();
 
@@ -35,6 +36,7 @@ export async function GET(request: Request) {
       { 'Metric': 'Confirmed Paid Revenue', 'Value': `₹${totalRevenue.toLocaleString('en-IN')}` },
       { 'Metric': 'Total Customer Enquiries', 'Value': enquiries.length },
       { 'Metric': 'Total Inventory Audit Logs', 'Value': adjustments.length },
+      { 'Metric': 'Total Farmer Reviews', 'Value': reviews.length },
     ];
 
     // Parse filter parameters
@@ -169,6 +171,19 @@ export async function GET(request: Request) {
       'Logged At': a.createdAt ? new Date(a.createdAt).toLocaleString('en-IN') : 'N/A',
     }));
 
+    // 7. Farmer Reviews Sheet
+    const reviewsData = reviews.map(r => ({
+      'Review ID': r.id,
+      'Farmer / Customer Name': r.customerName,
+      'Location': r.location,
+      'Batch Code': r.batchCode,
+      'Quantity (Saplings)': r.quantity,
+      'Rating (Stars)': r.rating,
+      'Verified Buyer': r.verified ? 'Yes (Verified)' : 'No',
+      'Review Date': r.date,
+      'Farmer Feedback / Comment': r.comment,
+    }));
+
     if (type === 'orders') {
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(ordersData), 'Orders');
     } else if (type === 'batches') {
@@ -179,6 +194,8 @@ export async function GET(request: Request) {
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(enquiriesData), 'Enquiries');
     } else if (type === 'audit' || type === 'inventory') {
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(auditData), 'Inventory Audit');
+    } else if (type === 'reviews' || type === 'farmer-reviews') {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(reviewsData), 'Farmer Reviews');
     } else {
       // Complete export: all tabs included
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summaryData), 'Overview Summary');
@@ -187,6 +204,7 @@ export async function GET(request: Request) {
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(treesData), 'Mother Trees Registry');
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(enquiriesData), 'Customer Enquiries');
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(auditData), 'Inventory Audit Log');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(reviewsData), 'Farmer Reviews');
     }
 
     const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });

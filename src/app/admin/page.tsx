@@ -168,6 +168,11 @@ export default function AdminDashboardPage() {
                   <i className="bi bi-shield-check text-secondary"></i> Inventory Audit (.xlsx)
                 </a>
               </div>
+              <div className="col-6 col-lg">
+                <a href="/api/admin/export?type=reviews" download className="btn btn-outline-secondary btn-sm w-100 text-dark fw-semibold d-flex align-items-center justify-content-center gap-1 py-2 rounded-3 hover-lift-subtle">
+                  <i className="bi bi-chat-quote-fill text-warning"></i> Farmer Reviews (.xlsx)
+                </a>
+              </div>
             </div>
 
             <div className="mt-3 pt-2 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -205,9 +210,19 @@ export default function AdminDashboardPage() {
 
             <div className="col-md-4">
               <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                <h5 className="fw-bold text-dark mb-2"><i className="bi bi-star-fill text-warning me-2"></i> Farmer Reviews</h5>
+                <p className="text-secondary small mb-3">Create, edit, and moderate verified farmer testimonials, star ratings & customer feedback.</p>
+                <Link href="/admin/reviews" className="btn btn-outline-warning text-dark fw-bold mt-auto">
+                  Manage Farmer Reviews <i className="bi bi-arrow-right ms-1"></i>
+                </Link>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
                 <h5 className="fw-bold text-dark mb-2"><i className="bi bi-envelope-paper text-warning me-2"></i> Customer Enquiries</h5>
                 <p className="text-secondary small mb-3">View contact form enquiries, customer questions, locations & reply directly on WhatsApp.</p>
-                <Link href="/admin/enquiries" className="btn btn-outline-warning text-dark fw-bold mt-auto">
+                <Link href="/admin/enquiries" className="btn btn-outline-secondary text-dark fw-bold mt-auto">
                   View Customer Enquiries <i className="bi bi-arrow-right ms-1"></i>
                 </Link>
               </div>

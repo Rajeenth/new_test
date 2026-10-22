@@ -1,0 +1,62 @@
+import { NextResponse } from 'next/server';
+import { DataStore } from '@/lib/dataStore';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  try {
+    const reviews = DataStore.getReviews();
+    return NextResponse.json(reviews);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Failed to fetch reviews' }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    if (!body.customerName || !body.comment) {
+      return NextResponse.json(
+        { error: 'Customer name and review comment are required' },
+        { status: 400 }
+      );
+    }
+
+    const newReview = DataStore.addReview(body);
+    return NextResponse.json(newReview, { status: 201 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Failed to create review' }, { status: 400 });
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    if (!body.id) {
+      return NextResponse.json({ error: 'Review ID is required for editing' }, { status: 400 });
+    }
+
+    const updated = DataStore.updateReview(body.id, body);
+    return NextResponse.json(updated);
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Failed to update review' }, { status: 400 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    if (!id) {
+      return NextResponse.json({ error: 'Review ID parameter required' }, { status: 400 });
+    }
+
+    const success = DataStore.deleteReview(id);
+    if (!success) {
+      return NextResponse.json({ error: 'Review not found' }, { status: 404 });
+    }
+    return NextResponse.json({ success: true, message: `Review ${id} deleted successfully.` });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Failed to delete review' }, { status: 500 });
+  }
+}
