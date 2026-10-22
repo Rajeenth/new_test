@@ -1026,11 +1026,7 @@ function syncDiskImages() {
             if (validCurrent.length === 0) {
               b.images = diskUrls;
             } else {
-              const combined: string[] = [...validCurrent];
-              diskUrls.forEach((url: string) => {
-                if (!combined.includes(url)) combined.push(url);
-              });
-              b.images = combined;
+              b.images = validCurrent;
             }
           }
         }
@@ -1055,11 +1051,7 @@ function syncDiskImages() {
             if (validCurrent.length === 0) {
               p.images = diskUrls;
             } else {
-              const combined: string[] = [...validCurrent];
-              diskUrls.forEach((url: string) => {
-                if (!combined.includes(url)) combined.push(url);
-              });
-              p.images = combined;
+              p.images = validCurrent;
             }
           }
         }
@@ -1238,6 +1230,9 @@ export const DataStore = {
       p.code.toLowerCase() === identifier.toLowerCase()
     );
     if (!target) throw new Error('Parent palm mother tree not found');
+    if (updatedFields.images && Array.isArray(updatedFields.images)) {
+      target.images = [...updatedFields.images];
+    }
     Object.assign(target, updatedFields);
     saveToDb();
     return target;

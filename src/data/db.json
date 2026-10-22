@@ -974,6 +974,17 @@
   ],
   "reviews": [
     {
+      "id": "rev-1792634507185",
+      "customerName": "Priya",
+      "location": "Pattukottai",
+      "batchCode": "EM-0826-H",
+      "quantity": 700,
+      "rating": 5,
+      "comment": "wonderful quality exactly the way we expected, very transparent and reliable.",
+      "verified": true,
+      "date": "2026-10-22"
+    },
+    {
       "id": "rev-1",
       "customerName": "Murugan K.",
       "location": "Nagercoil, Kanyakumari",

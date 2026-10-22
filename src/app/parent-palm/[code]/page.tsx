@@ -3,6 +3,8 @@ import { DataStore } from '@/lib/dataStore';
 import { notFound } from 'next/navigation';
 import ImageCarousel from '@/components/ImageCarousel';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ParentPalmDetailPage({
   params
 }: {
