@@ -1,95 +1,77 @@
+// src/app/api/upload/route.ts
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir, unlink } from 'fs/promises';
-import path from 'path';
+import { promises as fs } from 'fs';
+import { join, dirname } from 'path';
+import { randomUUID } from 'crypto';
+import { DataStore } from '@/lib/dataStore';
 
-export async function POST(request: Request) {
-  try {
-    const formData = await request.formData();
-    const files = formData.getAll('files') as File[];
-    const category = (formData.get('category') as string) || 'batches'; // 'batches' or 'parent-palms'
-    const tag = (formData.get('tag') as string) || 'general'; // e.g., 'EM-0926-A' or 'EM-MP-014'
-
-    if (!files || files.length === 0) {
-      return NextResponse.json({ error: 'No files provided' }, { status: 400 });
-    }
-
-    // Sanitize folder path
-    const safeTag = tag.replace(/[^a-zA-Z0-9_-]/g, '');
-    const targetDir = path.join(process.cwd(), 'public', 'images', category, safeTag);
-
-    let canWriteToDisk = true;
-    try {
-      await mkdir(targetDir, { recursive: true });
-    } catch {
-      canWriteToDisk = false;
-    }
-
-    const savedUrls: string[] = [];
-
-    for (const file of files) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      let savedToDisk = false;
-      if (canWriteToDisk) {
-        try {
-          const timeStamp = Date.now();
-          const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9_.-]/g, '_');
-          const filename = `${timeStamp}_${sanitizedFilename}`;
-          const filePath = path.join(targetDir, filename);
-          await writeFile(filePath, buffer);
-          const publicUrl = `/images/${category}/${safeTag}/${filename}`;
-          savedUrls.push(publicUrl);
-          savedToDisk = true;
-        } catch {
-          savedToDisk = false;
-        }
-      }
-
-      // If read-only filesystem (e.g. Vercel serverless /var/task), fall back to base64 Data URL
-      if (!savedToDisk) {
-        const mimeType = file.type || 'image/jpeg';
-        const base64 = buffer.toString('base64');
-        savedUrls.push(`data:${mimeType};base64,${base64}`);
-      }
-    }
-
-    return NextResponse.json({ 
-      success: true, 
-      urls: savedUrls,
-      message: `Processed ${savedUrls.length} image(s)` 
-    });
-  } catch (error: any) {
-    console.error('File upload error:', error);
-    return NextResponse.json({ error: error.message || 'File upload failed' }, { status: 500 });
-  }
+/**
+ * Ensure a directory exists – creates it recursively if needed.
+ */
+async function ensureDir(dirPath: string) {
+  await fs.mkdir(dirPath, { recursive: true });
 }
 
-export async function DELETE(request: Request) {
+/**
+ * POST handler for image uploads.
+ * Expected multipart fields:
+ *   - file: the binary image
+ *   - type: one of "receipt", "batch", "mother-tree", etc.
+ *   - orderId (optional, required when type === "receipt")
+ */
+export async function POST(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const imagePath = searchParams.get('path');
-    if (!imagePath) {
-      return NextResponse.json({ error: 'Image path parameter required' }, { status: 400 });
+    const form = await request.formData();
+
+    const file = form.get('file') as File | null;
+    const type = (form.get('type') as string | null) ?? 'generic';
+    if (!file) {
+      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
-    // Normalize path to prevent directory traversal
-    const relativePath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
-    const fullPath = path.join(process.cwd(), 'public', relativePath);
+    // Determine where to store the file
+    const baseFolder = join(
+      process.cwd(),
+      'public',
+      'images',
+      type === 'receipt' ? 'receipts' : type
+    );
+    await ensureDir(baseFolder);
 
-    // Only allow deleting within /public/images/
-    if (!fullPath.startsWith(path.join(process.cwd(), 'public', 'images'))) {
-      return NextResponse.json({ error: 'Unauthorized path deletion' }, { status: 403 });
+    // Build a unique filename
+    const ext = file.name.split('.').pop() ?? 'png';
+    const filename = `${randomUUID()}-${Date.now()}.${ext}`;
+    const filePath = join(baseFolder, filename);
+
+    // Write the file to disk
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await fs.writeFile(filePath, buffer);
+
+    // Public URL that the client can use
+    const publicUrl = `/images/${type === 'receipt' ? 'receipts' : type}/${filename}`;
+
+    // Persist the URL in the JSON DB
+    if (type === 'receipt') {
+      const orderId = form.get('orderId') as string | null;
+      if (!orderId) {
+        return NextResponse.json(
+          { error: 'orderId is required for receipt uploads' },
+          { status: 400 }
+        );
+      }
+      // Update only the receiptUrl field for the order
+      DataStore.updateOrder(orderId, { receiptUrl: publicUrl });
+    } else {
+      // Generic fallback – you can adapt this to other entities if needed
+      DataStore.addImageReference(type, publicUrl);
     }
 
-    try {
-      await unlink(fullPath);
-    } catch (e) {
-      // Ignore if file doesn't exist on disk
-    }
-
-    return NextResponse.json({ success: true, message: `File ${imagePath} removed from server.` });
+    return NextResponse.json({ url: publicUrl }, { status: 201 });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'File deletion failed' }, { status: 500 });
+    console.error('Upload error →', err);
+    return NextResponse.json(
+      { error: err.message || 'Upload failed' },
+      { status: 500 }
+    );
   }
 }

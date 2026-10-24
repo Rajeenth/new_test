@@ -66,6 +66,7 @@ export interface Booking {
   paymentStatus: 'PAID' | 'PENDING_VERIFICATION' | 'FAILED';
   bookingStatus: 'Payment review' | 'Confirmed' | 'Preparing' | 'Packed' | 'Dispatched' | 'Delivered' | 'Cancelled';
   paymentScreenshotUrl?: string;
+  receiptUrl?: string;
   courierName?: string;
   trackingId?: string;
   dispatchDate?: string;
@@ -1274,6 +1275,28 @@ export const DataStore = {
   getBookings: () => {
     loadFromDb();
     return bookings;
+  },
+
+  // Orders API (alias for bookings)
+  getOrders: () => {
+    loadFromDb();
+    return bookings;
+  },
+
+  // Update an order (booking) by ID
+  updateOrder: (orderId: string, changes: Partial<Booking>) => {
+    loadFromDb();
+    const target = bookings.find(b => b.id === orderId || b.bookingId === orderId);
+    if (!target) throw new Error('Order not found');
+    Object.assign(target, changes);
+    saveToDb();
+    return target;
+  },
+
+  // Placeholder for generic image reference handling
+  addImageReference: (type: string, url: string) => {
+    // Currently no-op; can be extended to store references per type.
+    return true;
   },
 
   getBookingsByMobile: (mobile: string) => {
